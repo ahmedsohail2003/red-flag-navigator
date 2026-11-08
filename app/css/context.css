@@ -1,0 +1,14 @@
+/* Context panels rendered by js/context-view.js: #practice (overview) and #path (method). */
+.ctx-card { margin-top: 16px; }
+.ctx-scroll { overflow-x: auto; }
+#practice .ctx-table th { width: 50%; }
+#practice .ctx-table td { line-height: 1.45; }
+#practice .ctx-table td:first-child { color: var(--ink-2); }
+#practice .ctx-table td:last-child { background: var(--brand-soft); border-left: 3px solid var(--brand-2); }
+
+#path .ctx-path { margin-top: 4px; }
+#path .ctx-item { border: 1px solid var(--line); border-radius: 8px; background: var(--bg); padding: 12px 14px; }
+#path .ctx-item h3 { font-size: .95rem; color: var(--brand); margin-bottom: .3em; }
+#path .ctx-item p { margin: 0; }
+#path .ctx-steps { margin: 0; padding-left: 1.3em; }
+#path .ctx-steps li { margin: 2px 0; }

@@ -1,0 +1,4 @@
+# private key of the self-signed certificate, and recorded sensor data
+.certs/
+recordings/
+__pycache__/

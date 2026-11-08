@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Patient view · Red-Flag Navigator</title>
+  <link rel="stylesheet" href="css/base.css">
+  <script src="js/fallback.js"></script>
+  <link rel="stylesheet" href="css/patient.css">
+</head>
+<body>
+  <main class="page pv-page" id="patient">
+    <header class="pv-intro">
+      <h1>Patient view</h1>
+      <p class="lede">What Alex would see on his phone after a visit: the same facts as the doctor dashboard, in gentler words, with every detail one tap away.</p>
+    </header>
+
+    <section class="card pv-controls" aria-label="Pick a visit">
+      <label for="pv-date">Show the update after this visit in Alex's story</label>
+      <div class="pv-picker">
+        <button type="button" id="pv-prev">&larr; Earlier</button>
+        <select id="pv-date"><option>Loading the case file…</option></select>
+        <button type="button" id="pv-next">Later &rarr;</button>
+      </div>
+      <p class="pv-settings muted" id="pv-settings"></p>
+    </section>
+
+    <div class="phone" id="phone" aria-live="polite">
+      <p class="muted">Loading Alex's case file…</p>
+    </div>
+
+    <section class="judge" id="judge" aria-label="Note for judges"></section>
+
+    <footer class="footer-note">Demo case: Alex Chen, from the BioHacks 2026 case. His notes are quoted word for word; his weekly check-in results are <span class="sim-tag">SIMULATED</span>. The tool flags who needs a nerve and muscle test (EMG). It never diagnoses.</footer>
+    <noscript><p>This page needs JavaScript.</p></noscript>
+  </main>
+  <script type="module" src="js/nav.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/patient.js" onerror="rfnFail()"></script>
+</body>
+</html>

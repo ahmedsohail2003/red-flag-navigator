@@ -1,0 +1,97 @@
+/* Method & validation page */
+.method h4 { margin: 0 0 .35em; font-size: .98rem; }
+.method section.card { margin-bottom: 18px; }
+.method section.card > h3 { margin-top: 22px; }
+.method .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 20px; }
+.method .toc a { text-decoration: none; padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: .9rem; color: var(--ink-2); }
+.method .toc a:hover { border-color: var(--brand-2); color: var(--brand); }
+.method .table-wrap { overflow-x: auto; max-width: 100%; }
+/* let grid cells shrink, so wide tables and .calc scroll inside instead of widening the page */
+.method .grid > * { min-width: 0; }
+.method td.num, .method th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.method table.compact td, .method table.compact th { padding: 6px 8px; }
+.method tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+.method .small { font-size: .8rem; }
+
+.callout { border-left: 4px solid var(--brand); background: var(--brand-soft); padding: 10px 14px; border-radius: 0 8px 8px 0; color: var(--ink-2); margin-bottom: 8px; }
+
+/* four steps */
+.steps { list-style: none; counter-reset: step; padding: 0; margin: 0 0 8px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.steps li { counter-increment: step; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; }
+.steps li::before { content: counter(step); display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: var(--brand); color: #fff; font-weight: 700; font-size: .85rem; align-items: center; justify-content: center; margin-bottom: 6px; }
+.steps .big { font-size: 1.2rem; font-weight: 700; color: var(--brand); margin: 2px 0 6px; font-variant-numeric: tabular-nums; }
+.steps p { font-size: .88rem; color: var(--ink-2); margin: 0; }
+@media (max-width: 900px) { .steps { grid-template-columns: 1fr 1fr; } }
+
+/* arithmetic block */
+.calc { font-family: var(--mono); background: #f2f4f7; border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; font-size: .86rem; white-space: pre; overflow-x: auto; line-height: 1.7; }
+.calc .c { color: var(--muted); }
+
+/* log-scale range bar */
+.rangebar { position: relative; height: 62px; margin: 22px 8px 4px; }
+.rangebar .track { position: absolute; left: 0; right: 0; top: 22px; height: 14px; background: #eef1f5; border-radius: 7px; }
+.rangebar .band { position: absolute; top: 22px; height: 14px; border-radius: 7px; opacity: .9; }
+.rangebar .band.prior { background: #98a2b3; }
+.rangebar .band.high { background: var(--high); }
+.rangebar .band.unclear { background: #f79009; }
+.rangebar .band.low { background: var(--low); }
+.rangebar .mid { position: absolute; top: 17px; width: 3px; height: 24px; background: var(--ink); border-radius: 2px; transform: translateX(-1px); }
+.rangebar .refline { position: absolute; top: 12px; height: 34px; border-left: 2px dashed var(--ink); }
+.rangebar .refline span { position: absolute; top: -16px; left: 0; transform: translateX(-50%); font-size: .75rem; font-weight: 700; white-space: nowrap; color: var(--ink); }
+.rangebar .tick { position: absolute; top: 44px; font-size: .72rem; color: var(--muted); transform: translateX(-50%); }
+.legend { font-size: .8rem; color: var(--muted); margin: 0 0 12px 8px; }
+.legend .key { display: inline-block; width: 18px; height: 8px; border-radius: 4px; vertical-align: middle; margin: 0 4px 0 10px; }
+.legend .key:first-child { margin-left: 0; }
+.legend .key.prior { background: #98a2b3; }
+.legend .key.high { background: var(--high); }
+.legend .key.unclear { background: #f79009; }
+.legend .key.low { background: var(--low); }
+.legend .key.mid { width: 3px; height: 14px; background: var(--ink); border-radius: 1px; }
+
+/* try it */
+.tryit { margin: 8px 0 18px; padding: 10px 14px; border: 1px dashed var(--line); border-radius: 8px; background: #fcfcfd; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { font-size: .82rem; padding: 4px 10px; border-radius: 999px; }
+.chip .or { color: var(--muted); font-variant-numeric: tabular-nums; }
+.chip[aria-pressed="true"] { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chip[aria-pressed="true"] .or { color: #dbe7f3; }
+
+/* tiers and rules */
+.why-grid { margin-top: 10px; }
+.tier-rows { display: grid; gap: 10px; }
+.tier-row { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: start; font-size: .92rem; }
+.tier-row .tier { justify-content: center; }
+.rule { background: var(--bg); border: 1px solid var(--line); border-left: 4px solid var(--high); border-radius: 8px; padding: 12px 14px; }
+.rule p { font-size: .9rem; margin-bottom: .4em; }
+.output-note { margin-top: 14px; }
+
+/* weights table */
+.method tr.group th { background: var(--brand-soft); color: var(--brand); text-transform: none; font-size: .9rem; letter-spacing: 0; }
+.forest { position: relative; width: 170px; height: 14px; }
+.forest .one { position: absolute; top: 0; bottom: 0; border-left: 1px solid #98a2b3; }
+.forest .ci { position: absolute; top: 6px; height: 2px; background: var(--brand-2); }
+.forest .pt { position: absolute; top: 3px; width: 8px; height: 8px; border-radius: 50%; background: var(--brand); transform: translateX(-4px); }
+
+/* referral line table */
+.method tr.current td { background: var(--brand-soft); }
+.pill { display: inline-block; font-size: .72rem; font-weight: 600; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 0 7px; margin-left: 4px; vertical-align: middle; }
+.pill.cur { color: var(--brand); border-color: var(--brand-2); background: #fff; }
+
+/* limits */
+.limits { padding-left: 20px; margin: 0; }
+.limits li { margin-bottom: 8px; }
+
+/* evidence */
+.pending { margin-top: 4px; }
+dl.gen { display: grid; grid-template-columns: max-content 1fr; gap: 2px 14px; margin: 4px 0 10px; font-size: .9rem; }
+dl.gen dt { color: var(--muted); }
+dl.gen dd { margin: 0; }
+dl.gen dl.gen { margin: 0; }
+ul.gen { margin: 0; padding-left: 18px; }
+.ev-notes { font-size: .9rem; color: var(--ink-2); padding-left: 20px; }
+
+/* validation plan */
+.vplan { padding-left: 20px; }
+.vplan li { margin-bottom: 8px; }
+.method tr.sub td { font-size: .86rem; color: var(--ink-2); }
+.method tr.sub td:first-child { padding-left: 26px; }

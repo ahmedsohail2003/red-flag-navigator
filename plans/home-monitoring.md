@@ -1,0 +1,125 @@
+# Everything outside the gyros, researched and working in the app: more home tests, device data in, and a weekly plan for each patient's situation, by 5:30 AM on 8 Nov 2026
+
+Plan v1 (2026-11-08, 02:20). Executed by: Claude (the wearables session). Parallel agents research and build; the lead integrates and checks. Ahmed is asleep; questions get an assumption, and work stays reversible.
+
+- **0. Situation**
+  - The ask (Ahmed, about 02:00):
+    - "other than the gyros, what other diagnostics data is there? ... your Apple Watch ... your phone ... a wearable. Like what other kind of shit is actually going to detect anything?"
+    - "what are the everyday exercises and what do you give based on the situation?"
+    - "do the research and build something ... build it so that all the functionality is there, so that stuff outside of the gyros"
+    - "there's another fork ... for how to integrate and add the gyros ... do everything outside of that, like so I don't know, blood pressure, a heartbeat, like whatever else there is. You need to research that."
+    - "try to get it done by 5:30 a.m. ... keep working until I tell you that I'm awake"
+  - What exists:
+    - `docs/WEARABLES.md` and `docs/wearables.json` (30 signals, fact-checked by this session).
+    - The main session is rebuilding `app/` as a one-page app with a sidebar. Its Monitoring view runs three working tests (finger tapping; reading rate, timed by the user, no microphone; weight) and lists the device signals.
+    - The gyro fork owns phone motion sensors and `gyro-starter/`.
+  - Why it is happening: the app has three working home tests and shows device data only as a list. Nothing brings device data in. Nothing tells a patient what to do this week for their situation. The score knows only five tests.
+  - Known vs assumed:
+    - The main session accepts a new view and route. Check: message it; meanwhile build only new files (reversible).
+    - The browser can time speech and breathing tasks from the microphone. Check: run the analysis on synthetic signals in Node and in the browser pane.
+    - The browser can unzip an Apple Health export. Node 22 supports deflate-raw (checked at 02:12). Check: the browser pane.
+    - Blood pressure, heart rate and ECG do not detect ALS. Check: research.
+    - We may use ALSFRS-R self-report and EAT-10 items. Check: research their licences.
+  - What makes it big: the number of signals; two other sessions working on the same app; microphone and zip handling in the browser; evidence for "what to give".
+  - Kind: an open question (which data matter, what to give) plus a checkable build (tests, browser).
+- **C. Done means**
+  - C1 "other than the gyros, what other diagnostics data is there ... what other kind of shit is actually going to detect anything?"
+    - Full marks: every non-gyro data type from a phone, watch, ring, scale, cuff or home device, each with an ALS evidence grade and a plain verdict (detects, helps monitor, context only, no use), sourced.
+    - Check: `docs/HOME_MONITORING.md` plus new `wearables.json` entries pass the checker; load-bearing claims are re-opened by a verifier.
+    - Met by: 1.
+  - C2 "what are the everyday exercises and what do you give based on the situation?"
+    - Full marks: a home battery per body region (instructions, safety, how often, MDC), and rules mapping a situation (tier, affected regions, diagnosed or not, devices owned, fall risk) to this week's plan, sourced to guidelines and studies, shown in the app for the current case.
+    - Check: protocol tests cover each situation; the browser shows the plan for Alex and for a look-alike.
+    - Met by: 1.4, 1.5, 2.2, 2.5.
+  - C3 "build it so that all the functionality is there, so that stuff outside of the gyros"
+    - Full marks:
+      - new non-gyro tests run in the browser and save results;
+      - device data comes in from an Apple Health export, CSV files, manual entry (blood pressure, heart rate, SpO2, weight, grip) and Bluetooth devices where the browser allows;
+      - weekly values with each signal's own MDC rule, honest about region (context-only signals never count as a motor decline);
+      - the situation plan;
+      - a view in the app;
+      - nothing gyro-based.
+    - Check: `npm test` passes, new tests included; the browser shows no console errors; each test runs once end to end.
+    - Met by: 2, 3.
+  - C4 "blood pressure, a heartbeat, like whatever else there is. You need to research that."
+    - Full marks: blood pressure and heart rate researched (cuffs, Apple Watch hypertension alerts, HR, HRV, ECG), and importable or enterable, shown as context with an honest label.
+    - Met by: 1.1, 2.3.
+  - C5 "get it done by 5:30 a.m." and keep improving until Ahmed says stop.
+    - Check: a report at about 05:30 with what works and what is left, then continued work.
+    - Met by: Sequence.
+  - C6 (implied) Do not break the main session's app or step on the gyro fork.
+    - Check: only new files plus agreed edits; `npm test` passes; both sessions told.
+    - Met by: 3.3.
+- **1. Research** — why: C1, C2 and C4 need sourced answers, and the build needs MDCs, thresholds and rules
+  - [x] 1.1 Vitals and other sensors: blood pressure (cuffs, Apple Watch hypertension notifications, Samsung), heart rate, HRV, ECG, temperature, skin conductance, VO2 max — done when: each has an ALS evidence grade and a verdict, sourced
+  - [x] 1.2 Muscle sensing outside the gyros: fasciculations (surface EMG wearables, home impedance myography, handheld ultrasound, video), grip dynamometers — done when: same
+  - [x] 1.3 Microphone, camera and touchscreen tasks: syllable repetition (pa-ta-ka), maximum phonation time, single-breath count, pause time, camera finger tapping and face, verbal fluency — done when: evidence, MDC and a published method for each
+  - [x] 1.4 Everyday exercises: sit-to-stand, timed up and go, stopwatch walks, stairs, grip, pegboard, self-report scales (ALSFRS-R self-administered, ROADS), EAT-10; licences; safety; exercise after diagnosis — done when: same, plus licence status
+  - [x] 1.5 What to give by situation: NICE NG42, EAN 2024, the Canadian best-practice recommendations, AAN; monitoring intervals and action thresholds — done when: rules with sources
+  - [x] 1.6 Data formats and browser limits: Apple Health export, Health Connect export, Google Takeout, Withings and Garmin exports, Bluetooth health services, microphone and Bluetooth in hosted frames — done when: format facts from official docs
+  - [x] 1.7 Verification: a second agent re-opens every load-bearing claim — done when: verification notes list each claim's verdict — check (03:36): six notes files in the shared notes folder, `research_notes/Home monitoring beyond gyros/`, each ending in a Verification section. 686 claims re-checked: 563 confirmed, 102 corrected, 17 unverified, 4 removed.
+- **2. Build** (new files only) — why: C3
+  - [x] 2.1 Data layer: weekly values, baseline after practice weeks, MDC decline on the latest pair, slope, local store — done when: unit tests pass — check:
+    - `tests/home-series.test.mjs` 33/33 and `home-store.test.mjs` 29/29 pass.
+    - firstDecline matches the engine's detectDecline on 400 seeded random series.
+    - The reviewer found and fixed 5 issues (03:50).
+  - [x] 2.2 Situation plan (`protocol.js`) — done when: tests cover each situation and every rule cites its source — check (04:30): `home-protocol` 19/19 pass. The reviewer fixed 18 issues. Every rule and trigger has a source URL, and all 8 built-in cases were checked.
+  - [x] 2.3 Device data in: Apple Health import, CSV import, manual entry, Bluetooth parsers — done when: fixture tests pass — check:
+    - The fixture tests pass, and the reviewers fixed 43 issues.
+    - In the browser pane (03:52), a synthetic export.zip imported correctly. 4.5 km/h became 1.25 m/s, 165 lb became 74.84 kg, and an SpO2 of 0.96 became 96%. Steps were summed per day, and the doubled blood-pressure reading was counted once.
+    - Bluetooth was tested only with fake devices.
+    - 04:10: added Withings weight.csv and bp.csv formats. 15 tests passed (`home-csv` 71/71, full suite 512/512). The column names come from two open-source parsers, not from a real export.
+  - [x] 2.4 New tests: microphone tasks, typing, stopwatch tasks, questionnaires — done when: analysis tests on synthetic input pass — check:
+    - The audio and typing tests pass, and the reviewers fixed 24 issues.
+    - In the browser pane (03:54), a synthetic microphone stream of 20 tone bursts gave 20 counted bursts at 5.56 per second (expected 5.56).
+  - [x] 2.5 The view (`#plan`): this week's plan, run the tests, device data with charts and flags, what detects what — done when: it renders in the pane with no console errors — check (04:45, browser pane): renders for Alex at two visits with Home data off and on, and for all 8 built-in cases. It shows no errors of its own; the remaining 404s are the main session's overview files.
+  - [x] 2.6 Simulated demo data for Alex, labelled — done when: the view shows it only with "Home data" on — check (04:45): with Home data off it reads "Alex never did home tests"; with it on, every row is chipped Simulated.
+- **3. Integrate and verify** — why: C3, C6
+  - [x] 3.1 `npm test` passes — check (05:30): 584/584, after the fixes and the gait_speed alignment.
+  - [x] 3.2 Browser: the view renders for Alex and for a look-alike; each test runs; a fixture export imports — done when: screenshots and no console errors — check (05:33): a fresh tab on #plan has an empty console. All 8 built-in cases render. The early-bulbar look-alike shows the 'contact your doctor now' alert. Saving a breathing check with 'yes, lying flat' shows the same-day alert (my test entry was deleted). There are two screenshots. The import and microphone checks ran at 03:52 and 03:54. Not tried: a real microphone, a real Bluetooth device, a real large export.
+  - [x] 3.3 The route is added (by the main session or with its OK), and the main session gets proposed engine entries for the new tests — check: the route was added at 02:20. The hand-over was sent at 05:35: no new HOME_TESTS, gait_speed is the leg test, and sourced MDCs are proposed for the existing tests.
+  - [x] 3.4 Independent review of the build, then fixes — check (04:54): three lenses (module integration, honesty, safety) found 40 issues, 9 of them blockers. The worst: red flags reported before diagnosis gave only a Saved message; imported history set baselines years back; practice runs were counted twice; simulated rows were chipped Real. Five fixers, one per file, started at 05:00 and finished at 05:27. Each fix has a test that fails without it. The full suite passes 584/584.
+- **4. Document and hand over** — why: C1, C5
+  - [x] 4.1 `docs/HOME_MONITORING.md`; new `wearables.json` entries; a hand-over note; a report at 05:30 — check (05:35): the doc was updated to match the code, wearables.json has 44 entries, the checker passed, the hand-over note is in the shared notes folder, and the report went to Ahmed.
+- **Plan support**
+  - **Sequence**: messages to both sessions -> 1 (research) and 2.1, 2.3, 2.4 (logic only) in parallel -> 2.2, 2.5, 2.6, 4.1 (need the research) -> 3 -> report at 05:30 -> keep improving.
+  - **Triggers**:
+    - A leaf failing twice gets a different approach.
+    - If research runs past 03:45, build from what has landed and mark the rest pending.
+    - If the main session refuses the route, mount the view from Monitoring through an exported function instead.
+  - **Risks**:
+    - Collisions with the main session's live edits. Mitigation: new files only, and a message to it.
+    - Invented MDCs or rules. Mitigation: sources required, plus a verifier.
+    - Microphone analysis that is wrong. Mitigation: synthetic tests, labelled "not validated".
+    - Hosted frames block the microphone or Bluetooth. Mitigation: clear messages and fallbacks.
+    - A view that clashes with the new design. Mitigation: reuse `app.css` tokens and `ui.js`.
+  - **Session**: this is local_890b6124 ("Research phone and wearable data for ALS red flags (fork)"). Its permission mode was confirmed as bypassPermissions at 02:24, so no switch was needed.
+  - **Hand-over the main session asked for** (it will merge everything into one app, one server and a local database): the files created, the storage keys, any server or endpoint needs, the proposed HOME_TESTS entries with sourced MDCs, and how to test each feature.
+  - **Merge** (06:00, from the main session's report, checked here): HOME_TESTS now uses tap 18, reading 31, weight 2.4 and gait_speed 0.28. wearables.js has 44 signals. `npm test` passes 584/584 (re-run here). Not adopted yet: 2 practice weeks before the baseline. That changes the shared detectDecline, so it is logged as a follow-up in PLAN.md.
+  - **Looking back** (the whole task, against the record)
+    - Good, keep:
+      - Research and logic modules were built in parallel against a written contract, with the view started early on placeholder modules. Without that, the view would have started an hour later.
+      - A reviewer per piece fixed 140+ issues.
+      - The browser checks used injected synthetic microphone streams, so they did not need permission.
+    - Bad:
+      - The red-flag path for patient-reported answers was in no contract. Each piece was correct alone, but a "yes" to breathless-lying-flat only showed "Saved".
+      - Only the final cross-module review caught this, together with three other cross-file flows: weight needed 3 weighings a week while the plan asked for 1; practice was counted twice; imported history set the baseline years back.
+      - Causes:
+        - the contract described shapes, not behaviours across modules;
+        - per-piece reviewers checked their own task, not the flows between files;
+        - the safety requirement was implied, never written as a Done-means line.
+      - Fix now in place: the actNow and redFlag fields, with tests. The fix for next time: a contract section for cross-module behaviours (red flags, baselines, practice), and a cross-cutting review as a planned leaf, not an afterthought.
+    - Middle:
+      - The research took 84 minutes against about 45 planned (verifiers re-opened 686 claims). Worth it, but plan about 90 minutes for verified research next time.
+      - Two of my own quick scripted edits put apostrophes inside single-quoted JS strings. node --check caught both at once; keep running it after every scripted edit.
+  - **Assumptions checked**
+    - 02:24, browser pane (Chromium 152, localhost:8777): deflate-raw unzip and TextDecoderStream work (a round trip passed), Web Bluetooth is present and available, getUserMedia exists but microphone permission is "denied" here, AudioWorklet works, and a synthetic microphone stream (oscillator to MediaStreamDestination) works.
+    - So the microphone tests get checked in the pane with an injected synthetic stream. Real-microphone capture stays unverified until Ahmed tries it.
+  - **Changes**
+    - 05:28: the kit's stopwatch walk became context only, and the plan names the phone walking test (HOME_TESTS.gait_speed, merged by the main session at about 05:15) as the leg test the score counts. Reason: two walk tests in the engine would count one leg decline twice. Three tests that asserted the old role were updated on purpose.
+    - Skill note: the plan's done-checks were all per module, and the mastery bar's breadth item had no prompt for behaviour that crosses modules. The cross-module failures were caught only because a final review was added late. For plans with parallel builders, a planned leaf for one cross-cutting review would have caught them earlier.
+    - 04:31: the stopwatch walk is the only kit test marked as a candidate for the score. Reason: the research found that five noisy tests together would falsely escalate about 20% of stable people (computed by the researchers), so it advises one escalating test per body region.
+    - 04:40: the CSV steps unit changed from 'count' to 'steps' to match the other modules. The three CSV tests that asserted 'count' were updated, a deliberate change of check: the contract's "count per day" was ambiguous.
+    - 04:56: the final review's blockers changed the plan: red-flag alerts, a 12-week import window, practice counted once, and simulated legacy rows labelled. Fixing these became leaf 3.4.
+    - 02:20: added `plans/home-monitoring-contracts.md` and placeholder catalogue, plan and demo modules, so the view builder can start before the research lands. Reason: the view is the longest task, and it depends only on the shapes.
+    - 02:22: the gyro fork's plan (`plans/phone-walk-test.md`) builds a motion-sensor walk saved as `gait_speed`, with a manual-stop fallback. My stopwatch walk stays only as the no-sensor option. The plan should prefer `gait_speed` once it exists.

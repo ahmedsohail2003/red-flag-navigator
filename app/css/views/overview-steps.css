@@ -1,0 +1,211 @@
+/* Overview section "How it works" (js/app/views/overview/steps.js).
+   Desktop (.is-pinned): a tall pin wrapper with a sticky stage; vertical scroll moves the
+   card track right to left. Phones and reduced motion: the cards stack, no scroll-jacking.
+   Card internals switch from one column to two with a container query on the card width.
+   Colours are app.css tokens: cream section, espresso cards, ALS red for red flags only,
+   ice blue (panel-accent) for the one interactive element, the referral line. */
+
+.st { --st-gap: 24px; --st-radius: 24px; }
+
+/* ---------- heading (light) ---------- */
+.st-head > .micro { margin-bottom: 18px; }
+.st-title { font-size: clamp(32px, 3.5vw, 50px); line-height: 1.03; letter-spacing: -.045em; font-weight: 600; text-wrap: balance; max-width: 19ch; }
+.st-lede { margin-top: 16px; max-width: 62ch; font-size: 16.5px; line-height: 1.6; color: var(--ink-2); }
+
+/* ---------- stacked (default: phones, reduced motion, short or narrow windows) ---------- */
+.st-pin, .st-stage { position: relative; }
+.st-view { margin-top: 40px; }
+.st-track { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
+.st-prog { display: none; }
+
+/* ---------- pinned (desktop) ---------- */
+.ov-sec.st.is-pinned { padding-block: 0; }
+.st.is-pinned .st-pin { margin-inline: calc(-1 * var(--ov-x, 0px)); }
+.st.is-pinned .st-stage {
+  position: sticky; top: var(--st-top, 0px); height: calc(100vh - var(--st-top, 0px));
+  overflow: hidden; overflow: clip; /* clip: focus can never scroll the stage sideways */
+  display: flex; flex-direction: column;
+  padding: clamp(28px, 6.5vh, 72px) 0 clamp(16px, 3vh, 30px);
+}
+.st.is-pinned .st-head { padding-inline: var(--ov-x, 0px); }
+.st.is-pinned .st-view { flex: 1 1 auto; min-height: 0; margin-top: 18px; display: flex; align-items: center; }
+.st.is-pinned .st-track {
+  display: flex; gap: var(--st-gap); width: max-content; padding: 16px var(--ov-x, 0px);
+  will-change: transform;
+}
+.st.is-pinned .st-card { flex: none; width: var(--st-card-w, 760px); height: var(--st-card-h, 470px); }
+.st.is-pinned .st-prog { display: flex; padding-inline: var(--ov-x, 0px); }
+/* short screens: the heading sits above the pin and scrolls away (steps.js placeHead) */
+.ov-sec.st.is-pinned.st-head-out { padding-top: var(--ov-y); }
+.st.is-pinned.st-head-out .st-head { padding-inline: 0; }
+.st.is-pinned.st-head-out .st-view { margin-top: 0; }
+
+/* ---------- the card ---------- */
+.st-card.panel {
+  position: relative; container: stcard / inline-size; isolation: isolate;
+  border-radius: var(--st-radius); overflow: visible; /* the crop marks sit outside */
+  background-color: var(--panel);
+  background-image:
+    linear-gradient(rgba(246, 238, 229, .03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(246, 238, 229, .03) 1px, transparent 1px);
+  background-size: 44px 44px; background-position: -1px -1px;
+}
+.st-obj { position: relative; height: 230px; border-radius: var(--st-radius) var(--st-radius) 0 0; overflow: hidden; }
+.st-obj canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* crop marks: shown on the active card */
+.st-crop { position: absolute; inset: -11px; z-index: 2; pointer-events: none; opacity: 0; transition: opacity .35s ease; }
+.st-crop i { position: absolute; width: 16px; height: 16px; border: 0 solid var(--ink-2); }
+.st-crop i:nth-child(1) { left: 0; top: 0; border-left-width: 1.5px; border-top-width: 1.5px; }
+.st-crop i:nth-child(2) { right: 0; top: 0; border-right-width: 1.5px; border-top-width: 1.5px; }
+.st-crop i:nth-child(3) { left: 0; bottom: 0; border-left-width: 1.5px; border-bottom-width: 1.5px; }
+.st-crop i:nth-child(4) { right: 0; bottom: 0; border-right-width: 1.5px; border-bottom-width: 1.5px; }
+.st-card.is-active .st-crop { opacity: 1; }
+
+.st-in { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 22px; padding: 4px 22px 22px; }
+.st-copy { display: flex; flex-direction: column; justify-content: flex-end; gap: 10px; min-width: 0; }
+/* the step number: a small mono label right above the title; the object owns the space */
+.st-num { font: 500 12px/1 var(--font-mono); letter-spacing: .08em; color: var(--panel-ink-3); font-feature-settings: "tnum" 1; }
+.st-h { font-size: 28px; line-height: 1.08; letter-spacing: -.03em; font-weight: 600; color: var(--panel-ink); text-wrap: balance; }
+.st-p { margin-top: 10px; max-width: 44ch; font-size: 15px; line-height: 1.6; color: var(--panel-ink-2); }
+.st-wrap { min-width: 0; }
+
+@container stcard (min-width: 700px) {
+  .st-obj {
+    position: absolute; left: 0; top: 0; bottom: 0; right: 392px; height: auto; border-radius: var(--st-radius) 0 0 var(--st-radius);
+    /* a large, quiet backdrop: dim hairlines, partly behind the copy, fading out at the
+       bottom edge where the paragraph sits */
+    opacity: .8;
+    -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 96%);
+    mask-image: linear-gradient(to bottom, #000 0, #000 72%, transparent 96%);
+  }
+  .st-in { display: grid; grid-template-columns: minmax(0, 1fr) 344px; column-gap: 34px; padding: 30px 30px 30px 32px; height: 100%; }
+  .st-h { font-size: 30px; }
+  .st-wrap { align-self: center; }
+  /* On shorter cards (laptop windows, 650-720px tall) the backdrop object reached down
+     through the title. A soft pool of the card colour sits behind the copy block only, so
+     the object keeps its size and fades out just above the step number. */
+  .st-copy { align-self: end; position: relative; isolation: isolate; }
+  .st-copy::before {
+    content: ""; position: absolute; z-index: -1; pointer-events: none;
+    left: -32px; right: -28px; top: -64px; bottom: -30px;
+    border-bottom-left-radius: var(--st-radius);
+    background: linear-gradient(to bottom, rgba(28, 21, 18, 0) 0, var(--panel) 64px);
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 48px), transparent);
+  }
+}
+
+/* ---------- widgets (inset instrument boxes) ---------- */
+.st-w {
+  display: flex; flex-direction: column; gap: 12px; padding: 15px 16px 14px;
+  background: var(--panel-2); border: 1px solid var(--panel-line); border-radius: 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03);
+}
+.st-w-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-bottom: 11px; border-bottom: 1px solid var(--panel-line); }
+.st-w-top .micro { color: var(--panel-ink-2); }
+.st-meta { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--panel-ink-3); white-space: nowrap; }
+.st-w-foot { font-size: 12px; line-height: 1.4; color: var(--panel-ink-3); }
+.st-w-foot a { color: var(--panel-accent); }
+.st-w button { font-family: var(--font-sans); }
+.st-w :focus-visible { outline: 2px solid var(--panel-accent); outline-offset: -2px; }
+
+/* 01 quote + the red flags in that note */
+.st-q {
+  margin: 0; padding: 10px 12px; border-left: 2px solid var(--panel-flag); border-radius: 0 10px 10px 0;
+  background: var(--panel-3); font-size: 13.5px; line-height: 1.55; color: var(--panel-ink-2);
+}
+.st-q-mark { padding: 1px 2px; border-radius: 3px; color: var(--panel-ink); background: rgba(242, 135, 110, .2); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.st-f-list { display: flex; flex-direction: column; border: 1px solid var(--panel-line); border-radius: 10px; overflow: hidden; }
+.st-f {
+  display: flex; align-items: center; gap: 9px; width: 100%; padding: 7px 10px; border: 0; border-bottom: 1px solid var(--panel-line);
+  background: transparent; color: var(--panel-ink-2); font-size: 13px; font-weight: 500; text-align: left; cursor: pointer;
+}
+.st-f:last-child { border-bottom: 0; }
+.st-f-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--panel-ink-3); flex: none; }
+.st-f-k { margin-left: auto; font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--panel-ink-3); }
+.st-f:hover { color: var(--panel-ink); }
+.st-f[aria-pressed="true"] { background: var(--panel-3); color: var(--panel-ink); }
+.st-f[aria-pressed="true"] .st-f-dot { background: var(--panel-flag); }
+
+/* 02 odds ratios with their 95% intervals (log axis 1 to 100) */
+.st-or { display: flex; flex-direction: column; border: 1px solid var(--panel-line); border-radius: 10px; overflow: hidden; }
+.st-or-row {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 7px 10px; width: 100%; padding: 8px 12px 10px;
+  border: 0; border-bottom: 1px solid var(--panel-line); background: transparent; color: var(--panel-ink-2);
+  font-size: 13px; font-weight: 500; text-align: left; cursor: pointer;
+}
+.st-or-v { font-size: 12.5px; color: var(--panel-ink); }
+.st-or-bar { grid-column: 1 / -1; position: relative; height: 6px; border-radius: 3px; background: var(--panel-3); }
+.st-or-ci { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: rgba(246, 238, 229, .3); }
+.st-or-pt { position: absolute; top: -3px; width: 2px; height: 12px; margin-left: -1px; border-radius: 1px; background: var(--panel-ink); }
+.st-or-row:hover { color: var(--panel-ink); }
+.st-or-row[aria-pressed="true"] { background: var(--panel-3); color: var(--panel-ink); }
+.st-or-row[aria-pressed="true"] .st-or-ci { background: rgba(242, 135, 110, .55); }
+.st-or-row[aria-pressed="true"] .st-or-pt { background: var(--panel-flag); }
+.st-or-axis { position: relative; height: 26px; margin: 0 12px; font-size: 10.5px; color: var(--panel-ink-3); }
+.st-or-axis span { position: absolute; top: 6px; transform: translateX(-50%); }
+.st-or-axis span:first-child { transform: none; }
+.st-or-axis span:last-child { transform: translateX(-100%); }
+.st-or-d { display: flex; flex-direction: column; gap: 3px; min-height: 40px; font-size: 12.5px; line-height: 1.5; color: var(--panel-ink-2); }
+.st-or-d .mono { font-size: 11.5px; color: var(--panel-ink); }
+
+/* 03 the range on a log axis, the referral line, the line control */
+.st-big { font: 500 30px/1.05 var(--font-mono); letter-spacing: -.03em; color: var(--panel-ink); font-feature-settings: "tnum" 1; }
+.st-big-to { font-size: 14px; letter-spacing: 0; color: var(--panel-ink-3); }
+.st-ax { padding-top: 20px; }
+.st-ax-tr { position: relative; height: 8px; border-radius: 4px; background: var(--panel-3); }
+.st-ax-rg { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: rgba(246, 238, 229, .42); }
+.st-ax-md { position: absolute; top: -3px; width: 2px; height: 14px; margin-left: -1px; border-radius: 1px; background: var(--panel-ink); }
+.st-ax-ln { position: absolute; top: -9px; bottom: -9px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--panel-accent); transition: left .35s cubic-bezier(.2, .7, .2, 1); }
+.st-ax-ln b { position: absolute; bottom: 100%; left: 50%; margin-bottom: 2px; transform: translateX(-50%); font-size: 10.5px; font-weight: 500; font-style: normal; white-space: nowrap; color: var(--panel-accent); }
+.st-ax-tk { position: relative; height: 15px; margin-top: 12px; font-size: 10.5px; color: var(--panel-ink-3); }
+.st-ax-tk span { position: absolute; transform: translateX(-50%); }
+.st-ax-tk span:first-child { transform: none; }
+.st-ax-tk span:last-child { transform: translateX(-100%); }
+.st-line { display: flex; align-items: center; justify-content: space-between; gap: 8px 12px; flex-wrap: wrap; }
+.st-line .seg button[aria-pressed="true"] { color: var(--panel-ink); }
+.st-verdict { display: flex; align-items: flex-start; gap: 9px; font-size: 13px; line-height: 1.5; color: var(--panel-ink-2); }
+.st-verdict .chip { flex: none; }
+
+/* 04 the action */
+.st-act { font-size: 27px; line-height: 1.08; letter-spacing: -.03em; font-weight: 600; color: var(--panel-ink); }
+.st-act-sub { margin-top: -7px; font-size: 13px; line-height: 1.5; color: var(--panel-ink-2); }
+.st-rules-h { color: var(--panel-ink-3); }
+.st-rules { list-style: none; margin: -4px 0 0; padding: 0; border: 1px solid var(--panel-line); border-radius: 10px; }
+.st-rules li { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; padding: 8px 11px 9px; border-bottom: 1px solid var(--panel-line); font-size: 13px; line-height: 1.4; color: var(--panel-ink); }
+.st-rules li:last-child { border-bottom: 0; }
+.st-rule-s { flex: none; font-size: 11.5px; white-space: nowrap; }
+.st-rule-s a { color: var(--panel-accent); }
+.st-rules .chip { flex: none; }
+.st-never { padding-top: 11px; border-top: 1px solid var(--panel-line); font-size: 12.5px; line-height: 1.5; color: var(--panel-ink-2); }
+.st-never b { color: var(--panel-ink); font-weight: 600; }
+
+/* ---------- progress (pinned only, follows the scroll) ---------- */
+.st-prog { align-items: center; gap: 28px; margin-top: 4px; }
+.st-prog-n { font-size: 13px; color: var(--ink-3); white-space: nowrap; }
+.st-prog-n b { font-weight: 500; color: var(--ink); }
+.st-prog-steps { flex: 1; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; max-width: 760px; }
+.st-prog-b {
+  display: flex; flex-direction: column; gap: 9px; padding: 6px 0; border: 0; background: none; text-align: left;
+  cursor: pointer; color: var(--ink-3); font: 500 13px var(--font-sans);
+}
+.st-prog-bar { position: relative; display: block; height: 2px; overflow: hidden; border-radius: 2px; background: var(--line-2); }
+.st-prog-bar i { position: absolute; inset: 0; transform: scaleX(0); transform-origin: left center; background: var(--ink); }
+.st-prog-l .mono { margin-right: 5px; font-size: 11.5px; }
+.st-prog-b:hover, .st-prog-b[aria-current="step"] { color: var(--ink); }
+
+.st-vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+/* ---------- small screens ---------- */
+@media (max-width: 560px) {
+  .st-view { margin-top: 28px; }
+  .st-obj { height: 200px; }
+  .st-in { padding: 2px 16px 16px; gap: 18px; }
+  .st-h { font-size: 25px; }
+  .st-w { padding: 13px 13px 12px; }
+  .st-big { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .st-crop, .st-ax-ln { transition: none; }
+}

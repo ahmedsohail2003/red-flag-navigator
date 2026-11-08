@@ -1,0 +1,4 @@
+/* Look-alike check table (method page). */
+#lookalikes .la-ok { color: var(--low); font-weight: 600; }
+#lookalikes .la-bad { color: var(--high); font-weight: 600; }
+#lookalikes td small { line-height: 1.4; }

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Doctor dashboard · Red-Flag Navigator</title>
+  <link rel="stylesheet" href="css/base.css">
+  <script src="js/fallback.js"></script>
+  <link rel="stylesheet" href="css/doctor.css">
+  <link rel="icon" href="data:,">
+</head>
+<body>
+  <main class="page doctor" id="doctor">
+    <header class="doc-head">
+      <h1 id="doc-title">Doctor dashboard</h1>
+      <p class="lede" id="doc-lede">Alex's notes replayed in date order. Pick a date to see what the tool would have said on that day, using only the notes written by then.</p>
+    </header>
+
+    <section class="card controls" id="controls" aria-label="Replay controls">
+      <p class="muted">Loading the case file…</p>
+    </section>
+
+    <section id="banner" class="doc-section" aria-live="polite"></section>
+
+    <section class="card doc-section" id="range" aria-labelledby="range-h"></section>
+
+    <section class="card doc-section" id="findings" aria-labelledby="findings-h"></section>
+
+    <section class="card doc-section" id="replay" aria-labelledby="replay-h"></section>
+
+    <section class="card doc-section" id="home" aria-labelledby="home-h"></section>
+
+    <section class="card doc-section" id="measures" aria-labelledby="measures-h"></section>
+
+    <footer class="footer-note" id="foot"></footer>
+    <noscript><p>This dashboard needs JavaScript.</p></noscript>
+  </main>
+  <script type="module" src="js/nav.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/doctor.js" onerror="rfnFail()"></script>
+</body>
+</html>

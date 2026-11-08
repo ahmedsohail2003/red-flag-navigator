@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gyro remote: screen</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="screen">
+<main id="stage"><canvas id="canvas"></canvas></main>
+<aside id="panel">
+  <div class="row"><h1>Gyro remote</h1><span id="conn" class="pill">connecting</span></div>
+
+  <section>
+    <h2>Score</h2>
+    <div class="row"><span class="score" id="score">0</span><span id="swings" class="hint">0 swings</span></div>
+    <p class="hint">Point at a target and press <b>A</b> on the phone. Flick the phone hard to register a swing.
+      Hold <b>B</b> to freeze the pointer while you re-aim. <kbd>R</kbd> recenters, <kbd>Space</kbd> = A.</p>
+  </section>
+
+  <section>
+    <h2>Devices</h2>
+    <div id="sources" class="hint">None yet. Open phone.html on your phone.</div>
+    <div class="row"><label for="active">Drives the pointer</label><select id="active"><option value="">first to connect</option></select></div>
+  </section>
+
+  <section>
+    <h2>Pointer</h2>
+    <div class="row"><label for="mode">Grip</label>
+      <select id="mode">
+        <option value="auto">Auto (from gravity)</option>
+        <option value="flat">Flat, top toward screen</option>
+        <option value="upright">Upright, camera toward screen</option>
+      </select></div>
+    <div class="row"><label for="gain">Speed</label><input id="gain" type="range" min="5" max="60" step="1"><span id="gainv" class="val"></span></div>
+    <div class="row"><label for="dead">Dead zone</label><input id="dead" type="range" min="0" max="5" step="0.5"><span id="deadv" class="val"></span></div>
+    <div class="row"><label for="swing">Swing at</label><input id="swing" type="range" min="100" max="800" step="10"><span id="swingv" class="val"></span></div>
+    <div class="row"><label><input id="invx" type="checkbox"> Invert X</label><label><input id="invy" type="checkbox"> Invert Y</label></div>
+  </section>
+
+  <section>
+    <h2>Gyroscope °/s (x red, y green, z blue)</h2>
+    <canvas id="plot"></canvas>
+    <pre id="now" class="hint">–</pre>
+  </section>
+
+  <section>
+    <h2>Recording</h2>
+    <div class="row"><button id="rec">Start recording</button></div>
+    <p id="recinfo" class="hint">Saves every sample and button press to a CSV in gyro-starter/recordings/.</p>
+  </section>
+</aside>
+<script src="screen.js"></script>
+</body>
+</html>

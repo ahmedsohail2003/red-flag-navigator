@@ -1,0 +1,217 @@
+/* Datasets view (#datasets). Only view-specific rules; tokens come from app.css.
+   No new colours: chart fills reuse --accent / --ink / --panel-* with opacity. */
+
+/* ---------- headline strip (dark instrument panel) ---------- */
+.ds-strip { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.ds-stat { padding: 20px 22px 18px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.ds-stat + .ds-stat { border-left: 1px solid var(--panel-line); }
+.ds-stat .stat { color: var(--panel-ink); font-variant-numeric: proportional-nums; font-feature-settings: normal; }
+.ds-stat-s { font-size: 12.5px; line-height: 1.45; color: var(--panel-ink-3); }
+
+/* ---------- dataset cards ---------- */
+.ds-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; align-items: stretch; }
+.ds-cell { min-width: 0; display: flex; }
+.ds-card {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 12px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-l); box-shadow: var(--shadow);
+  cursor: pointer; transition: border-color .15s ease, background-color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+/* clickable card: the hairline deepens and the card lifts 1px */
+.ds-card:hover { border-color: var(--line-2); transform: translateY(-1px); box-shadow: var(--shadow-2); }
+.ds-card.open { border-color: var(--accent); background: var(--surface-3); }
+.ds-card-top { display: flex; align-items: center; gap: 10px; min-height: 22px; }
+.ds-num { font: 500 12px/1 var(--font-mono); color: var(--ink-3); font-feature-settings: "tnum" 1; }
+.ds-name { font-size: 16.5px; line-height: 1.3; letter-spacing: -.012em; }
+.ds-what { flex: 1; font-size: 14px; line-height: 1.5; color: var(--ink-2); }
+.ds-who { display: flex; align-items: baseline; gap: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; }
+.ds-who .micro { flex: none; }
+.ds-card-foot { display: flex; align-items: center; gap: 10px; min-height: 30px; }
+.ds-lic { font-size: 12px; line-height: 1.35; color: var(--ink-3); }
+.ds-toggle {
+  margin-left: auto; flex: none; display: inline-flex; align-items: center; gap: 7px; height: 28px; padding: 0 8px; border: 0;
+  border-radius: 7px; background: transparent; color: var(--accent); font: 500 13px var(--font-sans); cursor: pointer;
+}
+.ds-toggle:hover { background: var(--accent-soft); color: var(--accent-hover); }
+.ds-chev { width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform .15s ease; }
+.ds-toggle[aria-expanded="true"] .ds-chev { transform: translateY(1px) rotate(-135deg); }
+
+/* status chips that are not tiers: neutral, with a word */
+.chip.ds-ctx { color: var(--ink-2); }
+.chip.ds-nu { color: var(--ink-3); background: transparent; }
+.chip.ds-run { color: var(--ink-2); background: var(--surface-2); }
+.chip.ds-run::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: ds-pulse 2.4s ease-in-out infinite; }
+@keyframes ds-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
+.panel .chip.ds-run { background: transparent; color: var(--panel-ink-2); }
+.panel .chip.ds-run::before { background: var(--panel-accent); }
+
+/* ---------- in-place detail panel ---------- */
+.ds-detail { grid-column: 1 / -1; animation: reveal .3s ease-out both; }
+.ds-detail:focus { outline: none; }
+.ds-detail-head { padding: 18px 24px 18px; border-bottom: 1px solid var(--panel-line); }
+.ds-detail-title-row { margin-top: 10px; gap: 10px 12px; }
+.ds-detail-title { font-size: 24px; line-height: 1.2; letter-spacing: -.022em; margin-right: 4px; }
+.ds-detail-what { margin-top: 8px; font-size: 15px; max-width: 72ch; }
+.ds-meta { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, .8fr); gap: 10px 20px; margin-top: 16px; }
+.ds-meta > div { display: flex; flex-direction: column; gap: 4px; font-size: 13.5px; color: var(--panel-ink); min-width: 0; }
+.ds-detail-body { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 24px; padding: 20px 24px 24px; }
+.ds-detail-lists { display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+.ds-detail-side { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.ds-ul { margin: 8px 0 0; padding-left: 18px; font-size: 14px; line-height: 1.55; color: var(--panel-ink); }
+.ds-ul li + li { margin-top: 6px; }
+.ds-ul li::marker { color: var(--panel-ink-3); }
+.ds-empty { margin-top: 8px; font-size: 14px; color: var(--panel-ink-2); }
+.ds-numbers { padding: 14px 16px 4px; }
+.ds-numbers > .micro { margin-bottom: 4px; }
+.ds-kv-l { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ds-kv-note { font-size: 12px; line-height: 1.4; color: var(--panel-ink-3); }
+.ds-kv-r { display: flex; align-items: center; gap: 8px; flex: none; }
+.ds-panel-chart { padding: 14px 16px 10px; }
+
+/* ---------- charts ---------- */
+.ds-charts { align-items: stretch; }
+.ds-chart-card { display: flex; flex-direction: column; }
+.ds-chart-card .card-body { flex: 1; gap: 18px; }
+.ds-feat-head { display: flex; align-items: baseline; gap: 4px 10px; flex-wrap: wrap; }
+.ds-feat-name { font-weight: 600; font-size: 14px; }
+.ds-feat-head .faint { font-size: 12.5px; }
+.ds-feat-auc { display: flex; align-items: baseline; flex-wrap: wrap; gap: 2px 8px; margin-top: 4px; font-size: 13px; color: var(--ink-2); }
+.ds-auc { font-weight: 600; color: var(--ink); }
+.ds-auc-others { color: var(--ink-3); }
+.ds-chart { margin-top: 10px; min-height: 24px; }
+/* max-width lets the chart host shrink (after a phone rotation, say), so the resize observer redraws at the new width */
+.ds-svg { display: block; overflow: visible; max-width: 100%; height: auto; }
+.ds-svg text { font-family: var(--font-sans); }
+.ds-svg .ds-grid { stroke: var(--line); stroke-width: 1; }
+.ds-svg .ds-axis { stroke: var(--line-2); stroke-width: 1; }
+.ds-svg .ds-tick { font: 500 10.5px var(--font-mono); fill: var(--ink-3); }
+.ds-svg .ds-lab { font-size: 12.5px; fill: var(--ink-2); }
+.ds-svg .ds-n { font: 500 10.5px var(--font-mono); fill: var(--ink-3); }
+.ds-svg .ds-group { font: 500 10.5px var(--font-mono); letter-spacing: .08em; fill: var(--ink-3); }
+.ds-svg .ds-track { stroke: var(--line-2); stroke-width: 1; }
+.ds-svg .ds-dot { fill: var(--ink-3); stroke: var(--surface); stroke-width: 2; }
+.ds-svg .ds-val { font: 500 12px var(--font-mono); fill: var(--ink-2); }
+.ds-svg .hi .ds-lab { fill: var(--ink); font-weight: 600; }
+.ds-svg .hi .ds-dot { fill: var(--accent); }
+.ds-svg .hi .ds-val { fill: var(--ink); font-weight: 600; }
+.ds-svg .ds-hit { fill: transparent; }
+.ds-svg .ds-row:hover .ds-hit { fill: var(--ink); fill-opacity: .035; }
+.ds-svg .ds-iqr { fill: var(--accent); fill-opacity: .32; }
+.ds-svg .ds-med { fill: var(--ink); }
+.ds-svg .ds-ref line { stroke: var(--ink-2); stroke-width: 1; }
+.ds-svg .ds-ref text { font: 500 10.5px var(--font-mono); fill: var(--ink); }
+.ds-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2); }
+.ds-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.ds-legend i { display: inline-block; flex: none; }
+.ds-key-iqr { width: 18px; height: 10px; border-radius: 3px; background: var(--accent); opacity: .32; }
+.ds-key-med { width: 3px; height: 14px; border-radius: 2px; background: var(--ink); }
+.ds-key-ref { width: 1px; height: 14px; background: var(--ink-2); }
+
+/* the same charts inside the dark panel */
+.panel .ds-feat-name, .panel .ds-auc { color: var(--panel-ink); }
+.panel .ds-feat-auc { color: var(--panel-ink-2); }
+.panel .ds-auc-others { color: var(--panel-ink-3); }
+.panel .ds-svg .ds-grid { stroke: var(--panel-line); }
+.panel .ds-svg .ds-axis, .panel .ds-svg .ds-track { stroke: var(--panel-line); }
+.panel .ds-svg .ds-tick, .panel .ds-svg .ds-n, .panel .ds-svg .ds-group { fill: var(--panel-ink-3); }
+.panel .ds-svg .ds-lab, .panel .ds-svg .ds-val { fill: var(--panel-ink-2); }
+.panel .ds-svg .hi .ds-lab, .panel .ds-svg .hi .ds-val { fill: var(--panel-ink); }
+.panel .ds-svg .ds-dot { fill: var(--panel-ink-3); stroke: var(--panel-2); }
+.panel .ds-svg .hi .ds-dot { fill: var(--panel-accent); }
+.panel .ds-svg .ds-iqr { fill: var(--panel-accent); fill-opacity: .3; }
+.panel .ds-svg .ds-med { fill: var(--panel-ink); }
+.panel .ds-svg .ds-ref line { stroke: var(--panel-ink-2); }
+.panel .ds-svg .ds-ref text { fill: var(--panel-ink); }
+.panel .ds-svg .ds-row:hover .ds-hit { fill: var(--panel-ink); fill-opacity: .04; }
+
+/* ---------- limits and credits ---------- */
+.ds-limits > div { font-size: 14px; color: var(--ink-2); }
+.ds-credit { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; gap: 4px 14px; align-items: start; }
+.ds-credit .ds-num { padding-top: 3px; }
+.ds-credit-name { font-weight: 600; font-size: 14px; }
+.ds-credit-main .note { margin-top: 2px; }
+.ds-credit-side { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; font-size: 13px; text-align: right; max-width: 260px; }
+.ds-terms { margin-top: 12px; max-width: 90ch; }
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .ds-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ds-stat:nth-child(3) { border-left: 0; }
+  .ds-stat:nth-child(n + 3) { border-top: 1px solid var(--panel-line); }
+  .ds-detail-body { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 860px) {
+  .ds-grid { grid-template-columns: minmax(0, 1fr); }
+  .ds-meta { grid-template-columns: minmax(0, 1fr); }
+  .ds-detail-head, .ds-detail-body { padding-left: 18px; padding-right: 18px; }
+  .ds-stat { padding: 16px 16px 14px; }
+  .ds-stat .stat { font-size: 32px; }
+  .ds-credit { grid-template-columns: 26px minmax(0, 1fr); }
+  .ds-credit-side { grid-column: 2; align-items: flex-start; text-align: left; max-width: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chip.ds-run::before, .ds-detail { animation: none; }
+  .ds-card, .ds-chev { transition: none; }
+}
+
+/* ---------- datasets checked and set aside: one tile, mini rows ---------- */
+.ds-aside-tile {
+  flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 10px; padding: 18px 20px 10px;
+  background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-l);
+}
+.ds-aside-tile .ds-what { flex: none; }
+/* small labels on sand (--surface-2): one step darker, so they keep 4.5:1 */
+.ds-aside-tile .micro, .ds-aside-tile .ds-num, .ds-aside-tile .ds-lic, .ds-aside-tile .chip.ds-nu { color: var(--ink-2); }
+.ds-mini-list { margin-top: auto; border-top: 1px solid var(--line); }
+.ds-card.ds-mini {
+  flex: none; flex-direction: row; align-items: center; gap: 10px; padding: 10px 0; background: transparent;
+  border: 0; border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none;
+}
+.ds-card.ds-mini:last-child { border-bottom: 0; }
+.ds-card.ds-mini:hover { border-color: var(--line); transform: none; box-shadow: none; }
+.ds-card.ds-mini:hover .ds-mini-name { color: var(--accent); }
+.ds-card.ds-mini.open { background: transparent; }
+.ds-card.ds-mini.open .ds-mini-name { color: var(--accent); }
+.ds-mini-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+.ds-mini-name { display: flex; align-items: baseline; gap: 8px; font-weight: 600; font-size: 14px; line-height: 1.35; }
+.ds-mini-name .ds-num { flex: none; }
+.ds-mini .ds-lic { padding-left: 26px; }
+
+/* text halo so reference and grid lines never cut through labels */
+.ds-svg .ds-group, .ds-svg .ds-ref text { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.panel .ds-svg .ds-group, .panel .ds-svg .ds-ref text { stroke: var(--panel-2); }
+@media (max-width: 860px) {
+  .ds-numbers .kv { align-items: flex-start; }
+  .ds-numbers .kv .v { white-space: normal; text-align: right; max-width: 58vw; }
+}
+/* ---------- finish: crop marks, focus on dark, scroll rise ---------- */
+.ds-strip::after, .ds-detail::after {
+  content: ""; position: absolute; inset: 12px; z-index: 2; pointer-events: none;
+  --cm: color-mix(in srgb, var(--panel-ink) 30%, transparent);
+  background:
+    linear-gradient(var(--cm), var(--cm)) left top / 14px 1px, linear-gradient(var(--cm), var(--cm)) left top / 1px 14px,
+    linear-gradient(var(--cm), var(--cm)) right top / 14px 1px, linear-gradient(var(--cm), var(--cm)) right top / 1px 14px,
+    linear-gradient(var(--cm), var(--cm)) left bottom / 14px 1px, linear-gradient(var(--cm), var(--cm)) left bottom / 1px 14px,
+    linear-gradient(var(--cm), var(--cm)) right bottom / 14px 1px, linear-gradient(var(--cm), var(--cm)) right bottom / 1px 14px;
+  background-repeat: no-repeat;
+}
+.ds-detail :focus-visible { outline-color: var(--panel-accent); }
+.ds-detail:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ds-strip ~ .section > .section-head, .ds-strip ~ .section > .list, .ds-strip ~ .section > .ds-terms,
+    .ds-strip ~ .section > .grid, .ds-strip ~ .section > .card, .ds-strip ~ .section > .ds-grid {
+      animation: ds-rise linear forwards; animation-timeline: view(); animation-range: entry 0% entry 60px;
+    }
+  }
+}
+@keyframes ds-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .ds-card:hover { transform: none; }
+}
+.ds-overyear { padding: 12px 14px 4px; }
+.ds-overyear .kv { font-size: 13.5px; }
+.ds-overyear .kv .v { background: var(--surface); }
+
+/* small labels on sand (--surface-2): one step darker, so they keep 4.5:1 */
+.ds-overyear .micro, .ds-overyear .faint { color: var(--ink-2); }

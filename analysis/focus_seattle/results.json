@@ -1,0 +1,1002 @@
+{
+  "_about": "Group-level summaries only. ALS Focus Wave 4 (doi:10.7910/DVN/RMBES9, ALS Association; no redistribution) and Seattle ALS Patient Profile Database v3 (doi:10.17632/stcztggnnp; CC BY-NC 3.0; McDonald et al. 1994). Script: analysis/focus_seattle/focus_seattle.py",
+  "A_focus_alsfrsr_vc": {
+    "n_pals_reports": 885,
+    "n_pals_people": 440,
+    "alsfrsr_awareness_people": {
+      "ever_reported_a_score": {
+        "k": 170,
+        "n": 440,
+        "pct": 38.6
+      },
+      "only_dont_know": {
+        "k": 236,
+        "n": 440,
+        "pct": 53.6
+      },
+      "never_had_test_no_score": {
+        "k": 68,
+        "n": 440,
+        "pct": 15.5
+      }
+    },
+    "alsfrsr": {
+      "reports_with_a_value": 301,
+      "usable_reports": 294,
+      "people_with_usable_report": 165,
+      "people_with_2plus_distinct_test_dates": 53,
+      "people_with_3plus_distinct_test_dates": 24,
+      "same_test_month_rereports": {
+        "n_pairs": 34,
+        "score_differs": {
+          "k": 12,
+          "n": 34,
+          "pct": 35.3
+        },
+        "abs_difference_when_differs": {
+          "n": 12,
+          "median": 2.0,
+          "q1": 1.0,
+          "q3": 3.2,
+          "mean": 2.6
+        }
+      },
+      "followup_span_months": {
+        "n": 53,
+        "median": 9.0,
+        "q1": 6.0,
+        "q3": 13.0,
+        "mean": 10.0
+      },
+      "slope_points_per_month_all": {
+        "n": 53,
+        "median": -0.15,
+        "q1": -0.5,
+        "q3": -0.0,
+        "mean": -0.04
+      },
+      "slope_points_per_month_span_ge_3m": {
+        "n": 49,
+        "median": -0.18,
+        "q1": -0.5,
+        "q3": -0.0,
+        "mean": -0.19
+      },
+      "steps_between_distinct_tests": {
+        "n_steps": 92,
+        "interval_months": {
+          "n": 92,
+          "median": 5.0,
+          "q1": 2.0,
+          "q3": 8.0,
+          "mean": 5.8
+        },
+        "up": {
+          "k": 19,
+          "n": 92,
+          "pct": 20.7
+        },
+        "flat": {
+          "k": 27,
+          "n": 92,
+          "pct": 29.3
+        },
+        "down": {
+          "k": 46,
+          "n": 92,
+          "pct": 50.0
+        },
+        "change_points": {
+          "n": 92,
+          "median": -0.2,
+          "q1": -2.2,
+          "q3": 0.0,
+          "mean": -0.9
+        },
+        "size_of_rises": {
+          "n": 19,
+          "median": 3.0,
+          "q1": 2.0,
+          "q3": 4.0,
+          "mean": 3.8
+        },
+        "p95_abs_change_within_4_months": 10.0,
+        "n_steps_within_4_months": 41
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 2.13,
+        "dof": 39,
+        "mdc95_single_pair": 5.9
+      }
+    },
+    "vc_percent": {
+      "reports_with_a_value": 287,
+      "usable_reports": 283,
+      "people_with_usable_report": 175,
+      "people_with_2plus_distinct_test_dates": 44,
+      "people_with_3plus_distinct_test_dates": 19,
+      "same_test_month_rereports": {
+        "n_pairs": 28,
+        "score_differs": {
+          "k": 7,
+          "n": 28,
+          "pct": 25.0
+        },
+        "abs_difference_when_differs": {
+          "n": 7,
+          "median": 6.0,
+          "q1": 4.0,
+          "q3": 22.0,
+          "mean": 14.3
+        }
+      },
+      "followup_span_months": {
+        "n": 44,
+        "median": 10.0,
+        "q1": 6.0,
+        "q3": 15.2,
+        "mean": 10.6
+      },
+      "slope_points_per_month_all": {
+        "n": 44,
+        "median": -0.25,
+        "q1": -1.6,
+        "q3": 0.0,
+        "mean": -0.8
+      },
+      "slope_points_per_month_span_ge_3m": {
+        "n": 41,
+        "median": -0.25,
+        "q1": -1.5,
+        "q3": 0.0,
+        "mean": -0.72
+      },
+      "steps_between_distinct_tests": {
+        "n_steps": 77,
+        "interval_months": {
+          "n": 77,
+          "median": 6.0,
+          "q1": 3.0,
+          "q3": 8.0,
+          "mean": 6.1
+        },
+        "up": {
+          "k": 10,
+          "n": 77,
+          "pct": 13.0
+        },
+        "flat": {
+          "k": 20,
+          "n": 77,
+          "pct": 26.0
+        },
+        "down": {
+          "k": 47,
+          "n": 77,
+          "pct": 61.0
+        },
+        "change_points": {
+          "n": 77,
+          "median": -2.0,
+          "q1": -8.0,
+          "q3": 0.0,
+          "mean": -4.6
+        },
+        "size_of_rises": {
+          "n": 10,
+          "median": 4.5,
+          "q1": 2.2,
+          "q3": 7.2,
+          "mean": 5.9
+        },
+        "p95_abs_change_within_4_months": 15.5,
+        "n_steps_within_4_months": 31
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 3.33,
+        "dof": 33,
+        "mdc95_single_pair": 9.2
+      },
+      "note": "Entry capped at 100% from Wave 2 (dataset note); values are recalled clinic results."
+    },
+    "baseline_rate_deltaFS": {
+      "definition": "(48 - first reported ALSFRS-R) / months from first symptom to that test",
+      "all": {
+        "n": 158,
+        "median": 0.35,
+        "q1": 0.17,
+        "q3": 0.55,
+        "mean": 0.44
+      },
+      "months_onset_to_first_test": {
+        "n": 158,
+        "median": 42.5,
+        "q1": 24.0,
+        "q3": 75.0,
+        "mean": 57.2
+      },
+      "bulbar_onset": {
+        "n": 30,
+        "median": 0.44,
+        "q1": 0.21,
+        "q3": 0.93,
+        "mean": 0.63
+      },
+      "limb_onset": {
+        "n": 119,
+        "median": 0.3,
+        "q1": 0.17,
+        "q3": 0.47,
+        "mean": 0.39
+      },
+      "bulbar_vs_limb_mannwhitney_p": 0.0218,
+      "predicts_later_slope_spearman": {
+        "n": 48,
+        "rho": 0.13,
+        "p": 0.3652
+      }
+    }
+  },
+  "B_focus_health_status": {
+    "n_reports": 769,
+    "n_people": 380,
+    "note": "First vs last report per person; no dates (only wave order), so no per-month rates.",
+    "speech": {
+      "people_2plus_reports": 194,
+      "worse": {
+        "k": 46,
+        "n": 194,
+        "pct": 23.7
+      },
+      "same": {
+        "k": 137,
+        "n": 194,
+        "pct": 70.6
+      },
+      "better": {
+        "k": 11,
+        "n": 194,
+        "pct": 5.7
+      },
+      "any_step_back_toward_normal": {
+        "k": 24,
+        "n": 194,
+        "pct": 12.4
+      }
+    },
+    "resp": {
+      "people_2plus_reports": 191,
+      "worse": {
+        "k": 20,
+        "n": 191,
+        "pct": 10.5
+      },
+      "same": {
+        "k": 167,
+        "n": 191,
+        "pct": 87.4
+      },
+      "better": {
+        "k": 4,
+        "n": 191,
+        "pct": 2.1
+      },
+      "any_step_back_toward_normal": {
+        "k": 7,
+        "n": 191,
+        "pct": 3.7
+      }
+    },
+    "mobility": {
+      "people_2plus_reports": 191,
+      "worse": {
+        "k": 34,
+        "n": 191,
+        "pct": 17.8
+      },
+      "same": {
+        "k": 149,
+        "n": 191,
+        "pct": 78.0
+      },
+      "better": {
+        "k": 8,
+        "n": 191,
+        "pct": 4.2
+      },
+      "any_step_back_toward_normal": {
+        "k": 15,
+        "n": 191,
+        "pct": 7.9
+      }
+    },
+    "tube": {
+      "people_2plus_reports": 191,
+      "worse": {
+        "k": 13,
+        "n": 191,
+        "pct": 6.8
+      },
+      "same": {
+        "k": 178,
+        "n": 191,
+        "pct": 93.2
+      },
+      "better": {
+        "k": 0,
+        "n": 191,
+        "pct": 0.0
+      },
+      "any_step_back_toward_normal": {
+        "k": 0,
+        "n": 191,
+        "pct": 0.0
+      }
+    }
+  },
+  "C_focus_telehealth": {
+    "n_pals": 217,
+    "had_ALS_telehealth_visit_in_pandemic": {
+      "k": 167,
+      "n": 216,
+      "pct": 77.3
+    },
+    "video_any": {
+      "k": 157,
+      "n": 216,
+      "pct": 72.7
+    },
+    "reasons_no_telehealth": {
+      "n": 49,
+      "not_offered": 11,
+      "in_person": 17,
+      "communicate": 5,
+      "equipment": 3,
+      "knowledge": 2,
+      "quality": 2,
+      "cost": 1,
+      "comfort": 1,
+      "privacy": 0,
+      "reason_other": 12
+    },
+    "tests_done_remotely_among_telehealth_users": {
+      "n": 167,
+      "oximetry": 41,
+      "alsfrs": 80,
+      "spirometry": 18,
+      "single_breath": 19,
+      "vocalizing": 30,
+      "neuro": 52,
+      "cognitive": 16,
+      "muscle_bulk": 14,
+      "muscle_manual": 13,
+      "grip": 10,
+      "record_voice": 16,
+      "test_other": 4,
+      "test_none": 58,
+      "test_dk": 1
+    },
+    "tests_given_by_caregiver_during_telehealth": {
+      "n": 167,
+      "oximetry": 15,
+      "alsfrs": 5,
+      "spirometry": 0,
+      "single_breath": 1,
+      "vocalizing": 0,
+      "neuro": 0,
+      "cognitive": 0,
+      "muscle_bulk": 3,
+      "muscle_manual": 1,
+      "grip": 1,
+      "record_voice": 1,
+      "test_other": 2,
+      "test_none": 77,
+      "test_dk": 0
+    },
+    "time_saved": {
+      "n": 163,
+      "Saved a lot of time with telehealth": 95,
+      "Saved some time with telehealth": 58,
+      "Did not save any time with telehealth": 5,
+      "Saved very little time with telehealth": 5
+    },
+    "money_saved": {
+      "n": 160,
+      "Saved some money with telehealth": 62,
+      "Did not save any money with telehealth": 40,
+      "Saved very little money with telehealth": 37,
+      "Saved a lot of money with telehealth": 21
+    },
+    "explain_concerns": {
+      "n": 160,
+      "Telehealth appointments are just as good as in-person appointments": 89,
+      "Telehealth appointments are worse than person-appointments": 67,
+      "Telehealth appointments are better than in-person appointments": 4
+    },
+    "understand_guidance": {
+      "n": 161,
+      "Telehealth appointments are just as good as in-person appointments": 107,
+      "Telehealth appointments are worse than person-appointments": 50,
+      "Telehealth appointments are better than in-person appointments": 4
+    },
+    "confident_in_quality": {
+      "n": 159,
+      "Telehealth appointments are worse than person-appointments": 85,
+      "Telehealth appointments are just as good as in-person appointments": 71,
+      "Telehealth appointments are better than in-person appointments": 3
+    },
+    "improves_quality_of_life": {
+      "n": 162,
+      "Somewhat": 62,
+      "Very little": 43,
+      "A lot": 41,
+      "Not at all": 16
+    },
+    "internet_quality": {
+      "n": 163,
+      "Very good internet connection": 104,
+      "Somewhat good internet connection": 45,
+      "Very poor internet connection": 11,
+      "Somewhat poor internet connection": 3
+    },
+    "willing_to_use_telehealth_after_pandemic": {
+      "k": 166,
+      "n": 212,
+      "pct": 78.3
+    },
+    "reasons_unwilling": {
+      "n": 46,
+      "quality": 25,
+      "communicate": 14,
+      "comfort": 6,
+      "equipment": 4,
+      "knowledge": 1,
+      "privacy": 0,
+      "unwilling_other": 9
+    },
+    "home_internet": {
+      "n": 217,
+      "wire": 159,
+      "broad": 94,
+      "cell": 47,
+      "dial": 0,
+      "dk": 2
+    },
+    "trials_in_pandemic": {
+      "took_part": {
+        "k": 44,
+        "n": 211,
+        "pct": 20.9
+      },
+      "could_NOT_access_without_telehealth": 13,
+      "answered_access_q": 42
+    },
+    "willing_by_latest_speech": {
+      "normal": {
+        "k": 63,
+        "n": 79,
+        "pct": 79.7
+      },
+      "impaired_but_speaks": {
+        "k": 64,
+        "n": 83,
+        "pct": 77.1
+      },
+      "prefers_device_or_lost": {
+        "k": 33,
+        "n": 43,
+        "pct": 76.7
+      },
+      "no_health_status_report": {
+        "k": 6,
+        "n": 7,
+        "pct": 85.7
+      }
+    }
+  },
+  "D_seattle_alsss_domains": {
+    "note": "ALS Severity Scale (Hillel 1989), clinician-rated 1-10 per domain (10 = normal); visits ~3 months apart, 1987-89.",
+    "speech": {
+      "people": 143,
+      "people_2plus_visits": 125,
+      "visit1_score": {
+        "n": 143,
+        "median": 7.0,
+        "q1": 4.0,
+        "q3": 9.5,
+        "mean": 6.5
+      },
+      "visit1_at_ceiling_10": {
+        "k": 36,
+        "n": 143,
+        "pct": 25.2
+      },
+      "slope_points_per_month": {
+        "n": 125,
+        "median": -0.064,
+        "q1": -0.169,
+        "q3": 0.0,
+        "mean": -0.124
+      },
+      "people_with_zero_slope": {
+        "k": 35,
+        "n": 125,
+        "pct": 28.0
+      },
+      "steps": {
+        "n_steps": 553,
+        "interval_months": {
+          "n": 553,
+          "median": 2.9,
+          "q1": 2.8,
+          "q3": 3.0,
+          "mean": 2.9
+        },
+        "up": {
+          "k": 42,
+          "n": 553,
+          "pct": 7.6
+        },
+        "flat": {
+          "k": 358,
+          "n": 553,
+          "pct": 64.7
+        },
+        "down": {
+          "k": 153,
+          "n": 553,
+          "pct": 27.7
+        },
+        "change_points": {
+          "n": 553,
+          "median": 0.0,
+          "q1": -1.0,
+          "q3": 0.0,
+          "mean": -0.3
+        },
+        "size_of_rises": {
+          "n": 42,
+          "median": 1.0,
+          "q1": 1.0,
+          "q3": 1.0,
+          "mean": 1.0
+        },
+        "p95_abs_change_within_4_months": 2.0,
+        "n_steps_within_4_months": 538
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 0.49,
+        "dof": 428,
+        "mdc95_single_pair": 1.4
+      }
+    },
+    "swallowing": {
+      "people": 143,
+      "people_2plus_visits": 125,
+      "visit1_score": {
+        "n": 143,
+        "median": 8.0,
+        "q1": 7.0,
+        "q3": 10.0,
+        "mean": 7.6
+      },
+      "visit1_at_ceiling_10": {
+        "k": 40,
+        "n": 143,
+        "pct": 28.0
+      },
+      "slope_points_per_month": {
+        "n": 125,
+        "median": -0.056,
+        "q1": -0.18,
+        "q3": -0.0,
+        "mean": -0.137
+      },
+      "people_with_zero_slope": {
+        "k": 33,
+        "n": 125,
+        "pct": 26.4
+      },
+      "steps": {
+        "n_steps": 553,
+        "interval_months": {
+          "n": 553,
+          "median": 2.9,
+          "q1": 2.8,
+          "q3": 3.0,
+          "mean": 2.9
+        },
+        "up": {
+          "k": 50,
+          "n": 553,
+          "pct": 9.0
+        },
+        "flat": {
+          "k": 361,
+          "n": 553,
+          "pct": 65.3
+        },
+        "down": {
+          "k": 142,
+          "n": 553,
+          "pct": 25.7
+        },
+        "change_points": {
+          "n": 553,
+          "median": 0.0,
+          "q1": -1.0,
+          "q3": 0.0,
+          "mean": -0.3
+        },
+        "size_of_rises": {
+          "n": 50,
+          "median": 1.0,
+          "q1": 1.0,
+          "q3": 1.0,
+          "mean": 1.1
+        },
+        "p95_abs_change_within_4_months": 2.0,
+        "n_steps_within_4_months": 538
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 0.59,
+        "dof": 428,
+        "mdc95_single_pair": 1.6
+      }
+    },
+    "upper_limb": {
+      "people": 143,
+      "people_2plus_visits": 125,
+      "visit1_score": {
+        "n": 143,
+        "median": 5.0,
+        "q1": 3.0,
+        "q3": 7.0,
+        "mean": 5.0
+      },
+      "visit1_at_ceiling_10": {
+        "k": 1,
+        "n": 143,
+        "pct": 0.7
+      },
+      "slope_points_per_month": {
+        "n": 125,
+        "median": -0.061,
+        "q1": -0.188,
+        "q3": 0.0,
+        "mean": -0.113
+      },
+      "people_with_zero_slope": {
+        "k": 20,
+        "n": 125,
+        "pct": 16.0
+      },
+      "steps": {
+        "n_steps": 553,
+        "interval_months": {
+          "n": 553,
+          "median": 2.9,
+          "q1": 2.8,
+          "q3": 3.0,
+          "mean": 2.9
+        },
+        "up": {
+          "k": 67,
+          "n": 553,
+          "pct": 12.1
+        },
+        "flat": {
+          "k": 315,
+          "n": 553,
+          "pct": 57.0
+        },
+        "down": {
+          "k": 171,
+          "n": 553,
+          "pct": 30.9
+        },
+        "change_points": {
+          "n": 553,
+          "median": 0.0,
+          "q1": -1.0,
+          "q3": 0.0,
+          "mean": -0.3
+        },
+        "size_of_rises": {
+          "n": 67,
+          "median": 1.0,
+          "q1": 1.0,
+          "q3": 1.0,
+          "mean": 1.1
+        },
+        "p95_abs_change_within_4_months": 2.0,
+        "n_steps_within_4_months": 538
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 0.59,
+        "dof": 428,
+        "mdc95_single_pair": 1.6
+      }
+    },
+    "lower_limb": {
+      "people": 143,
+      "people_2plus_visits": 125,
+      "visit1_score": {
+        "n": 143,
+        "median": 6.0,
+        "q1": 3.0,
+        "q3": 7.0,
+        "mean": 5.3
+      },
+      "visit1_at_ceiling_10": {
+        "k": 5,
+        "n": 143,
+        "pct": 3.5
+      },
+      "slope_points_per_month": {
+        "n": 125,
+        "median": -0.05,
+        "q1": -0.179,
+        "q3": 0.0,
+        "mean": -0.109
+      },
+      "people_with_zero_slope": {
+        "k": 32,
+        "n": 125,
+        "pct": 25.6
+      },
+      "steps": {
+        "n_steps": 553,
+        "interval_months": {
+          "n": 553,
+          "median": 2.9,
+          "q1": 2.8,
+          "q3": 3.0,
+          "mean": 2.9
+        },
+        "up": {
+          "k": 48,
+          "n": 553,
+          "pct": 8.7
+        },
+        "flat": {
+          "k": 345,
+          "n": 553,
+          "pct": 62.4
+        },
+        "down": {
+          "k": 160,
+          "n": 553,
+          "pct": 28.9
+        },
+        "change_points": {
+          "n": 553,
+          "median": 0.0,
+          "q1": -1.0,
+          "q3": 0.0,
+          "mean": -0.3
+        },
+        "size_of_rises": {
+          "n": 48,
+          "median": 1.0,
+          "q1": 1.0,
+          "q3": 1.0,
+          "mean": 1.1
+        },
+        "p95_abs_change_within_4_months": 2.0,
+        "n_steps_within_4_months": 538
+      },
+      "noise_floor": {
+        "pooled_residual_sd_sem_proxy": 0.53,
+        "dof": 428,
+        "mdc95_single_pair": 1.5
+      }
+    }
+  },
+  "E_seattle_before_diagnosis": {
+    "n_patients": 143,
+    "first_symptom": {
+      "Feet/legs": 54,
+      "Hands": 29,
+      "Speech/voice": 18,
+      "Arm": 12,
+      "Fasciculations/twitching": 7,
+      "Generalized weakness/atrophy": 6,
+      "Shoulder": 4,
+      "Balance": 3,
+      "Cramps/soreness/numbness": 3,
+      "Swallowing": 2,
+      "Difficulty with saliva": 2,
+      "Stress incontinence/frequent urination": 2,
+      "Shortness of breath": 1
+    },
+    "second_symptom": {
+      "Feet/legs": 49,
+      "Arm": 33,
+      "Hands": 19,
+      "Speech/voice": 9,
+      "Generalized weakness/atrophy": 6,
+      "Fasciculations/twitching": 6,
+      "Swallowing": 5,
+      "Cramps/soreness/numbness": 4,
+      "Shortness of breath": 3,
+      "Balance": 2,
+      "Weight loss": 2,
+      "Shoulder": 2,
+      "Back trouble": 1
+    },
+    "first_diagnosis_made_by": {
+      "Neurologist/ALS specialist": 131,
+      "Family practitioner": 5,
+      "Neurosurgeon": 2,
+      "Internist": 2,
+      "Physiatrist": 1,
+      "Pulmonologist": 1
+    },
+    "second_opinion_obtained": {
+      "k": 120,
+      "n": 142,
+      "pct": 84.5
+    },
+    "first_to_second_diagnosis_months": {
+      "n": 112,
+      "median": 1.0,
+      "q1": 0.8,
+      "q3": 3.3,
+      "mean": 5.1
+    },
+    "second_diagnosis_dated_before_first": 0,
+    "first_heard_of_ALS": {
+      "n": 116,
+      "before_first_symptom": 37,
+      "between_symptom_and_diagnosis": 14,
+      "at_or_after_diagnosis": 65
+    },
+    "regions": {
+      "definition": "bulbar = speech/swallow/saliva; respiratory = breathing; upper/lower limb = L/R arm+hand / leg+foot. A missing region date is treated as not affected, so counts are lower bounds.",
+      "n": 139,
+      "first_region_by_dates": {
+        "upper_limb": 54,
+        "lower_limb": 52,
+        "bulbar": 28,
+        "respiratory": 5
+      },
+      "regions_affected_by_diagnosis": {
+        "0": 8,
+        "1": 69,
+        "2": 45,
+        "3": 13,
+        "4": 4
+      },
+      "two_plus_regions_by_diagnosis": {
+        "k": 62,
+        "n": 139,
+        "pct": 44.6
+      },
+      "two_plus_regions_6_months_before_diagnosis": {
+        "k": 33,
+        "n": 139,
+        "pct": 23.7
+      },
+      "months_first_to_second_region": {
+        "n": 131,
+        "median": 12.0,
+        "q1": 4.0,
+        "q3": 30.5,
+        "mean": 23.3
+      },
+      "second_region_began_before_diagnosis": {
+        "k": 62,
+        "n": 131,
+        "pct": 47.3
+      },
+      "months_second_region_to_diagnosis": {
+        "n": 62,
+        "median": 6.0,
+        "q1": 3.0,
+        "q3": 16.7,
+        "mean": 11.6
+      },
+      "affected_before_diagnosis_by_region": {
+        "bulbar": {
+          "k": 43,
+          "n": 139,
+          "pct": 30.9
+        },
+        "respiratory": {
+          "k": 11,
+          "n": 139,
+          "pct": 7.9
+        },
+        "upper_limb": {
+          "k": 79,
+          "n": 139,
+          "pct": 56.8
+        },
+        "lower_limb": {
+          "k": 81,
+          "n": 139,
+          "pct": 58.3
+        }
+      }
+    },
+    "weight_loss": {
+      "weight_loss_date_recorded": {
+        "k": 77,
+        "n": 143,
+        "pct": 53.8
+      },
+      "weight_loss_before_diagnosis": {
+        "k": 26,
+        "n": 77,
+        "pct": 33.8
+      },
+      "months_before_diagnosis_when_before": {
+        "n": 26,
+        "median": 4.0,
+        "q1": 1.0,
+        "q3": 7.7,
+        "mean": 9.0
+      }
+    },
+    "surgery_and_injury_vs_window": {
+      "definition": "Integer age at event between floor(age at first symptom) and floor(age at diagnosis) = 'possibly in the window' (1-year resolution); background = age 20 to the year before onset. Recall favours recent events; compare the 'other' rows as a recall-bias control.",
+      "n_patients_with_history": 143,
+      "msk_site_surgery": {
+        "events_in_window": 12,
+        "people_with_event_in_window": 11,
+        "window_person_years": 391.0,
+        "background_events": 13,
+        "background_person_years": 4682.0,
+        "rate_ratio_window_vs_background": 11.1,
+        "rr_95ci": [
+          5.0,
+          24.2
+        ]
+      },
+      "other_site_surgery": {
+        "events_in_window": 17,
+        "people_with_event_in_window": 15,
+        "window_person_years": 391.0,
+        "background_events": 97,
+        "background_person_years": 4682.0,
+        "rate_ratio_window_vs_background": 2.1,
+        "rr_95ci": [
+          1.3,
+          3.5
+        ]
+      },
+      "msk_surgeries_in_window_by_site": {
+        "Back": 1,
+        "Neck/spine (incl. Cloward)": 7,
+        "Feet": 2,
+        "Legs/knee": 1,
+        "Hand": 1
+      },
+      "falls_fractures_injuries": {
+        "events_in_window": 5,
+        "people_with_event_in_window": 4,
+        "window_person_years": 391.0,
+        "background_events": 29,
+        "background_person_years": 4682.0,
+        "rate_ratio_window_vs_background": 2.1,
+        "rr_95ci": [
+          0.8,
+          5.3
+        ]
+      },
+      "other_major_illness": {
+        "events_in_window": 7,
+        "people_with_event_in_window": 6,
+        "window_person_years": 391.0,
+        "background_events": 69,
+        "background_person_years": 4682.0,
+        "rate_ratio_window_vs_background": 1.2,
+        "rr_95ci": [
+          0.6,
+          2.6
+        ]
+      }
+    }
+  }
+}

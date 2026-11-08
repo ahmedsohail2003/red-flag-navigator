@@ -1,0 +1,1283 @@
+{
+  "delay": {
+    "als_focus": {
+      "source": "ALS Focus Wave 4, ALSFocusWave4_Demographics.csv (opt-in US online survey of people with ALS, 2020-02-13 to 2021-10-11)",
+      "variables": {
+        "onset": "p4_onset_date (derived from p4_onset_month, p4_onset_year)",
+        "diagnosis": "p5_diag_date (derived from p5_diag_month, p5_diag_year)",
+        "site": "p3_onset_location"
+      },
+      "interval_rule": "whole calendar months between the month of first symptom and the month of diagnosis (dates are only known to the month)",
+      "n_people_with_als": 528,
+      "excluded_wrong_survey_ids": 1,
+      "n_missing_a_date": 52,
+      "n_excluded_diagnosis_before_onset": 3,
+      "n_zero_months": 4,
+      "overall": {
+        "n": 472,
+        "median_months": 13.0,
+        "iqr_months": [
+          7.0,
+          25.0
+        ],
+        "pct_over_12_months": 52.1
+      },
+      "by_onset_site": {
+        "bulbar": {
+          "n": 88,
+          "median_months": 11.0,
+          "iqr_months": [
+            6.0,
+            17.5
+          ],
+          "pct_over_12_months": 44.3
+        },
+        "upper_limb": {
+          "n": 167,
+          "median_months": 11.0,
+          "iqr_months": [
+            7.0,
+            22.5
+          ],
+          "pct_over_12_months": 45.5
+        },
+        "lower_limb": {
+          "n": 176,
+          "median_months": 16.0,
+          "iqr_months": [
+            9.0,
+            30.0
+          ],
+          "pct_over_12_months": 61.9
+        },
+        "multiple_sites": {
+          "n": 36,
+          "median_months": 13.0,
+          "iqr_months": [
+            6.0,
+            24.0
+          ],
+          "pct_over_12_months": 50.0
+        },
+        "limb_upper_or_lower": {
+          "n": 343,
+          "median_months": 14.0,
+          "iqr_months": [
+            8.0,
+            26.0
+          ],
+          "pct_over_12_months": 53.9
+        }
+      },
+      "n_site_unknown_or_declined": 5,
+      "bulbar_vs_limb_mannwhitney_p": 0.0484
+    },
+    "seattle": {
+      "source": "Seattle ALS Patient Profile Database v3, DHX_person.csv (patients from 3 hospital ALS clinics and support groups, enrolled 1987-88; prevalent cases)",
+      "variables": {
+        "onset": "DHXsx1D (First ALS symptom, days relative to Visit 1)",
+        "diagnosis": "DHXdx1D (First ALS diagnosis, days relative to Visit 1)",
+        "site": "DHXsx1 (First ALS symptom, Codebook ALS SYMPTOM CODES)"
+      },
+      "site_coding": {
+        "bulbar": {
+          "1": "Swallowing",
+          "2": "Speech/voice",
+          "14": "Difficulty with saliva"
+        },
+        "limb": {
+          "3": "Hands",
+          "4": "Feet/legs",
+          "6": "Arm",
+          "10": "Shoulder"
+        },
+        "other_not_site_specific": "all other codes"
+      },
+      "interval_rule": "(DHXdx1D - DHXsx1D) days / 30.4375",
+      "n_patients": 143,
+      "n_missing_a_date": 1,
+      "n_excluded_diagnosis_before_onset": 0,
+      "overall": {
+        "n": 142,
+        "median_months": 11.0,
+        "iqr_months": [
+          6.0,
+          24.0
+        ],
+        "pct_over_12_months": 45.8
+      },
+      "max_months": 257.0,
+      "by_onset_site": {
+        "bulbar": {
+          "n": 22,
+          "median_months": 13.5,
+          "iqr_months": [
+            6.3,
+            24.0
+          ],
+          "pct_over_12_months": 50.0
+        },
+        "limb": {
+          "n": 98,
+          "median_months": 10.5,
+          "iqr_months": [
+            6.0,
+            24.0
+          ],
+          "pct_over_12_months": 46.9
+        },
+        "other_not_site_specific": {
+          "n": 22,
+          "median_months": 10.0,
+          "iqr_months": [
+            6.0,
+            17.8
+          ],
+          "pct_over_12_months": 36.4
+        }
+      },
+      "bulbar_vs_limb_mannwhitney_p": 0.696
+    },
+    "note": "Both are people already diagnosed with ALS, recalling or recording when symptoms began; dates of first symptom are self-reported."
+  },
+  "gait": {
+    "dataset": "PhysioNet Gait in Neurodegenerative Disease Database 1.0.0 (.ts files)",
+    "n": {
+      "control": 16,
+      "als": 13,
+      "park": 15,
+      "hunt": 20
+    },
+    "processing": {
+      "side": "left foot: .ts column 2 (stride interval) and column 6 (swing %)",
+      "trim_rule": "drop strides starting before 20 s (start = elapsed time - left stride interval)",
+      "strides_removed_by_trim": 0,
+      "first_stride_start_s_range": [
+        20.5,
+        62.68
+      ],
+      "trim_note": "the distributed .ts files already begin after ~20 s, so the 20-s rule removed nothing",
+      "outlier_rule": "per subject: drop strides with |x - median| > 3 x 1.4826 x MAD (MAD = median absolute deviation); swing % gets the same rule on its own values among the kept strides",
+      "pct_strides_removed_as_outliers": {
+        "control": 4.2,
+        "als": 3.76,
+        "park": 4.45,
+        "hunt": 3.4
+      },
+      "strides_used_per_subject_range": {
+        "control": [
+          193,
+          268
+        ],
+        "als": [
+          109,
+          240
+        ],
+        "park": [
+          195,
+          279
+        ],
+        "hunt": [
+          165,
+          302
+        ]
+      },
+      "stance_equals_100_minus_swing_max_abs_dev": 0.0,
+      "auc_ci": "stratified percentile bootstrap, 2000 resamples, seed 20261107",
+      "p_values": "two-sided Mann-Whitney U (exact when there are no ties); not corrected for testing 3 features"
+    },
+    "demographics": {
+      "control": {
+        "n": 16,
+        "age_median": 35.0,
+        "age_range": [
+          20.0,
+          74.0
+        ],
+        "n_female": 14
+      },
+      "als": {
+        "n": 13,
+        "age_median": 62.0,
+        "age_range": [
+          36.0,
+          70.0
+        ],
+        "n_female": 3,
+        "months_since_diagnosis_median": 13.0,
+        "months_since_diagnosis_range": [
+          1.0,
+          54.0
+        ]
+      },
+      "park": {
+        "n": 15,
+        "age_median": 68.0,
+        "age_range": [
+          44.0,
+          80.0
+        ],
+        "n_female": 5
+      },
+      "hunt": {
+        "n": 20,
+        "age_median": 44.5,
+        "age_range": [
+          29.0,
+          71.0
+        ],
+        "n_female": 14
+      }
+    },
+    "older_controls_subset": {
+      "rule": "controls aged >= youngest ALS patient (36 y)",
+      "n": 8,
+      "age_median": 54.5
+    },
+    "features": {
+      "mean_stride_s": {
+        "description": "mean stride time (s)",
+        "group_stats": {
+          "control": {
+            "n": 16,
+            "median": 1.0794,
+            "iqr": [
+              1.0371,
+              1.1065
+            ],
+            "min": 0.995,
+            "max": 1.3917
+          },
+          "als": {
+            "n": 13,
+            "median": 1.268,
+            "iqr": [
+              1.2066,
+              1.5046
+            ],
+            "min": 1.1299,
+            "max": 1.7369
+          },
+          "park": {
+            "n": 15,
+            "median": 1.122,
+            "iqr": [
+              1.0181,
+              1.1803
+            ],
+            "min": 0.9641,
+            "max": 1.3706
+          },
+          "hunt": {
+            "n": 20,
+            "median": 1.0833,
+            "iqr": [
+              1.042,
+              1.2003
+            ],
+            "min": 0.8981,
+            "max": 1.6527
+          }
+        },
+        "auc_orientation": "higher value = ALS",
+        "median_difference_als_minus_control": 0.1886,
+        "als_vs_control": {
+          "n_als": 13,
+          "n_other": 16,
+          "auc": 0.947,
+          "auc_ci95": [
+            0.841,
+            1.0
+          ],
+          "mannwhitney_u": 197.0,
+          "p_two_sided": 5.75e-06,
+          "mw_method": "exact"
+        },
+        "als_vs_controls_aged_at_least_youngest_als": {
+          "n_als": 13,
+          "n_other": 8,
+          "auc": 0.99,
+          "auc_ci95": [
+            0.942,
+            1.0
+          ],
+          "mannwhitney_u": 103.0,
+          "p_two_sided": 1.97e-05,
+          "mw_method": "exact"
+        },
+        "als_vs_parkinsons": {
+          "n_als": 13,
+          "n_other": 15,
+          "auc": 0.872,
+          "auc_ci95": [
+            0.723,
+            0.979
+          ],
+          "mannwhitney_u": 170.0,
+          "p_two_sided": 0.000448,
+          "mw_method": "exact"
+        },
+        "als_vs_huntingtons": {
+          "n_als": 13,
+          "n_other": 20,
+          "auc": 0.846,
+          "auc_ci95": [
+            0.704,
+            0.965
+          ],
+          "mannwhitney_u": 220.0,
+          "p_two_sided": 0.000541,
+          "mw_method": "exact"
+        }
+      },
+      "cv_pct": {
+        "description": "stride-time coefficient of variation (CV, %)",
+        "group_stats": {
+          "control": {
+            "n": 16,
+            "median": 2.3127,
+            "iqr": [
+              1.9967,
+              2.809
+            ],
+            "min": 1.2667,
+            "max": 3.2434
+          },
+          "als": {
+            "n": 13,
+            "median": 4.5781,
+            "iqr": [
+              2.6492,
+              6.276
+            ],
+            "min": 1.7669,
+            "max": 7.8507
+          },
+          "park": {
+            "n": 15,
+            "median": 3.3981,
+            "iqr": [
+              3.1844,
+              4.704
+            ],
+            "min": 2.6911,
+            "max": 9.5847
+          },
+          "hunt": {
+            "n": 20,
+            "median": 6.1198,
+            "iqr": [
+              3.9463,
+              8.3746
+            ],
+            "min": 2.6189,
+            "max": 22.043
+          }
+        },
+        "auc_orientation": "higher value = ALS",
+        "median_difference_als_minus_control": 2.2653,
+        "als_vs_control": {
+          "n_als": 13,
+          "n_other": 16,
+          "auc": 0.827,
+          "auc_ci95": [
+            0.644,
+            0.962
+          ],
+          "mannwhitney_u": 172.0,
+          "p_two_sided": 0.0021,
+          "mw_method": "exact"
+        },
+        "als_vs_controls_aged_at_least_youngest_als": {
+          "n_als": 13,
+          "n_other": 8,
+          "auc": 0.827,
+          "auc_ci95": [
+            0.635,
+            0.971
+          ],
+          "mannwhitney_u": 86.0,
+          "p_two_sided": 0.0126,
+          "mw_method": "exact"
+        },
+        "als_vs_parkinsons": {
+          "n_als": 13,
+          "n_other": 15,
+          "auc": 0.528,
+          "auc_ci95": [
+            0.297,
+            0.774
+          ],
+          "mannwhitney_u": 103.0,
+          "p_two_sided": 0.8207,
+          "mw_method": "exact"
+        },
+        "als_vs_huntingtons": {
+          "n_als": 13,
+          "n_other": 20,
+          "auc": 0.323,
+          "auc_ci95": [
+            0.162,
+            0.531
+          ],
+          "mannwhitney_u": 84.0,
+          "p_two_sided": 0.094,
+          "mw_method": "exact"
+        }
+      },
+      "swing_pct": {
+        "description": "swing time (% of stride); stance % = 100 - swing %",
+        "group_stats": {
+          "control": {
+            "n": 16,
+            "median": 36.7988,
+            "iqr": [
+              35.7729,
+              37.295
+            ],
+            "min": 32.5977,
+            "max": 39.0731
+          },
+          "als": {
+            "n": 13,
+            "median": 33.5187,
+            "iqr": [
+              31.7866,
+              35.2209
+            ],
+            "min": 26.7725,
+            "max": 35.7426
+          },
+          "park": {
+            "n": 15,
+            "median": 33.4889,
+            "iqr": [
+              32.1245,
+              35.5333
+            ],
+            "min": 28.9907,
+            "max": 37.9536
+          },
+          "hunt": {
+            "n": 20,
+            "median": 35.8346,
+            "iqr": [
+              33.975,
+              36.8512
+            ],
+            "min": 22.7077,
+            "max": 38.8378
+          }
+        },
+        "auc_orientation": "lower value = ALS",
+        "median_difference_als_minus_control": -3.2801,
+        "als_vs_control": {
+          "n_als": 13,
+          "n_other": 16,
+          "auc": 0.894,
+          "auc_ci95": [
+            0.759,
+            0.99
+          ],
+          "mannwhitney_u": 186.0,
+          "p_two_sided": 0.000126,
+          "mw_method": "exact"
+        },
+        "als_vs_controls_aged_at_least_youngest_als": {
+          "n_als": 13,
+          "n_other": 8,
+          "auc": 0.798,
+          "auc_ci95": [
+            0.548,
+            0.981
+          ],
+          "mannwhitney_u": 83.0,
+          "p_two_sided": 0.0246,
+          "mw_method": "exact"
+        },
+        "als_vs_parkinsons": {
+          "n_als": 13,
+          "n_other": 15,
+          "auc": 0.569,
+          "auc_ci95": [
+            0.338,
+            0.774
+          ],
+          "mannwhitney_u": 111.0,
+          "p_two_sided": 0.5551,
+          "mw_method": "exact"
+        },
+        "als_vs_huntingtons": {
+          "n_als": 13,
+          "n_other": 20,
+          "auc": 0.758,
+          "auc_ci95": [
+            0.585,
+            0.908
+          ],
+          "mannwhitney_u": 197.0,
+          "p_two_sided": 0.0127,
+          "mw_method": "exact"
+        }
+      }
+    },
+    "best_feature": {
+      "feature": "mean_stride_s",
+      "selected_by": "highest oriented AUC for ALS vs control among the 3 features (picked after looking at the data, so its AUC is optimistic)",
+      "auc_orientation": "higher value = ALS",
+      "als_vs_control": {
+        "n_als": 13,
+        "n_other": 16,
+        "auc": 0.947,
+        "auc_ci95": [
+          0.841,
+          1.0
+        ],
+        "mannwhitney_u": 197.0,
+        "p_two_sided": 5.75e-06,
+        "mw_method": "exact"
+      },
+      "als_vs_parkinsons": {
+        "n_als": 13,
+        "n_other": 15,
+        "auc": 0.872,
+        "auc_ci95": [
+          0.723,
+          0.979
+        ],
+        "mannwhitney_u": 170.0,
+        "p_two_sided": 0.000448,
+        "mw_method": "exact"
+      },
+      "als_vs_huntingtons": {
+        "n_als": 13,
+        "n_other": 20,
+        "auc": 0.846,
+        "auc_ci95": [
+          0.704,
+          0.965
+        ],
+        "mannwhitney_u": 220.0,
+        "p_two_sided": 0.000541,
+        "mw_method": "exact"
+      },
+      "als_vs_controls_aged_at_least_youngest_als": {
+        "n_als": 13,
+        "n_other": 8,
+        "auc": 0.99,
+        "auc_ci95": [
+          0.942,
+          1.0
+        ],
+        "mannwhitney_u": 103.0,
+        "p_two_sided": 1.97e-05,
+        "mw_method": "exact"
+      }
+    },
+    "sensitivity_right_foot_als_vs_control": {
+      "mean_stride_s": {
+        "auc": 0.947,
+        "auc_ci95": [
+          0.841,
+          1.0
+        ],
+        "p_two_sided": 5.75e-06
+      },
+      "cv_pct": {
+        "auc": 0.779,
+        "auc_ci95": [
+          0.567,
+          0.952
+        ],
+        "p_two_sided": 0.0101
+      },
+      "swing_pct": {
+        "auc": 0.894,
+        "auc_ci95": [
+          0.75,
+          1.0
+        ],
+        "p_two_sided": 0.000126
+      }
+    },
+    "test_retest_controls": {
+      "method": "each control's trimmed walk split at its time midpoint; each half processed separately; SEM = SD(half2 - half1)/sqrt(2) (= within-subject SD); MDC95 = 1.96 x sqrt(2) x SEM",
+      "half_duration_s_median": 139.0,
+      "strides_per_half_median": 123.0,
+      "features": {
+        "mean_stride_s": {
+          "n": 16,
+          "mean_half1": 1.0894,
+          "mean_half2": 1.092,
+          "mean_diff_half2_minus_half1": 0.0026,
+          "sd_of_differences": 0.0144,
+          "within_subject_sd_sem": 0.0102,
+          "mdc95": 0.0282,
+          "control_median_full_walk": 1.0794
+        },
+        "cv_pct": {
+          "n": 16,
+          "mean_half1": 2.26,
+          "mean_half2": 2.291,
+          "mean_diff_half2_minus_half1": 0.031,
+          "sd_of_differences": 0.4097,
+          "within_subject_sd_sem": 0.2897,
+          "mdc95": 0.8031,
+          "control_median_full_walk": 2.3127
+        },
+        "swing_pct": {
+          "n": 16,
+          "mean_half1": 36.4499,
+          "mean_half2": 36.1266,
+          "mean_diff_half2_minus_half1": -0.3233,
+          "sd_of_differences": 0.3325,
+          "within_subject_sd_sem": 0.2351,
+          "mdc95": 0.6518,
+          "control_median_full_walk": 36.7988
+        }
+      }
+    },
+    "per_subject": [
+      {
+        "id": "control1",
+        "group": "control",
+        "age": 57.0,
+        "sex": "f",
+        "mean_stride_s": 1.068,
+        "cv_pct": 2.7519,
+        "swing_pct": 32.5977,
+        "strides_used": 249
+      },
+      {
+        "id": "control2",
+        "group": "control",
+        "age": 22.0,
+        "sex": "m",
+        "mean_stride_s": 1.1421,
+        "cv_pct": 2.392,
+        "swing_pct": 39.0731,
+        "strides_used": 230
+      },
+      {
+        "id": "control3",
+        "group": "control",
+        "age": 23.0,
+        "sex": "f",
+        "mean_stride_s": 1.0907,
+        "cv_pct": 2.1827,
+        "swing_pct": 35.7844,
+        "strides_used": 248
+      },
+      {
+        "id": "control4",
+        "group": "control",
+        "age": 52.0,
+        "sex": "f",
+        "mean_stride_s": 1.0394,
+        "cv_pct": 1.2667,
+        "swing_pct": 37.3526,
+        "strides_used": 264
+      },
+      {
+        "id": "control5",
+        "group": "control",
+        "age": 47.0,
+        "sex": "f",
+        "mean_stride_s": 1.0968,
+        "cv_pct": 1.8974,
+        "swing_pct": 37.2758,
+        "strides_used": 231
+      },
+      {
+        "id": "control6",
+        "group": "control",
+        "age": 30.0,
+        "sex": "f",
+        "mean_stride_s": 1.0289,
+        "cv_pct": 2.8022,
+        "swing_pct": 36.7904,
+        "strides_used": 268
+      },
+      {
+        "id": "control7",
+        "group": "control",
+        "age": 22.0,
+        "sex": "f",
+        "mean_stride_s": 1.0619,
+        "cv_pct": 1.5805,
+        "swing_pct": 37.5275,
+        "strides_used": 243
+      },
+      {
+        "id": "control8",
+        "group": "control",
+        "age": 22.0,
+        "sex": "f",
+        "mean_stride_s": 1.0578,
+        "cv_pct": 1.9023,
+        "swing_pct": 35.7384,
+        "strides_used": 248
+      },
+      {
+        "id": "control9",
+        "group": "control",
+        "age": 32.0,
+        "sex": "f",
+        "mean_stride_s": 1.0048,
+        "cv_pct": 2.0699,
+        "swing_pct": 36.7681,
+        "strides_used": 257
+      },
+      {
+        "id": "control10",
+        "group": "control",
+        "age": 38.0,
+        "sex": "f",
+        "mean_stride_s": 0.995,
+        "cv_pct": 2.0282,
+        "swing_pct": 37.4668,
+        "strides_used": 258
+      },
+      {
+        "id": "control11",
+        "group": "control",
+        "age": 69.0,
+        "sex": "f",
+        "mean_stride_s": 1.0304,
+        "cv_pct": 2.2334,
+        "swing_pct": 33.2471,
+        "strides_used": 259
+      },
+      {
+        "id": "control12",
+        "group": "control",
+        "age": 74.0,
+        "sex": "m",
+        "mean_stride_s": 1.1342,
+        "cv_pct": 2.8294,
+        "swing_pct": 36.8071,
+        "strides_used": 234
+      },
+      {
+        "id": "control13",
+        "group": "control",
+        "age": 61.0,
+        "sex": "f",
+        "mean_stride_s": 1.1054,
+        "cv_pct": 3.0388,
+        "swing_pct": 37.1923,
+        "strides_used": 246
+      },
+      {
+        "id": "control14",
+        "group": "control",
+        "age": 20.0,
+        "sex": "f",
+        "mean_stride_s": 1.1099,
+        "cv_pct": 3.2434,
+        "swing_pct": 36.8231,
+        "strides_used": 241
+      },
+      {
+        "id": "control15",
+        "group": "control",
+        "age": 20.0,
+        "sex": "f",
+        "mean_stride_s": 1.3917,
+        "cv_pct": 3.1531,
+        "swing_pct": 36.1254,
+        "strides_used": 193
+      },
+      {
+        "id": "control16",
+        "group": "control",
+        "age": 40.0,
+        "sex": "f",
+        "mean_stride_s": 1.0969,
+        "cv_pct": 2.6095,
+        "swing_pct": 33.9751,
+        "strides_used": 236
+      },
+      {
+        "id": "als1",
+        "group": "als",
+        "age": 68.0,
+        "sex": "m",
+        "mean_stride_s": 1.268,
+        "cv_pct": 6.276,
+        "swing_pct": 33.5187,
+        "strides_used": 191
+      },
+      {
+        "id": "als2",
+        "group": "als",
+        "age": 63.0,
+        "sex": "m",
+        "mean_stride_s": 1.1485,
+        "cv_pct": 1.7669,
+        "swing_pct": 33.7629,
+        "strides_used": 240
+      },
+      {
+        "id": "als3",
+        "group": "als",
+        "age": 70.0,
+        "sex": "f",
+        "mean_stride_s": 1.2409,
+        "cv_pct": 6.7527,
+        "swing_pct": 35.6899,
+        "strides_used": 212
+      },
+      {
+        "id": "als4",
+        "group": "als",
+        "age": 70.0,
+        "sex": "f",
+        "mean_stride_s": 1.5977,
+        "cv_pct": 7.8507,
+        "swing_pct": 26.7725,
+        "strides_used": 129
+      },
+      {
+        "id": "als5",
+        "group": "als",
+        "age": 36.0,
+        "sex": "m",
+        "mean_stride_s": 1.2452,
+        "cv_pct": 2.6492,
+        "swing_pct": 35.3798,
+        "strides_used": 185
+      },
+      {
+        "id": "als6",
+        "group": "als",
+        "age": 43.0,
+        "sex": "m",
+        "mean_stride_s": 1.5604,
+        "cv_pct": 4.5781,
+        "swing_pct": 29.0739,
+        "strides_used": 168
+      },
+      {
+        "id": "als7",
+        "group": "als",
+        "age": 65.0,
+        "sex": "m",
+        "mean_stride_s": 1.7369,
+        "cv_pct": 6.4152,
+        "swing_pct": 27.1736,
+        "strides_used": 155
+      },
+      {
+        "id": "als8",
+        "group": "als",
+        "age": 51.0,
+        "sex": "m",
+        "mean_stride_s": 1.1857,
+        "cv_pct": 4.3635,
+        "swing_pct": 35.2209,
+        "strides_used": 224
+      },
+      {
+        "id": "als9",
+        "group": "als",
+        "age": 50.0,
+        "sex": "m",
+        "mean_stride_s": 1.3092,
+        "cv_pct": 6.0993,
+        "swing_pct": 35.7426,
+        "strides_used": 210
+      },
+      {
+        "id": "als10",
+        "group": "als",
+        "age": 40.0,
+        "sex": "f",
+        "mean_stride_s": 1.1299,
+        "cv_pct": 2.2913,
+        "swing_pct": 32.6242,
+        "strides_used": 239
+      },
+      {
+        "id": "als11",
+        "group": "als",
+        "age": 39.0,
+        "sex": "m",
+        "mean_stride_s": 1.2066,
+        "cv_pct": 2.3731,
+        "swing_pct": 32.9414,
+        "strides_used": 219
+      },
+      {
+        "id": "als12",
+        "group": "als",
+        "age": 62.0,
+        "sex": "m",
+        "mean_stride_s": 1.3845,
+        "cv_pct": 4.6539,
+        "swing_pct": 34.5937,
+        "strides_used": 109
+      },
+      {
+        "id": "als13",
+        "group": "als",
+        "age": 66.0,
+        "sex": "m",
+        "mean_stride_s": 1.5046,
+        "cv_pct": 4.1181,
+        "swing_pct": 31.7866,
+        "strides_used": 173
+      },
+      {
+        "id": "park1",
+        "group": "park",
+        "age": 77.0,
+        "sex": "m",
+        "mean_stride_s": 1.1328,
+        "cv_pct": 3.3458,
+        "swing_pct": 35.5587,
+        "strides_used": 241
+      },
+      {
+        "id": "park2",
+        "group": "park",
+        "age": 44.0,
+        "sex": "f",
+        "mean_stride_s": 0.9916,
+        "cv_pct": 3.0347,
+        "swing_pct": 37.9536,
+        "strides_used": 253
+      },
+      {
+        "id": "park3",
+        "group": "park",
+        "age": 80.0,
+        "sex": "m",
+        "mean_stride_s": 1.1852,
+        "cv_pct": 3.9786,
+        "swing_pct": 33.3289,
+        "strides_used": 214
+      },
+      {
+        "id": "park4",
+        "group": "park",
+        "age": 74.0,
+        "sex": "f",
+        "mean_stride_s": 1.2511,
+        "cv_pct": 4.3957,
+        "swing_pct": 31.1566,
+        "strides_used": 213
+      },
+      {
+        "id": "park5",
+        "group": "park",
+        "age": 75.0,
+        "sex": "m",
+        "mean_stride_s": 1.0542,
+        "cv_pct": 3.3981,
+        "swing_pct": 33.0925,
+        "strides_used": 256
+      },
+      {
+        "id": "park6",
+        "group": "park",
+        "age": 53.0,
+        "sex": "m",
+        "mean_stride_s": 1.0299,
+        "cv_pct": 3.5108,
+        "swing_pct": 35.7499,
+        "strides_used": 261
+      },
+      {
+        "id": "park7",
+        "group": "park",
+        "age": 64.0,
+        "sex": "f",
+        "mean_stride_s": 1.1754,
+        "cv_pct": 5.0124,
+        "swing_pct": 33.4069,
+        "strides_used": 215
+      },
+      {
+        "id": "park8",
+        "group": "park",
+        "age": 64.0,
+        "sex": "m",
+        "mean_stride_s": 1.3706,
+        "cv_pct": 8.0687,
+        "swing_pct": 28.9907,
+        "strides_used": 195
+      },
+      {
+        "id": "park9",
+        "group": "park",
+        "age": 68.0,
+        "sex": "m",
+        "mean_stride_s": 1.2349,
+        "cv_pct": 2.6911,
+        "swing_pct": 36.4865,
+        "strides_used": 211
+      },
+      {
+        "id": "park10",
+        "group": "park",
+        "age": 60.0,
+        "sex": "m",
+        "mean_stride_s": 0.9641,
+        "cv_pct": 3.2213,
+        "swing_pct": 33.4889,
+        "strides_used": 279
+      },
+      {
+        "id": "park11",
+        "group": "park",
+        "age": 74.0,
+        "sex": "m",
+        "mean_stride_s": 1.0062,
+        "cv_pct": 6.9522,
+        "swing_pct": 30.8215,
+        "strides_used": 219
+      },
+      {
+        "id": "park12",
+        "group": "park",
+        "age": 57.0,
+        "sex": "f",
+        "mean_stride_s": 1.122,
+        "cv_pct": 3.2105,
+        "swing_pct": 35.5078,
+        "strides_used": 238
+      },
+      {
+        "id": "park13",
+        "group": "park",
+        "age": 79.0,
+        "sex": "f",
+        "mean_stride_s": 1.0979,
+        "cv_pct": 3.1583,
+        "swing_pct": 33.866,
+        "strides_used": 241
+      },
+      {
+        "id": "park14",
+        "group": "park",
+        "age": 57.0,
+        "sex": "m",
+        "mean_stride_s": 0.9778,
+        "cv_pct": 9.5847,
+        "swing_pct": 30.9141,
+        "strides_used": 259
+      },
+      {
+        "id": "park15",
+        "group": "park",
+        "age": 76.0,
+        "sex": "m",
+        "mean_stride_s": 1.169,
+        "cv_pct": 3.0103,
+        "swing_pct": 33.5736,
+        "strides_used": 229
+      },
+      {
+        "id": "hunt1",
+        "group": "hunt",
+        "age": 42.0,
+        "sex": "m",
+        "mean_stride_s": 0.8981,
+        "cv_pct": 4.6418,
+        "swing_pct": 38.4169,
+        "strides_used": 302
+      },
+      {
+        "id": "hunt2",
+        "group": "hunt",
+        "age": 41.0,
+        "sex": "f",
+        "mean_stride_s": 1.2199,
+        "cv_pct": 6.7832,
+        "swing_pct": 34.3032,
+        "strides_used": 216
+      },
+      {
+        "id": "hunt3",
+        "group": "hunt",
+        "age": 66.0,
+        "sex": "f",
+        "mean_stride_s": 1.1989,
+        "cv_pct": 9.5483,
+        "swing_pct": 34.2706,
+        "strides_used": 231
+      },
+      {
+        "id": "hunt4",
+        "group": "hunt",
+        "age": 47.0,
+        "sex": "f",
+        "mean_stride_s": 1.0313,
+        "cv_pct": 7.3944,
+        "swing_pct": 35.9756,
+        "strides_used": 260
+      },
+      {
+        "id": "hunt5",
+        "group": "hunt",
+        "age": 36.0,
+        "sex": "m",
+        "mean_stride_s": 1.0371,
+        "cv_pct": 4.0698,
+        "swing_pct": 38.7628,
+        "strides_used": 247
+      },
+      {
+        "id": "hunt6",
+        "group": "hunt",
+        "age": 41.0,
+        "sex": "f",
+        "mean_stride_s": 1.0488,
+        "cv_pct": 3.5757,
+        "swing_pct": 36.5298,
+        "strides_used": 250
+      },
+      {
+        "id": "hunt7",
+        "group": "hunt",
+        "age": 71.0,
+        "sex": "m",
+        "mean_stride_s": 1.2046,
+        "cv_pct": 6.6342,
+        "swing_pct": 32.4779,
+        "strides_used": 226
+      },
+      {
+        "id": "hunt8",
+        "group": "hunt",
+        "age": 53.0,
+        "sex": "f",
+        "mean_stride_s": 1.0749,
+        "cv_pct": 3.2243,
+        "swing_pct": 37.9365,
+        "strides_used": 244
+      },
+      {
+        "id": "hunt9",
+        "group": "hunt",
+        "age": 54.0,
+        "sex": "f",
+        "mean_stride_s": 1.0176,
+        "cv_pct": 2.7207,
+        "swing_pct": 37.1797,
+        "strides_used": 252
+      },
+      {
+        "id": "hunt10",
+        "group": "hunt",
+        "age": 47.0,
+        "sex": "f",
+        "mean_stride_s": 1.2546,
+        "cv_pct": 5.6055,
+        "swing_pct": 34.0903,
+        "strides_used": 215
+      },
+      {
+        "id": "hunt11",
+        "group": "hunt",
+        "age": 33.0,
+        "sex": "m",
+        "mean_stride_s": 1.1578,
+        "cv_pct": 4.7849,
+        "swing_pct": 36.1904,
+        "strides_used": 231
+      },
+      {
+        "id": "hunt12",
+        "group": "hunt",
+        "age": 47.0,
+        "sex": "m",
+        "mean_stride_s": 1.0706,
+        "cv_pct": 6.9165,
+        "swing_pct": 35.7157,
+        "strides_used": 247
+      },
+      {
+        "id": "hunt13",
+        "group": "hunt",
+        "age": 40.0,
+        "sex": "f",
+        "mean_stride_s": 1.6527,
+        "cv_pct": 22.043,
+        "swing_pct": 35.9536,
+        "strides_used": 165
+      },
+      {
+        "id": "hunt14",
+        "group": "hunt",
+        "age": 36.0,
+        "sex": "f",
+        "mean_stride_s": 1.0437,
+        "cv_pct": 3.2196,
+        "swing_pct": 36.7416,
+        "strides_used": 247
+      },
+      {
+        "id": "hunt15",
+        "group": "hunt",
+        "age": 34.0,
+        "sex": "f",
+        "mean_stride_s": 1.0918,
+        "cv_pct": 16.0844,
+        "swing_pct": 22.7077,
+        "strides_used": 205
+      },
+      {
+        "id": "hunt16",
+        "group": "hunt",
+        "age": 70.0,
+        "sex": "m",
+        "mean_stride_s": 1.4509,
+        "cv_pct": 18.84,
+        "swing_pct": 33.629,
+        "strides_used": 187
+      },
+      {
+        "id": "hunt17",
+        "group": "hunt",
+        "age": 29.0,
+        "sex": "f",
+        "mean_stride_s": 1.1163,
+        "cv_pct": 4.1823,
+        "swing_pct": 34.6246,
+        "strides_used": 241
+      },
+      {
+        "id": "hunt18",
+        "group": "hunt",
+        "age": 54.0,
+        "sex": "f",
+        "mean_stride_s": 1.0635,
+        "cv_pct": 19.1747,
+        "swing_pct": 32.9316,
+        "strides_used": 244
+      },
+      {
+        "id": "hunt19",
+        "group": "hunt",
+        "age": 59.0,
+        "sex": "f",
+        "mean_stride_s": 1.1451,
+        "cv_pct": 7.9834,
+        "swing_pct": 33.4959,
+        "strides_used": 242
+      },
+      {
+        "id": "hunt20",
+        "group": "hunt",
+        "age": 33.0,
+        "sex": "f",
+        "mean_stride_s": 0.9912,
+        "cv_pct": 2.6189,
+        "swing_pct": 38.8378,
+        "strides_used": 229
+      }
+    ]
+  }
+}

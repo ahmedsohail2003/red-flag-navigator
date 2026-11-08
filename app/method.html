@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Method and validation - Red-Flag Navigator</title>
+  <link rel="stylesheet" href="css/base.css">
+  <script src="js/fallback.js"></script>
+  <link rel="stylesheet" href="css/method.css">
+  <link rel="stylesheet" href="css/lookalikes.css">
+  <link rel="stylesheet" href="css/context.css">
+</head>
+<body>
+  <main class="page method">
+    <h1>Method and validation</h1>
+    <p class="lede">How the referral recommendation is made, where every weight comes from, what the method cannot do yet, and how we would test it. Every weight, range and tier on this page is computed in your browser by the same code and data files the dashboard uses.</p>
+
+    <nav class="toc" aria-label="On this page">
+      <a href="#how">1. How the number is made</a>
+      <a href="#weights">2. The weights</a>
+      <a href="#line">3. The referral line</a>
+      <a href="#limits">4. Honest limits</a>
+      <a href="#evidence">5. Evidence from real data</a>
+      <a href="#lookalikes">5b. Look-alike check</a>
+      <a href="#validation">6. Validation plan</a>
+    </nav>
+
+    <noscript><p class="banner unclear">This page builds its tables with JavaScript. Please enable it.</p></noscript>
+
+    <!-- 1 -->
+    <section id="how" class="card">
+      <h2>1. How the number is made</h2>
+      <div class="callout ai-rule">
+        <strong>No AI produces the number.</strong> AI may only extract findings from clinic notes, and every finding must carry the exact sentence it came from, so a doctor can check it. A test checks every quote word for word against its note. The number itself is plain arithmetic on published study results.
+      </div>
+
+      <h3>In four steps</h3>
+      <ol class="steps" id="steps"></ol>
+
+      <h3>Worked example, computed live</h3>
+      <p class="muted" id="worked-intro"></p>
+      <div id="worked"></div>
+
+      <details class="tryit">
+        <summary>Try another combination of findings</summary>
+        <p class="muted">Click findings to add or remove them. This shows the number only; pattern rules need the body region from the note, so they run on the doctor dashboard.</p>
+        <div class="chips" id="try-chips"></div>
+        <div id="try-out"></div>
+      </details>
+
+      <div class="grid grid-2 why-grid">
+        <div>
+          <h3>Why a range, not one number</h3>
+          <p>Two things are uncertain. The starting rate depends on age, and each odds ratio from the study has a 95% confidence interval. A single percentage would hide both. The range shows them, and the decision only needs to know one thing: does the whole range sit above the referral line, below it, or across it?</p>
+          <p>The simulation uses a fixed seed, so the same findings always give the same range.</p>
+        </div>
+        <div>
+          <h3>From range to tier</h3>
+          <div id="tiers"></div>
+        </div>
+      </div>
+
+      <h3>Pattern rules: straight to an EMG referral</h3>
+      <p>Some patterns matter more than any single weight can express. When one of these is present, the tier is High whatever the number says. Pattern signs never change the number itself.</p>
+      <div class="grid grid-2" id="rules"></div>
+
+      <h3>The <span id="deadline-weeks"></span>-week deadline for Unclear</h3>
+      <p id="deadline-text"></p>
+
+      <p class="muted output-note">The output is always "needs EMG or neuromuscular workup", never "has ALS". The same workup is also how the look-alike conditions are told apart.</p>
+    </section>
+
+    <!-- 2 -->
+    <section id="weights" class="card">
+      <h2>2. The weights</h2>
+      <p id="weights-intro"></p>
+      <div class="table-wrap"><table id="weights-table"></table></div>
+      <h3>Pattern signs (no weight; they trigger a rule)</h3>
+      <div class="table-wrap"><table id="pattern-table"></table></div>
+    </section>
+
+    <!-- 3 -->
+    <section id="line" class="card">
+      <h2>3. The referral line is a values choice</h2>
+      <p>The line is not a statistic. It says how many normal EMGs a clinic is willing to order to find one person who needs neuromuscular care. That trade (the cost and wait of an EMG against a late diagnosis) is a judgement for the clinic and the patient, so the line is adjustable on the doctor dashboard. The validation study reports the results across all of these lines.</p>
+      <div class="table-wrap"><table id="line-table"></table></div>
+      <p class="muted" id="line-note"></p>
+    </section>
+
+    <!-- 4 -->
+    <section id="limits" class="card">
+      <h2>4. Honest limits</h2>
+      <ul class="limits" id="limits-list"></ul>
+      <h3>Home tests: what counts as a real drop</h3>
+      <p>Each person is compared with their own baseline, weekly, at a fixed time of day. A drop only counts if it is bigger than the test's minimal detectable change (MDC) twice in a row. Until the team's own repeat measurements are entered, the MDCs below are placeholders.</p>
+      <div class="table-wrap"><table id="mdc-table"></table></div>
+    </section>
+
+    <!-- 5 -->
+    <section id="evidence" class="card">
+      <h2>5. Evidence from real data</h2>
+      <div id="evidence-body"></div>
+    </section>
+
+    <!-- 5b: rendered by js/lookalikes-view.js -->
+    <section id="lookalikes"></section>
+
+    <!-- 6 -->
+    <section id="validation" class="card">
+      <h2>6. Validation plan</h2>
+      <p>The written plan is in <code>docs/VALIDATION.md</code>. In short:</p>
+      <ol class="vplan">
+        <li><strong>Replay past records.</strong> Linked primary-care records (for example, Ontario primary-care EMR data linked to physician billing). Three groups: people later diagnosed with ALS; people with look-alike conditions (carpal tunnel, cervical myelopathy, radiculopathy, multifocal motor neuropathy, myasthenia, inclusion body myositis); and general controls. Notes are fed to the tool in date order, exactly as a family doctor would have seen them.</li>
+        <li><strong>Measure what matters.</strong> How many months earlier the tool would have escalated than the real referral date; EMG referrals per true case (and per neuromuscular diagnosis found); sensitivity at 6 and 12 months before diagnosis; discrimination (AUC, c-statistic); calibration (calibration-in-the-large, slope, plot); and decision curves across referral lines. Reported to TRIPOD+AI.</li>
+        <li><strong>Check the extraction.</strong> Every extracted finding is compared with a clinician's reading of the same note, and every quote must match its note word for word.</li>
+        <li><strong>Measure the home tests.</strong> MDC protocol: 10 repeats of each test per person, at the same time of day, to measure normal test-to-test variation.</li>
+        <li><strong>Silent pilot, then rollout.</strong> A silent prospective pilot in a family health team (the tool runs, nobody acts on it, outcomes are compared later), then a stepped rollout across sites.</li>
+      </ol>
+      <p class="muted">Regulation: likely regulated as software as a medical device in Canada (to be confirmed with Health Canada). The tool makes a referral recommendation; a clinician confirms it.</p>
+    </section>
+
+    <section id="path"></section>
+
+
+    <p class="footer-note" id="footer-note">Computed from engine.js, weights.js and evidence.js when this page loaded. Data labelled SIMULATED is made up for the demo; values labelled ASSUMPTION are the team's choices until they are measured.</p>
+  </main>
+  <script type="module" src="js/nav.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/method.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/lookalikes-view.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/context-view.js" onerror="rfnFail()"></script>
+</body>
+</html>

@@ -1,0 +1,427 @@
+# Phase 3: a warm, Zelt-style redesign with ALS-relevant 3D scenes, mouse interaction and a scroll story (8 Nov 2026, from 02:10; Ahmed asleep, no questions)
+
+Plan v3 (02:15). Executed by Claude with parallel builders and reviewers. Ahmed wakes between 5:00 and 7:00 AM; keep building and logging in `PROGRESS.md` until then.
+
+- **0. Situation**
+  - The ask (02:00): "I really like this design ... the 3D animations ... replace those animations with things that are more relevant to our app ... search up ALS and see whatever is appropriate ... I like the water ice bucket challenge ... more warm, but still contrasts well ... clean and minimalist ... the mouse is interactive ... keep basically all that, but adapt it to this app ... scroll and feel like the site, but not ... a portfolio site".
+  - Studied in the browser (02:10):
+    - The reference's "3D" is Canvas 2D: a mouse-parallax line-drawn hero scene, scroll-driven cards with scanline-rendered 3D objects, a live crop-marked grid, scrambling headline words, and a calculator card.
+  - Researched (02:12):
+    - The ALS Association's official colour is red; blue-and-white honours Lou Gehrig.
+    - Ice Bucket Challenge: more than $115M in about six weeks, $77M for research; NEK1 found via Project MinE (link partly indirect).
+    - Respectful imagery: active, no pity.
+- **C. Done means**
+  - C7 A warm palette with good contrast, via tokens: cream, sand, espresso, ALS red flags, an ice-blue accent.
+  - C8 ALS-relevant 3D canvas scenes that react to the mouse: body point cloud with red-flag beacons and a live calculator; scanline step cards; a visits × regions live grid; Ice Bucket Challenge water; a closing signal trace.
+  - C9 The overview scrolls like the reference; the app views stay an app, with warm polish.
+  - C10 Every effect stops off screen, honours reduced motion and is aria-hidden; mobile is stacked; no libraries.
+  - C11 Tests still pass. The hosted copy is republished. `PROGRESS.md` tells Ahmed what changed.
+- **1. Shared foundations** (lead) — [x] warm tokens in `app/css/app.css`, `app/js/fx/core.js` (effects runtime), `app/js/fx/scramble.js`, red-flag brand mark — check: server serves them (02:15)
+- **2. Builders + reviewers** (workflow `warm-3d-redesign`): hero+closing, steps, pattern+ice, app-view polish, overview composer
+- **3. Lead integration:** cross-section consistency, performance spot checks, then a design-judge, accessibility and honesty review round, then republish
+- **4. Polishing loop until Ahmed wakes:** judge, fix and log; regenerate `wearables.js` when the research sessions finish
+
+---
+
+# Phase 3: one app — every session's work combined, one command to run it, devices connect and their data is visibly logged in a local database (by 7:30 AM, 8 Nov 2026)
+
+Plan v3 (02:35). Executed by Claude, unattended: Ahmed is asleep until about 5:30 to 6:30 AM and said "answer your own questions until then". Progress report at about 7:20 to 7:30 AM.
+
+- **0. Situation**
+  - The ask, in his words (02:25):
+    - "after all of these other forks are done ... you then need to like look at all of them and somehow you need to combine that into one app"
+    - "use the planning mindset and the problem solving mindset"
+    - "I actually want to test it ... can I actually connect AirPods to it? Will it actually log the gyros or your phone's gyros or etc.? ... we need to be able to see if the data is being logged"
+    - "just make your own local database for now ... Or maybe look at the MLH prizes ... (Vultr) has some cloud service"
+    - "till like 730 AM as like my ideal goal ... let me know around this time what the actual progress is"
+  - The pieces today, four separate things with three storage methods:
+    - The app (`app/`, served by `serve.py` on 8765, data in the browser): the redesign fork owns the UI until it reports done; I own the engine and data.
+    - The home kit (`app/js/home/*`, Home plan view, browser storage): the home-monitoring fork.
+    - Motion (`motion/`: walk-test phone page, laptop page, its own server on 8090/8453, walks in `motion/data/walks.jsonl`): the wearables session.
+    - Gyro starter (`gyro-starter/`: phone page; Sensor Logger push for AirPods, Watch and phone; SSE; CSV recordings; server on 8080/8443): Ahmed's gyro session.
+  - What makes it hard:
+    - three servers and three storage methods, with no single place to see data arrive
+    - phones need HTTPS for motion data
+    - AirPods only stream through an iPhone app (Sensor Logger), not a browser
+    - nothing is tested on real hardware yet
+    - three sessions are still editing files
+  - Known vs assumed:
+    - Known: both protocols are documented (`motion/CONTRACT.md`, `gyro-starter/README.md`); Python has the standard library plus `cryptography`; SQLite is in the standard library.
+    - Assumed, to check: that Sensor Logger really streams AirPods motion. Only a real phone can settle this, so it goes on Ahmed's morning checklist.
+- **C. Done means**
+  - C1 "combine that into one app": one command (`python run.py`) starts one server. It serves the app and every phone page from one origin (so browser data is shared), on HTTP for the laptop and HTTPS for phones, and prints the URLs. Check: start it, open each page.
+  - C2 "can I actually connect AirPods ... log the gyros or your phone's gyros": the server accepts the phone page's stream, Sensor Logger pushes (AirPods, Watch, phone) and walk-test results, unchanged from what those pages send. Check: automated tests plus a simulator that sends each format.
+  - C3 "see if the data is being logged": every sample, walk and session is written to a local SQLite database. A "Devices and data" screen shows devices, live rates and growing row counts, and exports CSV. Check: the simulator runs and the screen shows rows rising; the database file is read back.
+  - C4 "make your own local database for now": `data/rfn.sqlite` (git-ignored), with a schema that maps onto Postgres or TimescaleDB, plus a written path to the sponsor database the research recommends. Check: schema test; the research report.
+  - C5 Everything the other sessions built still works inside the one app, and every test suite passes. Check: all Node and Python suites, plus a browser pass over every view.
+  - C6 A 5-minute morning test Ahmed runs with his iPhone and AirPods, with what success looks like at each step.
+- **1. Unified server and database** (`server/`, mine; stdlib only, plus `cryptography` for the certificate)
+  - 1.1 Database layer (`server/db.py`): tables devices, sessions, samples, walks, home_results and events; batched inserts; read queries for the screen; CSV export; Postgres-compatible schema.
+  - 1.2 Server (`run.py` + `server/app_server.py`):
+    - Static files: `app/` at `/`, `motion/web` at `/motion/`, `gyro-starter/static` at `/gyro/`.
+    - Gyro protocol at the root: `/ingest`, `/sensorlogger` and `/data`, `/events`, `/stats`, `/record`.
+    - Motion protocol: `/api/walks`, `/api/events`, `/api/info`.
+    - New `/api/db/*` read endpoints.
+    - Everything that arrives is logged to the database. HTTPS uses one self-signed certificate for localhost and the LAN IPs.
+    - Never serve `data/` or certificates; reject path traversal.
+  - 1.3 Simulator (`server/simulate.py`): pushes synthetic AirPods (Sensor Logger headphone motion), Watch and phone streams, plus a synthetic walk, so logging can be shown and tested without hardware.
+  - 1.4 Tests (`server/tests/test_*.py`): each protocol lands in the database; the formats convert correctly; the read API works; static files are safe; HTTPS starts.
+  - [x] 1.1 to 1.4 done and adversarially reviewed (03:05).
+    - Server tests 37/37; gyro-starter's own 10/10, untouched.
+    - Live run of `python run.py` plus the simulator, read back from the database: airpods (simulated) 25 Hz, watch (simulated) 50 Hz, phone (simulated) 60 Hz, one simulated walk at 1.25 m/s.
+    - Reviewer: about 50 traversal variants refused; 3 threads pushing for 10 s gave 151k rows with 0 lost; `/events` saw every batch; the summary takes about 20 ms at 151k samples; WAL mode; indexed reads.
+    - 4 bugs fixed: an emoji device name crashed the server when output was piped; Infinity in a walk broke the JSON; a huge Sensor Logger time dropped the connection; an over-limit body reset the connection instead of a 413.
+    - Known, minor: an empty `/ingest` creates a device called "unknown", and NaN can reach `/events` (both inherited from gyro-starter).
+    - `walk.js` hard-codes port 8453; asked the motion session to read it from `/api/info`.
+    - `run.py` refuses to start while `serve.py` holds 8765; switch the preview at integration.
+  - [?] 1.5 Tiger Data path: `server/schema_pg.sql`, `server/migrate.py` (dry-run, follow, watermark, upserts; the URL never printed), `docs/DATABASE.md` — check (03:25): 10 migration tests against a fake Postgres connection, and 4 bugs planted on purpose were each caught; server suite 47/47. Not testable against a real Tiger service until Ahmed creates one, so it is marked unverified.
+- **2. Devices and data screen** (`#devices`, after the redesign fork reports done). It shows:
+  - connection cards with the URLs (phone stream, walk test, Sensor Logger push URL and steps)
+  - live devices and sample rates
+  - a live gyroscope chart
+  - recording start and stop
+  - database row counts and recent sessions, with export
+  - a clear "run the local server" state on the hosted copy, which has no backend
+  - Rules from the redesign fork (02:45), to follow when building it:
+    - `views/devices.js` with mount and update/unmount, plus `css/views/devices.css` through ensureCss. Register it in ROUTES and loaders (patient group) only after it reports "UI done", and keep `go()`.
+    - Colour: `--accent` (ice blue) is the only interactive and live colour. `--flag` (ALS red) is for red flags and High only, never for errors or "disconnected"; warnings use `--watch` plus a word.
+    - Layout: live readings in dark `.panel` cards with `.stat`/`.stat-s`, `.kv`, `.micro`; lists in `.table-wrap`/`.list`.
+    - Charts with `app/js/fx/core.js` `createEffect(canvas, {draw})` and `palette()`: canvases aria-hidden with values also in text, and `destroy()` on unmount.
+    - Label every reading as measured (device and time), simulated or imported. Device data never changes the red-flag number unless it is a HOME_TESTS entry with an MDC.
+  - [x] 2.1 Built and verified live on `python run.py` (the "app" preview now runs it) — check (03:47):
+    - with the simulator running: Live at 25, 60 and 50 Hz; counts rising; the chart draws three lines; the setup cards and the firewall command show
+    - one session's CSV export gave 1,500 rows for 25 s at 60 Hz
+    - a simulated stream and walk sent over HTTPS 8443 were stored (walks 2 to 3)
+  - [x] 2.2 Last Sensor Logger push, on screen and in the console: each sensor name in the push, and whether it was stored (as which device), used for tilt, not read, or unreadable — check (03:59):
+    - the names were checked against Sensor Logger's own push documentation [E3]
+    - server tests went from 47 to 49, and a planted bug fails both new tests
+    - in the browser: a test push, old-version AirPods readings ("not stored") and a simulated stream each showed the right line
+    - why: AirPods through Sensor Logger is the one path nobody has seen work. If it fails in the morning, the screen now says why instead of staying empty.
+    - no Sensor Logger device, session or user ids are kept
+- **3. Merges**
+  - [x] 3.1 Motion walking test: HOME_TESTS.gait_speed in the engine, then Monitoring's legs row and the rounding fix — check (04:09 to 04:13):
+    - The motion session's patch (md5 19385ac2) applied all 15 edits; a second run reported 15 "already done".
+    - npm test 516/516, motion JS 116/116.
+    - Browser: the walk results page dropped its "not in the app's test list yet" banner.
+    - Four staged weekly walks in Monitoring gave "Decline confirmed on 8 Nov 2026 ... 0.96 ... then 0.92 ... more than 0.28 m/s below the baseline of 1.34", with a Demo dates chip. The patient check-in reads "Walking speed over 10 m, timed by the phone". Storage was restored afterwards.
+    - Added `#walk-card` in Monitoring, pointing to #devices and /motion/receive.html, because the walk runs on the phone, not on that page.
+    - Sent "merge done" to the redesign fork.
+  - [x] 3.1b Server follow-ups from the motion review (contract section 5) — check (04:14): server tests 53/53; three planted bugs were each caught; the live server gives 403 to a delete with Host evil.example and keeps the walks.
+    - DELETE /api/walks now also needs a Host of localhost, 127.0.0.1 or [::1]. This blocks tunnels and DNS rebinding.
+    - /api/info looks up LAN addresses again, at most every 5 s.
+    - Walk summaries are marked simulated when only the recording says so. This already worked; a test now locks it.
+  - [x] 3.1d From the redesign fork's review (04:35):
+    - `simulate()` memo in engine.js, keyed by the ids in order (not sorted: the order decides the draws), only for the default prior and table, with copy-on-return, bounded at 2000 entries.
+      - check: the fingerprint of every Alex result is identical before and after;
+      - a Node pass went from 358 ms to 3.2 ms;
+      - tests/engine-cache.test.mjs has 4 tests, and 3 planted bugs are each caught;
+      - npm test 525/525.
+    - Route-change focus in shell.js:
+      - #view gets focus after go() or hashchange;
+      - the Case menu keeps focus after a case change;
+      - a "Skip to content" link comes first.
+      - check: in the browser after a reload, Tab reaches the skip link first; sidebar, case change and Back each behave as described; no console errors.
+  - [x] 3.1c Phone-page axis order — fixed.
+    - Change: `gyro-starter/static/phone.js` now sends rotationRate alpha, beta and gamma as gx, gy and gz, with a guard comment.
+    - Why: the workflow axes-and-server-review (6 agents, 04:22 to 05:15) checked primary sources. Two independent researchers and a refuter agree, with high confidence, that alpha, beta and gamma are the rates about the device x, y and z axes:
+      - W3C spec section 6.3.2 (ED and CRD of 26 Oct 2026);
+      - Chromium device_motion_event_pump.cc and its unit test;
+      - WebKit WebCoreMotionManager.mm and DeviceMotionClientIOS.mm;
+      - Gecko nsDeviceSensors.cpp;
+      - the spec was changed to match the browsers by PR #43, merged 2019-01-16.
+      - MDN's DeviceMotionEventRotationRate pages are stale.
+    - screen.js needs no change: it already assumes the true axes.
+    - Also: a gyro-starter README note, and a regression test (the gyro-starter suite goes from 10 to 11).
+    - check:
+      - the new test fails on the old mapping;
+      - live in the pane, with the permission prompt stubbed, rotationRate.alpha 10 became the readout "x 10.0" and 30 stored samples with gx 10.0, gy 0, gz 0. The device was "axis (simulated)", labelled.
+    - Not checked on a real phone.
+  - [x] 3.1e The two minor findings from the server review are fixed (server 54/54, and each planted bug is caught):
+    - DELETE now needs exactly one Host line (RFC 9112 section 3.2).
+    - The Sensor Logger console signature ignores the order of counts, and notices simulated data giving way to real data.
+  - [x] 3.2 The home kit's HOME_TESTS proposals; regenerate `wearables.js` — done by 05:37.
+    - Hand-over at 05:35: 584/584 tests; #plan clean for all 8 cases.
+    - Engine MDCs now the research's (docs/WEARABLES.md): tap 18 (provisional), reading 31, weight 2.4. gait_speed was already 0.28.
+      - Why: under the old 6 taps, about 21% to 33% of stable people per hand would be flagged falsely within 8 weeks, and about 22% for reading at 15 wpm. Through unclear_with_decline, a false flag escalates an Unclear case to an EMG referral.
+      - Effect: with Home data on, Alex's simulated tap drop (54 to 46) is normal variation, so home-on results equal notes-only (14.3 and 16.1). The old 14.5-month home-on figure is gone. The headline is unchanged.
+      - Not done: the 2 practice weeks before the baseline. That changes the shared detectDecline, which the motion flag and the home-series parity test both pin. It is a follow-up.
+    - 4 tests that hard-coded a 6-tap drop now size the drop from HOME_TESTS. One new assertion: at the default MDC, Alex's simulated drop is not a decline; at a measured 6, it is.
+    - The home kit's MDC notes now name each default's source (summary.js and its test). Weight was added to that test.
+    - wearables.js regenerated: 44 signals (strong 7, moderate 20, weak 13, not studied 4).
+    - check:
+      - npm test 584/584 and motion JS 116/116;
+      - browser: #plan for Alex (home off and on) and 3 look-alikes, no errors, with the bulbar "contact your doctor now" alert;
+      - Monitoring shows ±18 taps and "Within normal variation";
+      - the indicator says "Simulated data On · no decline yet";
+      - the signals list shows 44.
+    - Docs updated: README, PITCH and DEVPOST (44 signals, the MDCs, Home plan).
+    - Left: app/dev-homeplan.html stays local; exclude it from the hosted copy.
+    - (05:16) Agreed with the home fork:
+      - One walk test in the engine (gait_speed). The kit's stopwatch walk becomes context only, a no-sensor backup that never scores.
+      - No new HOME_TESTS entries. Its hand-over will bring sourced MDCs for the existing tests.
+      - It hands over only with npm test green and #plan clean for Alex and a look-alike in the browser.
+      - Five fixers are applying its final review's 40 findings now.
+  - [x] 3.3 Check that the redesign kept the router fix, `#plan`, the context-flag branches and the honesty chips — check (02:59):
+    - all present in `shell.js` and the four views
+    - 25 simulated-chip and 15 assumption-chip uses
+    - all 8 routes render with no errors
+    - 328/331 tests pass; the 3 failures are in the home kit's Bluetooth module, which is still being built and is not mine; recheck when it reports done
+  - [x] 3.4 `#devices` route registered in `shell.js` with a placeholder (03:00); the view builder and reviewer are running against the real server and simulator.
+  - [x] 3.5 Phone width fixed: `position: relative` on `.switch` and `.table-wrap` in `app.css`. The redesign fork was told and asked to keep it. — check: all 9 routes measure exactly 390 px wide in a 390 px viewport; before the fix they were 567 px, and 903 px on `#devices`. (Check at 03:50.)
+    - Cause 1: the Home data switch's hidden checkbox escaped the top bar's scroll strip.
+    - Cause 2: screen-reader text in the sessions table escaped `.table-wrap`.
+- **4. Verify, document, report**
+  - [x] 4a Browser pass after all merges (05:41 to 05:46), on the one server:
+    - 8 cases × 9 routes at 1440: no error cards, no empty views, no NaN or undefined, no console errors;
+    - no sideways overflow on any route at 390 or 768;
+    - the device path end to end with the simulator: 3 devices Live, "Last push ... wrist motion 13 → watch (simulated) · headphone 7 → airpods (simulated)".
+  - [x] 4b Final consistency review (workflow final-consistency-review: 12 agents, 05:47 to 06:12) found 59 issues; every verified one held. Fixed by 06:18:
+    - App copy (9 lines):
+      - the hero no longer says the indicator "reads every note";
+      - the pattern heading;
+      - the provenance note on the assumption-based rule;
+      - the single tapping box at the new MDC;
+      - the walking chip "Built, not yet tried on a phone";
+      - the calibration caveat;
+      - the weak-spot sentence by tier;
+      - the Seattle 92% inference;
+      - the ALS Focus telehealth wording.
+    - Docs:
+      - test counts: 811, server 54;
+      - 44 signals;
+      - the false-alarm figures (4% to 12.5% for reading under the engine's rule);
+      - the headline counts from the visit day (13.9 months with a 10-day letter delay);
+      - "published", not "measured", MDCs;
+      - real-device overclaims;
+      - the server README's DELETE, tests and Postgres sections;
+      - dated update notes in WEARABLES.md and HOME_MONITORING.md;
+      - VALIDATION.md, the motion and gyro READMEs, DATABASE.md and DESIGN.md.
+    - The motion patch's done-check accepts the 'built' label. The final run had caught 6 motion test failures after the relabel, and they now pass.
+    - check: all five suites pass (app 584, motion JS 116, server 54, motion Python 46, gyro-starter 11: 811). Every changed UI line was read back in the browser with no console errors.
+  - [x] 4c Final republish (06:19): version 1794136770-e13a, patch over fd5a, 14 files. dev-homeplan.html is removed (82 files). The hosted link loads the app.
+  - [x] 4d From the redesign fork's second review (C22):
+    - A case switch on overview, evidence or datasets now updates in place, keeping the scroll position, instead of rebuilding the view (shell.js refreshChrome).
+    - check: in the browser, scrollY stays at 1400 on both pages; the chrome updates; focus is kept; no console errors; npm test 584/584.
+    - Published as 1794138998-109e (06:56).
+    - C11 (the Low patient wording) is left to the fork's patient.js variant.
+  - [x] 4e Progress report sent to Ahmed (06:22), with the Devices screenshot (docs/screenshots/devices-live-simulated.jpg).
+  - [x] 4f The 07:20 check:
+    - My copy fixes all survived the redesign fork's later edits (12 greps).
+    - All five suites pass at 07:21 (811).
+    - Live is 1794138998-109e.
+    - The redesign fork is still running one fix round and republishes itself. The motion and home forks are idle and merged.
+  - [x] 4g (07:45) The redesign fork published 1794141918-66e5: its review round 2, 20 files.
+    - All 31 files changed since the morning match local app/ by sha256, including my shell.js.
+    - The fork diff-checked that all my copy edits were kept.
+  - [x] 4h (10:05 to 10:12) The study-guide fork's 8 doc findings were checked against the engine and fixed.
+    - Fixed: DEVPOST's device note, "case-file notes", tiers by line, the 6 rules, the voice AUCs, the pitch what-if moved to 14 Oct 2024, the trial weight label, and 44 signals in the research notes.
+    - The single file was rebuilt, and npm test passed 584/584.
+    - Ahmed said "Yes, republish" in this session. Version 1794150748-e8d7 is public and changes only js/datasets.js; its sha256 matches local (ab712d48).
+    - The final republish sends 9 changed files against 1794133442-fd5a (engine, home kit, datasets, wearables.js) and removes dev-homeplan.html.
+  - all test suites
+  - a browser pass with the simulator running
+  - the README "Run it" section
+  - `docs/MORNING_TEST.md`
+  - republish the static parts to the hosted copy
+  - the progress report at 7:20 to 7:30
+- **Plan support**
+  - **Sequence:** 1.1 to 1.4 now, in parallel with the forks. Then 3.3 once the redesign is done, 2, then 3.1 and 3.2 as their patches arrive. 4 last.
+  - **Hosted copy (agreed with the redesign fork, 04:20):** it publishes once more after its review round, at about 04:30 to 04:45, with all of `app/`, and sends the version id. I do the final republish after the home-kit merge, re-reading the live version first.
+    - (05:24) Now 1794133442-fd5a: overview-hero.css only. The hero keeps the body beside the text at 1010 to 1260 px and on tablets. The hosted viewer frames the app at 1024x728.
+    - (05:16) Now 1794132965-aebe: overview-steps.css only. The redesign fork added docs/DESIGN.md: Devpost interface text and a 40-second overview demo.
+      - (05:21) I updated docs/PITCH.md (new overview demo step, a Devices and data step, the walking test, over 800 tests, a database Q&A) and docs/DEVPOST.md (812 tests, the interface and accessibility bullets).
+      - All five suites passed at 05:19: app 585, motion JS 116, server 54, motion Python 46, gyro-starter 11.
+    - (05:12) Now 1794132687-17c4: CSS only. The top bar is one row at 1181 to 1440 px, and the hero buttons fit at 1280.
+      - At 05:12 #plan showed "situation is not defined" and npm test was 531/532 (the home-catalog threshold contract). That is the home fork mid-edit: homeplan.js was saved at 05:12:19. The fork was told. The hosted copy still has the working fd25 homeplan.
+    - (04:57) The redesign fork moved the live version to 1794131911-0ff8: 13 of its files.
+      - `ui.js` gained `pctAt` and `rangeAt`: when a range end would print the same as the referral line but sits on the other side, they add decimals. Example: "20.05%" for Alex on 14 Oct 2024 at the 20% line.
+      - The scroll fades now finish 60 px above the fold.
+      - Re-read it before the final republish.
+    - (04:44) The redesign fork published version 1794131164-fd25: patch mode, all 83 app files as of 04:43, 525/525 tests, 9 routes clean at 1440, no overflow at 390. My final republish comes after the home-kit merge.
+  - **Triggers:** if a fork is not done by 05:30, integrate what exists, list what is missing, and say so in the report. Two failed fixes on one device path means reporting it as not working rather than faking it.
+  - **Risks (premortem):**
+    - The phone cannot reach the laptop (Windows firewall, venue Wi-Fi isolation, certificate warning): the checklist covers allowing Python through the firewall, a phone hotspot, and clicking through the certificate; the simulator proves the pipeline without a phone.
+    - The redesign overwrites integration edits: ownership is split, I integrate after its report, and the full test suite plus browser pass follow.
+    - The hosted copy cannot log anything: it says so plainly; the real app runs locally.
+    - Sample volume: batched inserts and a cap per request.
+  - **Evidence:**
+    - E1 The device protocols, from `motion/CONTRACT.md` and `gyro-starter/README.md` (read 02:30).
+    - E2 Sponsor databases (research agent, sources opened 8 Nov):
+      - Only one prize is a database: "[MLH] Best Use of Tiger Data" (1 winner, Stream Deck Mini; judged on the "most innovative, impactful, and performance-driven use").
+      - Tiger Data is plain PostgreSQL with TimescaleDB hypertables; MLH gives $1,000 of 30-day credits (https://www.mlh.com/partners/tigerdata). The client needs `pip install "psycopg[binary]"`.
+      - Vultr is a hosting prize ($100 credit; managed Postgres from $15/month); skip it unless there is spare time.
+      - Decision: SQLite tonight, with Postgres-compatible columns; partition the cloud table on the server's epoch time (the received time in ms), because device clocks differ (the phone page uses page time, Sensor Logger epoch time).
+  - **4.x (added from E2):** `server/schema_pg.sql` (TimescaleDB hypertable DDL) plus `server/migrate.py` (copies SQLite into Postgres when `DATABASE_URL` is set) plus `docs/DATABASE.md` (Ahmed's 45-minute morning switch and the Devpost wording). Labelled untested until a Tiger Data service exists, because no account or credentials are available overnight.
+    - E3 Sensor Logger push format: https://github.com/tszheichoi/awesome-sensor-logger, PUSHING.md and UNITS.md (raw files opened 03:54, 8 Nov). Strong: it is the app's own documentation.
+      - The reading names are "headphone" (AirPods) and "wrist motion" (Watch), as the server uses.
+      - rotationRateX/Y/Z are in rad/s. Headphone rotationRate is new in version 1.30.
+      - Headphone gravity is in m/s²; wrist gravity is in g unless "Standardise Units" is on. The server handles both.
+      - Times are in UTC epoch nanoseconds.
+  - **Changes:**
+    - (03:50) Added 3.5: on a phone every page was 567 px wide, measured in the browser.
+    - (03:52) Wrote `docs/MORNING_TEST.md`: a 5-minute checklist with what success looks like on `#devices` at each step.
+    - (03:59) Added 2.2: the morning test depends on Sensor Logger's AirPods stream, which no one has seen. A silent failure there would leave Ahmed with an empty screen and no reason why.
+    - (03:55) Baseline before the merges: app 441, motion JS 85, server 47 (49 after 2.2), gyro-starter 10, motion Python 39. All pass.
+
+---
+
+# Phase 2: the red-flag tool rebuilt as a calm, app-quality product, using every dataset and the phone/wearable signals (7 Nov 2026, from 23:00)
+
+Plan v2 (23:10). Executed by Claude: views by parallel builders, datasets by parallel analysts. Wearables research runs in its own session. Progress checks at 11:30 PM and midnight, as cards Ahmed clicks.
+
+- **0. Situation**
+  - The ask, in Ahmed's words (23:00):
+    - "What I want is like an application, not like a shitty looking website", in the style of https://zelt-nu.vercel.app/, but "change the colors instead of just black and white ... some nice chill calm color scheme".
+    - "research good UI" with the planning and problem-solving mindsets.
+    - Phone, Fitbit and Apple Watch data: "what useful data can we get ... can we use", fed into the red-flag idea from the chat.
+    - "examine these data sets ... What are they telling you? Is there anything more that we can do?"
+    - Progress forks at 11:30 PM and midnight.
+  - Understood so far:
+    - The chat is unchanged; its core is the red-flag scorer and indicator.
+    - Zelt's language: Geist and Geist Mono, mono uppercase micro-labels, two-tone headlines, dark instrument panels with big mono numbers, segmented pills, inset value rows, a "follow one robot" timeline, and a warm off-white canvas (#F7F6F2).
+    - VOC-ALS voice data is now downloaded (1,224 files), so speech can be analysed for real.
+    - Another session researches gyroscope hardware (`gyro-starter/`, `reports/`, `research_notes/`).
+  - Design rules from the UI research skills:
+    - 60-30-10 colour budget with one accent hue.
+    - 1px hairlines before shadow, shadow alpha below 0.08.
+    - No glass blur, rainbow gradients or decorative pills.
+    - Every list or table sits in a frame.
+    - Status always has a word, never colour alone.
+- **C. Done means**
+  - C1 An app, not pages: one shell with a sidebar, a top bar holding the global controls (visit, referral line, simulated data) and views that switch without reloads. Check: it runs locally and hosted.
+  - C2 Zelt aesthetic in a calm palette, applying the rules above. Check: screenshots against the rules.
+  - C3 Every dataset examined, with what it is, what it shows and what more we can use, reported to Ahmed and shown on a Datasets view. Check: each number traced to analysis results.
+  - C4 Phone and wearable signals researched with sources and wired into Monitoring as region signals with the MDC rule. Check: `docs/wearables.json` rendered.
+  - C5 Nothing lost: all engine logic, quotes and honesty labels kept; the full test suite passes.
+  - C6 Progress cards at 23:30 and 00:00.
+- **1. Design system and shell** (lead) — [x] `app/css/app.css`, `app/js/app/{shell,store,ui}.js`, `app/index.html`, placeholder views — check: shell renders in the pane with no console errors (23:09)
+- **2. Views** (parallel builders, then reviewers): overview, indicator, patient, monitoring (reuses the working home tests), evidence, datasets
+- **3. Datasets** (parallel analysts in `analysis/<name>/`): VOC-ALS voice, DREAM progression, ALS Focus with Seattle extras, EEG/BCI characterisation; the lead then generates `app/js/datasets.js` from the results
+- **4. Wearables** (own session): `docs/WEARABLES.md` and `docs/wearables.json`; the lead then generates `app/js/wearables.js`
+- **5. Integrate, verify (local and hosted), republish the artifact, report**
+- **6. Any patient, not only Alex** (Ahmed, about 23:45: "does this current app model only work for Alex's current situation? ... how would I alter the inputs and get an applicable output"; he chose "build it now"; at 01:30: "make this into like a real app")
+  - Why: the engine was always general, but every view imported Alex's file. Judges and clinicians need to enter their own case.
+  - [x] 6.1 Case registry: `app/js/cases.js` (Alex, 7 look-alike demos, user cases in the browser; validation, import and export). The current case lives in the shared state, and a Case switcher sits in the top bar. Check (01:30): all 8 built-in cases run through the engine; bad input is caught with messages.
+  - [~] 6.2 Cases view with a case builder and a keyword note helper (`app/js/suggest.js`, plain rules, not AI; a clinician confirms every flag). Indicator, patient app and monitoring follow the chosen case. The overview adds "Analyse any patient". Builders and reviewers are running.
+  - [x] 6.2 Done and reviewed (02:00). The case builder flow was driven end to end in Edge: note, Suggest, Accept, live result, Save, then open in indicator, patient app and monitoring. The helper found 34 of 35 hand-picked red flags on Alex's notes; that is a best case, because the rules were written while reading them.
+  - [x] 6.3 Lead fixes:
+    - Save and import refuse a case with a bad date or no visits.
+    - Ids carry a random suffix.
+    - An empty quote stays empty.
+    - Neutral tooltips.
+    - The phone top bar fits.
+    - Check: `tests/cases-guards.test.mjs`; 69/69 tests (02:01).
+- **7. Wearables wired in**
+  - [x] 7.1 `app/js/wearables.js` generated by `analysis/make_wearables_js.py` from `docs/wearables.json` (30 signals: 6 strong, 12 moderate, 11 weak, 1 not studied). Demo picks: phone finger tapping, timed-walk gait speed, body weight, reading rate. Check: Monitoring renders all 30 with no errors (02:02). Re-run the script if the research session's fact-check edits the JSON.
+- **11. Seattle surgery finding as a context flag** (Ahmed: "Yes, add it", 02:17)
+  - [x] 11.1 A new finding type, "context flag": shown with its source, never weighted, never firing a rule.
+    - `lookalike_surgery` added in `weights.js` (source `seattle_analysis`: rate ratio 11.1, 95% CI 5.0 to 24.2, recall bias noted). Alex's 21 Apr 2025 visit carries it, with a word-for-word quote.
+    - The indicator, patient app, cases picker and evidence views label it "shown, not scored", not as a pattern sign.
+    - The helper's score excludes context flags, so it stays 34 of 35. Test change, named: the suggest test's labelled count now excludes context flags too, because they are not red flags the helper looks for.
+    - Check: `tests/context-flag.test.mjs` (Alex's replay is identical with and without the flag at every line, and no rule fires on it); 74/74 tests (02:20); all three views checked in the browser.
+- **10. Pending merges from the other sessions**
+  - [ ] 10.1 Phone walking test (wearables session, `motion/`, MERGE.md expected about 04:00). Add HOME_TESTS.gait_speed (m/s, leg, higherIsBetter, placeholder MDC 0.28 sourced to WatchALS) with its short label and unit, and switch Monitoring's legs row to it. Check that Monitoring's realForCase rounding (1 decimal) keeps enough precision for m/s.
+  - [ ] 10.2 Home plan view and new home tests (home-monitoring fork). Route `#plan` is added and a placeholder renders. When it reports: regenerate `wearables.js`, decide which of its proposed HOME_TESTS the engine counts, run the full tests, republish.
+- **9. Hosting**
+  - [x] 9.1 Republished all 50 app files to the same private artifact (02:03), then fixed the router. The hosted frame never delivers hash changes, so internal route links now switch views in the app itself. Verified locally: nav links, in-view buttons, address updated.
+  - [?] 9.2 Hosted interaction is not verified. The new app renders and scrolls in claude.ai, but automated clicks are intercepted by claude.ai's viewer (a clipboard write fired instead), while at 22:10 they reached the page. Ahmed should click through the hosted link himself.
+- **8. Fixes from the view reviewers** — [x] the 8-week step-down no longer claims "no decline" when home data is off (test added); the team's measured MDCs now reach the engine through the store — check: 53/53 tests (23:40)
+
+---
+
+# A working demo of the ALS red-flag referral tool from the chat, ready by 8:30 PM tonight (7 Nov 2026)
+
+Plan v1 (2026-11-07, 18:45). Executed by: Claude, with subagents building separate pages. Ahmed sees a progress check at 7:30 PM (separate session) and the finished demo at 8:30 PM. Judging is 11:30 AM tomorrow.
+
+- **0. Situation**
+  - The ask: "See this Claude chat so far. Whatever we talked about in this, can you create this." Done by about 8:30 PM, with a progress fork at 7:30 PM that shows what exists while this session keeps building.
+  - What the chat settled (BioHacks 2026, Detection and Diagnostics track, case: Alex Chen). Alex lost two years before reaching a neuromuscular specialist; the specialist then needed about five weeks. The tool targets that delay.
+    - A red-flag scorer that reads notes across visits. AI may only pull findings out of notes, and each finding must quote its sentence. The score is plain arithmetic.
+    - Weights from Mei et al. 2022 (6,437 MND cases vs 62,003 controls, multivariable adjusted odds ratios). Start from the general-population rate. Report a 95% range from simulation, never one number.
+    - Tiers against a referral line: High = whole range above, Low = whole range below, Unclear = crosses. Key patterns go straight to High. Unclear has an 8-week deadline.
+    - Home tests by body region (hand, legs, speech, weight) run alongside the referral, never instead of it. Each person is compared with their own baseline. Test weekly, at a fixed time of day; the minimal detectable change (MDC) sets what counts as a real drop.
+    - Doctor view: the range, the reasons, and the sources. Patient view: gentler words, same facts, more on request.
+    - Demo: Alex's file in date order, with home-test data labelled simulated.
+  - Known: the odds ratios, copied from the paper's Figure 2 today. Assumed and labelled: the starting rate (from incidence), the home-test weight, and the placeholder MDCs until the team measures its own.
+  - Kind: a build with checkable parts (tests, running pages) and judged parts (wording, design).
+- **C. Done means** (the chat's "what to build by 11:30", plus the two views)
+  - C1 "The scorer and tiers, run on Alex's real notes in date order": every encounter is evaluated in order, every finding's quote is checked to appear word for word in its note, and months saved are shown against what really happened. Check: tests plus the replay page. Met by: 1, 2, 3.1.
+  - C2 "One home test that actually works, with the others shown as mockups": a finger-tapping test that works in the browser for both hands, saves results and exports CSV; walking, speech and weight shown as mockups. Check: run it in the browser. Met by: 3.3.
+  - C3 "Your teammates' repeat-test measurements": a repeat mode that computes the spread and the MDC from about 10 runs. The numbers come from the team tonight and are never invented. Check: run it with 10 trials. Met by: 3.3.
+  - C4 "A validation plan": run on past records of ALS and look-alikes; measure months earlier and unneeded EMGs per real case; discrimination plus calibration (TRIPOD+AI). Check: docs/VALIDATION.md and the method page. Met by: 3.4.
+  - C5 Doctor dashboard: range against the referral line, each finding with its note, date and study source, the rules that fired, and an adjustable line. Check: browser. Met by: 3.1.
+  - C6 Patient view: what is being checked, why, what happens next, with full detail on request. Check: browser. Met by: 3.2.
+- **1. Scoring engine** — why: everything else displays its output
+  - [x] 1.1 Sourced weights (all 33 Mei odds ratios, prior range, referral lines) — check: copied from PMC9240876 Figure 2 (2026-11-07)
+  - [x] 1.2 Engine: Monte Carlo range, tiers, three pattern rules, home-test decline, 8-week deadline, months saved — check: `npm test` gives 14/14 passing (18:43)
+- **2. Alex's case file as data** — why: the demo must run on his real notes
+  - [x] 2.1 `app/js/alex.js`: dated encounters, verbatim notes, findings with exact quotes, what actually happened, simulated home tests labelled — check: notes generated from the PDF text (`app/js/alex_notes.js`); `npm test` 17/17 passing, including quote-in-note for all 7 encounters (18:51)
+  - [x] 2.2 Replay result, as computed (not tuned): at the default 5% line, the 14 Oct 2024 family-doctor visit already escalates by the number (range 5.2% to 20%), 19.9 months before the first neuromuscular visit. At a 10% or 20% line, Oct 2024 is unclear and the 9 Dec 2024 hand-surgeon visit escalates through the split-hand and look-alike-ruled-out rules: 18.0 months earlier. The Oct 2024 result depends on reading "thenar eminence looks a little flatter" as wasting; without it, Oct 2024 is low and Dec 2024 still escalates.
+- **3. Pages** (separate files so builders never collide) — why: judges see the pages
+  - [x] 3.1 `doctor.html`: dashboard plus Alex replay — check: builder and reviewer headless screenshots; seen in the pane at 19:19 with the new headline and no script errors
+  - [x] 3.2 `patient.html` and `index.html` (overview) — check: reviewer compared patient vs doctor tier and range on all 7 dates under 6 settings (identical); seen at phone width in the pane at 19:20 (no sideways scroll)
+  - [x] 3.3 `hometests.html`: working tapping and reading tests, team calibration, mockups — check: reviewer drove Edge with seeded results, and a hand-worked MDC example matched (6.93). Lead clicked a real test in the pane at 19:19: 12 taps counted, gap and variability computed, result saved in the shared format; that test entry was then removed so it never shows as patient data.
+  - [x] 3.4 `method.html` plus `docs/VALIDATION.md` and `docs/PITCH.md` — check: reviewer traced every number; pitch updated by the lead at 19:19 to the "at least 18 months" headline
+- **4. Real-data evidence** (analysis/) — why: "Evidence and testing" points
+  - [x] 4.1 Gait dataset: ALS vs controls, with AUC and MDC — check: `analysis/results.json` (18:51). Mean stride time AUC 0.95 (0.84 to 1.00), 13 ALS vs 16 controls; also separates ALS from Parkinson's (0.87) and Huntington's (0.85). Stride variability AUC 0.83 vs controls but not specific (0.53 vs Parkinson's). Small, unmatched groups; limits listed.
+  - [x] 4.2 Diagnostic delay in real data — check: ALS Focus, 472 people, median 13 months (IQR 7 to 25), leg onset 16; Seattle, 142 people, median 11 months.
+  - [x] 4.3 `app/js/evidence.js` generated from results.json by `analysis/make_evidence_js.py`, so no number is retyped (18:52)
+  - [x] 4.4 Look-alike check (constructed cases, not patients; expectations set before running) — check: `tests/lookalikes.test.mjs`, 5/5 benign cases not escalated (19:01). Typical carpal tunnel 0.14% to 0.42%; benign twitching 0.50% to 2.2%; peroneal palsy 0.30% to 1.1%; neck radiculopathy 0.14% to 0.42%; older adult with non-specific symptoms 0.044% to 0.14%. Shown for honesty: severe carpal tunnel with wasting is unclear (3.4% to 14%); early speech-onset ALS is unclear at 5% (1.9% to 5.9%) and low at 10%. That second one is a weak spot.
+  - [x] 4.5 Show the look-alike table on the method page — check: rendered in the browser pane at 19:17 (section 5b), 7 rows, no script errors
+- **5. Integration and verification** — why: a demo that breaks on stage costs more than a missing feature
+  - [x] 5.1 Every page loads with no errors — check (19:53, browser pane): all 5 pages show no fallback banner, no failed files and no "NaN" or "undefined". The overview headline reads "At least 14 months earlier referral", and both new panels render. `npm test` passes 52/52.
+  - [x] 5.2 Every number traced — check: an independent fact-check traced the pages and docs to their sources (19:40). Lead fixes after it:
+    - comparator: referral to referral
+    - two-territory wasting
+    - EURALS 2.16
+    - three regions
+    - extraction wording
+    - simulated data off by default
+    A final grep at 19:52 found no stale "18/20 months as the gain", "split-hand rule fires" or "AI extracts" claims.
+- **6. Hosted copy** (asked for at 22:00) — why: judges and Devpost need a link that works without Python
+  - [x] 6.1 Made the app work in a sandboxed frame: storage falls back to memory, "Delete all" is two clicks instead of confirm(), and "Copy CSV" sits beside "Download CSV" — check: 52/52 tests; local run of tap test, then delete (1 result saved, first click arms, second deletes, storage clean) at 22:03
+  - [x] 6.2 Published `app/` (28 files) as a private claude.ai artifact: https://claude.ai/artifact/S6z4BNxt3TX2bhJUyuu2z8 — check: server file list matches the local SHA-256 hashes; clicked all five pages (overview, doctor, patient, home tests, method) in the claude.ai viewer at 22:10. All render and the nav links work; method and patient took up to about 8 seconds on first load.
+  - [ ] 6.3 Sharing: private until Ahmed uses Share on the page (this tool cannot change sharing)
+- **Looking back** (what went wrong and what now guards it)
+  - The headline first counted the 16-week waiting list as a gain. The comparator was picked without asking what a fair comparison is, and self-checks checked the arithmetic, not the choice. The independent fact-check caught it. A test now asserts the gain is counted referral to referral and is smaller than the specialist-visit gap.
+  - The split hand was claimed in December 2024 without its defining sign. I noticed this at 18:51 but only renamed the label instead of changing the finding. A test now asserts the 9 Dec 2024 trigger is the two-territory rule, not split hand.
+  - What worked: the quote-in-note test, setting the 5% line before seeing Alex's numbers, and putting the soft October 2024 result second rather than first.
+- **Plan support**
+  - **Interfaces** (the contract the page builders code against)
+    - `app/js/engine.js` exports `simulate, tierFromRange, stateAt, evaluateState, timeline, evaluateAt, monthsSaved, detectDecline, formatPct, RULES, ACTIONS, HOME_TESTS, FINDINGS, PRIOR, SOURCES, DEFAULT_REFERRAL_LINE, UNCLEAR_DEADLINE_WEEKS`; `app/js/weights.js` exports `REFERRAL_LINES`.
+    - `app/js/alex.js` exports `ALEX = { patient, sourceDoc, encounters: [{ id, date, dateApprox?, setting, clinician, title, note, findings: [{ id, region, quote }], negatives: [{ label, quote }], whatHappened }], actual: { firstNeurology, firstNeuromuscular, diagnosis }, measurements: [...], homeTests: [{ date, test, value, simulated: true }] }`.
+    - Shared browser state in localStorage: `rfn.referralLine` (number), `rfn.includeHomeTests` ("true"/"false"), `rfn.homeResults` (JSON array of `{ date, test, value, trial }`), `rfn.mdc` (JSON object, per test).
+    - Shared look: `app/css/base.css`, and `app/js/nav.js` injects the top navigation. Each page owns its own `css/<page>.css` and `js/<page>.js`.
+    - Served by `python -m http.server 8765 --directory app` (launch config "app").
+  - **Sequence**: 1 -> 2.1 and 3.x and 4.1 in parallel -> 5.1 -> 7:30 PM progress fork -> 5.2 -> report at 8:30 PM.
+  - **Triggers**: a page that fails to load twice after fixes gets cut to a simpler version rather than patched again. If the build runs past 8:15 PM, stop adding and verify what exists.
+  - **Risks**
+    - Alex's notes don't support the chat's demo story (High in Dec 2024). Mitigation: report what the engine says; never tune weights or the line to make the story fit.
+    - Invented numbers. Mitigation: the quote test, sourced weights, assumptions labelled on screen, and no team data made up.
+    - Builders collide. Mitigation: one owner per file.
+    - The demo runs only from a local server. Mitigation: plain static files with no build step, plus a README run line.
+  - **Assumptions**
+    - Prior: 1 to 3 in 10,000 adults diagnosed within 5 years (2.7 to 5.7 per 100,000 per year, times 5). Unverified for Alex's age band, so it is shown as a range.
+    - Odds ratios are treated as likelihood ratios. The controls were GP patients, not look-alikes. Both are stated on the method page.
+    - Home-test decline weight 3 (1.5 to 6): a team assumption, labelled on screen.
+  - **Evidence**
+    - E1 Mei et al. 2022, BMJ Open, PMC9240876, opened 2026-11-07. Figure 2 adjusted ORs; symptom window from 3 months to 5 years before diagnosis; 6,437 cases over 112,003,453 person-years.
+  - **Changes**
+    - Added a fourth pattern rule, upper plus lower motor neuron signs together. The physiotherapist's note flags brisk reflexes in a weak, wasted leg as "not what I would expect from a peripheral nerve problem", and that combination is a Gold Coast route to diagnosis.
+    - Renamed the split-hand finding to "wasting in two nerve territories". The December 2024 note shows thumb plus first dorsal interosseous wasting but does not mention the little-finger side; the June 2026 note confirms the sparing.
+    - The demo story differs from the chat's sketch (unclear in Oct 2024, high in Dec 2024): at the pre-set 5% line, Oct 2024 is already high. Both versions are shown in the pitch as a sensitivity check rather than picking the line after the fact.
+    - From the page reviewers (19:13):
+      - Added a fifth rule, "unclear, and home tests confirm a decline". The unclear action text promised an escalation on a decline, but the engine kept the case unclear.
+      - Percentages are now never printed as 100% or 0%; they show >99% and <0.001%.
+      - The doctor page now ignores the team's calibration trials.
+      - Doctor and overview headlines now say "at least 18 months" (floored), with the current-line result second. Tests: 50/50.
+    - From the final three-lens review (19:40), each finding checked against the case text before acting:
+      - Headline corrected to "at least 14 months earlier referral". The old 18 months ran to the specialist visit, so it counted the 16-week waiting list as a gain. Now it is referral to referral (9 Dec 2024 vs the real referral on 16 Feb 2026, 14.3 months; 16.1 at the 3% and 5% lines).
+      - The 9 Dec 2024 trigger is now "wasting across two nerve territories". The little-finger sparing that completes the split-hand sign is first recorded in June 2026.
+      - The EURALS incidence is 2.16, not Mei's 2.7.
+      - The June 2026 visit shows three body regions, not four.
+      - Simulated home tests are now off by default.
+      - The pages say extraction was by hand (AI-assisted), not automatic.
+      - Added: a fallback banner when a module fails or the page is opened from disk; panels for current practice and path to use.
+      - Two page tests asserted the old specialist-visit gain and are being updated to referral to referral. This is a deliberate change to the check, because the old metric overcounted.
+    - Headline changed to "at least 18 months earlier" (superseded above). The Oct 2024 result is borderline: its lower bound is 5.2% against a 5% line, and it rests on two soft inputs. One is reading "a little flatter" as wasting. The other is a starting rate that is not age-specific; Alex, at 45, is likely at or below its low end. The Dec 2024 escalation comes from pattern rules that depend on neither, and it holds at every line from 3% to 20%.

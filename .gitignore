@@ -1,0 +1,18 @@
+Datasets/
+.venv-synapse/
+node_modules/
+__pycache__/
+
+# Private or licensed: never publish (added 8 Nov 2026, before the first push)
+Datasets/
+data/
+.certs/
+*.pem
+*.sqlite
+*.sqlite-*
+*.pdf
+.claude/
+motion/data/
+gyro-starter/recordings/
+analysis/voc_als/results.json
+tb-*.mjs

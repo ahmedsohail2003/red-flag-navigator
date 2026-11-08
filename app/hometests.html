@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home tests | Red-Flag Navigator</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="css/base.css">
+  <script src="js/fallback.js"></script>
+  <link rel="stylesheet" href="css/hometests.css">
+</head>
+<body>
+  <main class="page ht" data-hometests-page>
+    <div class="ht-head">
+      <h1>Home tests</h1>
+      <p class="lede">Short weekly checks on a phone or laptop, one for each body region. They run <strong>alongside</strong> the EMG referral, never instead of it, and they never delay it. Each person is compared only with their own earlier results.</p>
+    </div>
+
+    <section class="grid grid-2 ht-row">
+      <article class="card" id="schedule-card">
+        <h2>How and when</h2>
+        <ul class="ht-list">
+          <li><strong>Once a week, same day, same time of day.</strong> Results can change within a single day (see the reading test), so the clock stays the same.</li>
+          <li><strong>About 5 minutes in total:</strong> tapping with each hand, reading one passage aloud, and a weight.</li>
+          <li><strong>Alongside the referral, not instead of it.</strong> If an EMG has been ordered, keep the appointment. The results go to the specialist with it.</li>
+          <li><strong>What counts as a real change.</strong> The first two weekly results set the baseline. A change counts only when <em>two results in a row</em> are worse than the baseline by more than the test's normal variation (its minimal detectable change, MDC). One bad week never counts on its own.</li>
+          <li><strong>What happens then.</strong> If the scorer put the patient in the Unclear group, the doctor decides by week <span id="deadline-weeks"></span>: a real change, or signs in a new body region, means an EMG referral; otherwise the patient steps down. If an EMG is already booked, a real change is sent to the specialist, who can decide to see the patient sooner.</li>
+        </ul>
+      </article>
+      <article class="card" id="regions-card">
+        <h2>Tests by body region</h2>
+        <div class="table-wrap"><table id="region-table" class="region-table"></table></div>
+      </article>
+    </section>
+
+    <section class="card ht-who ht-row">
+      <label for="person"><strong>Who is testing</strong></label>
+      <input id="person" type="text" placeholder="Name (needed for team calibration)" autocomplete="off" maxlength="40">
+      <span class="muted small">Results are saved under this name, in this browser only. Nothing is sent anywhere.</span>
+    </section>
+
+    <section class="grid grid-2 ht-row">
+      <article class="card ht-test" id="tap-card">
+        <div class="ht-card-head"><h2>Finger tapping</h2><span class="status-tag working">Working</span></div>
+        <p class="muted">Hand and arm. Tap the pad as fast as you can with one index finger for 10 seconds. On a laptop you can press the Space bar instead. Each hand is tested on its own, so a change on one side is not hidden by the other.</p>
+        <div class="calib-banner" id="tap-calib" hidden></div>
+        <div class="seg" id="hand-seg" role="radiogroup" aria-label="Hand">
+          <button type="button" role="radio" aria-checked="true" data-test="tap_right">Right hand</button>
+          <button type="button" role="radio" aria-checked="false" data-test="tap_left">Left hand</button>
+        </div>
+        <div id="tap-pad" class="tap-pad" tabindex="0" role="button" aria-label="Tapping pad: tap here, or press Space">
+          <div class="pad-big" id="tap-big" aria-live="off">Ready</div>
+          <div class="pad-small" id="tap-small">Press Start, then tap here</div>
+          <div class="pad-bar"><span id="tap-bar"></span></div>
+        </div>
+        <div class="ht-actions">
+          <button type="button" class="primary big" id="tap-start">Start</button>
+          <button type="button" id="tap-cancel" hidden>Stop without saving</button>
+        </div>
+        <div id="tap-result" class="ht-result" aria-live="polite"></div>
+      </article>
+
+      <article class="card ht-test" id="read-card">
+        <div class="ht-card-head"><h2>Reading rate</h2><span class="status-tag working">Working</span></div>
+        <p class="muted">Speech. Read the passage aloud at your normal pace. Press Start as you say the first word and Stop after the last.</p>
+        <div class="callout">
+          <strong>Why the time of day matters.</strong> Alex reads 165 words a minute at 9 am but 118 at 4 pm. A change that big can happen within one day, so the test runs at the same time each week; otherwise the clock could look like a decline, or hide one.
+        </div>
+        <div class="calib-banner" id="read-calib" hidden></div>
+        <blockquote class="passage" id="passage"></blockquote>
+        <p class="muted small" id="passage-count"></p>
+        <div class="ht-actions">
+          <button type="button" class="primary big" id="read-start">Start</button>
+          <button type="button" class="big" id="read-stop" disabled>Stop</button>
+          <span class="timer" id="read-timer" aria-live="off">0.0 s</span>
+        </div>
+        <div id="read-result" class="ht-result" aria-live="polite"></div>
+      </article>
+    </section>
+
+    <section class="grid grid-2 ht-row">
+      <article class="card ht-mock" id="walk-card">
+        <div class="ht-card-head"><h2>Walking test</h2><span class="status-tag mock">Mockup, not working yet</span></div>
+        <p class="muted">Legs. Alex's right foot started catching on stairs in April 2025, and his foot drop kept getting worse through physio (August 2025 to February 2026).</p>
+        <div class="mock-wrap">
+          <div class="mock-phone" aria-hidden="true">
+            <div class="mock-notch"></div>
+            <div class="mock-title">Walking test</div>
+            <div class="mock-step">Phone in a front pocket. Walk along a hallway at your usual pace.</div>
+            <div class="mock-readout"><span>Stride-time variability</span><strong>– %</strong></div>
+            <div class="mock-btn">Start walking</div>
+          </div>
+          <div class="mock-text">
+            <p><strong>How it would work.</strong> The phone's motion sensor marks each step. The test reports <em>stride-time variability</em>: how much the time from one step of a foot to its next step changes, as a percentage of the average. Steadier walking gives a lower number, so here a rise is the warning sign.</p>
+            <p class="small" id="walk-evidence"></p>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" id="weight-card">
+        <div class="ht-card-head"><h2>Body weight</h2><span class="status-tag working">Working: simple entry</span></div>
+        <p class="muted">Whole body. Weigh yourself once a week on the same scale, at the same time of day.</p>
+        <div class="weight-row">
+          <label for="weight-input">Weight (kg)</label>
+          <input id="weight-input" type="number" inputmode="decimal" step="0.1" min="20" max="400">
+          <button type="button" class="primary" id="weight-save">Save weight</button>
+        </div>
+        <div id="weight-result" class="ht-result" aria-live="polite"></div>
+        <p class="small muted" id="weight-why"></p>
+      </article>
+    </section>
+
+    <section class="card ht-row" id="calib-card">
+      <div class="ht-card-head"><h2>Team calibration: how big a change is real?</h2></div>
+      <p>Every test wobbles a little from one run to the next, even for a healthy person on the same evening. Before a drop is trusted, the team measures that wobble: each teammate does one test 10 times in a row, and the page works out the minimal detectable change.</p>
+      <div class="calib-controls">
+        <label for="calib-test">Test</label>
+        <select id="calib-test"></select>
+        <button type="button" class="primary" id="calib-start">Start 10 trials</button>
+        <span class="msg-inline" id="calib-hint" aria-live="polite"></span>
+      </div>
+      <div class="grid grid-2 calib-body">
+        <div id="calib-summary"></div>
+        <div class="formula">
+          <h3>The formula in plain words</h3>
+          <ol>
+            <li><strong>Each person's spread.</strong> Work out the standard deviation (SD) of each teammate's own trials. Everyone is compared only with themselves, so only this within-person spread matters.</li>
+            <li><strong>Pool it.</strong> Average the squared spreads (variances) across teammates and take the square root: the pooled within-person SD.</li>
+            <li><strong>Turn it into a change.</strong> MDC = 1.96 × √2 × pooled SD. The √2 is there because a change compares two results, and each has its own wobble; the 1.96 covers 95% of normal ups and downs.</li>
+          </ol>
+          <p class="formula-line"><strong>A drop smaller than the MDC is normal variation.</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card ht-row" id="history-card">
+      <div class="ht-card-head">
+        <h2>Saved results <span class="muted small" id="history-count"></span></h2>
+        <div class="ht-actions tight">
+          <button type="button" id="csv-btn">Download CSV</button>
+          <button type="button" id="csv-copy-btn">Copy CSV</button>
+          <button type="button" class="danger" id="delete-btn">Delete all results</button>
+        </div>
+      </div>
+      <div id="trend"></div>
+      <div class="table-wrap"><table id="history-table" class="history-table"></table></div>
+      <p class="muted" id="history-empty">No results yet. Run a test above; each result is saved in this browser.</p>
+    </section>
+
+    <p class="footer-note">MDC means minimal detectable change: the smallest change bigger than normal test-to-test variation. Values tagged <span class="assume-tag">ASSUMPTION</span> are placeholders from the scoring engine; they are replaced by the team's own measurements (tagged <span class="measured-tag">MEASURED</span>) once saved above. A decline only counts when two weekly results in a row are worse than the person's own baseline by more than the MDC. These tests support an EMG referral; they never replace one.</p>
+  </main>
+  <script type="module" src="js/nav.js" onerror="rfnFail()"></script>
+  <script type="module" src="js/hometests.js" onerror="rfnFail()"></script>
+</body>
+</html>

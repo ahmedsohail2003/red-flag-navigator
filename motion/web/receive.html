@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Phone walking test: doctor's view</title>
+  <link rel="stylesheet" href="./receive.css">
+  <script type="module" src="./receive.js"></script>
+</head>
+<body>
+  <main class="page">
+    <header class="top">
+      <h1>Phone walking test: doctor's view</h1>
+      <p class="lede">It measures walking speed over 10 m with the phone's motion sensors, and a drop beyond normal variation two weeks running raises the home-test flag; it is not an ALS test.</p>
+      <p id="boot" class="notice">Starting the page. If this message stays, start the server (python run.py, or python motion/server.py) and open this page from the address it prints.</p>
+      <p id="gait-note" class="notice" hidden>Walking speed is not in the app's test list yet, so this page added it for itself. The app's own views will show it after the merge (motion/MERGE.md).</p>
+      <p id="storage-note" class="notice notice-warn" hidden>This browser is not keeping data (storage is blocked), so saved results last only until you reload, and the app will not see them.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="h-connect">
+      <h2 id="h-connect">Connect the phone</h2>
+      <p id="conn-status" class="conn" role="status" aria-live="polite" data-state="connecting">Connecting to the server…</p>
+      <div id="phone-urls" class="urls"></div>
+      <p id="info-error" class="error" hidden>This page must be opened from the project's server. In the project folder run <code>python run.py</code> (or <code>python motion/server.py</code>), then open the laptop address it prints, followed by /motion/receive.html.</p>
+      <ol class="steps">
+        <li>Join the phone to the same Wi-Fi as this laptop.</li>
+        <li>On the phone, type the address above in full, starting with https://. Accept the certificate warning once: the server made its own certificate, so the phone does not know it yet.</li>
+        <li>Tap Start, then walk the 10 m at your usual pace.</li>
+      </ol>
+    </section>
+
+    <section class="panel" aria-labelledby="h-walks">
+      <h2 id="h-walks">Walks received</h2>
+      <p id="walks-error" class="error" hidden></p>
+      <p id="walks-empty" class="empty">No walks yet. They appear here, newest first, as soon as the phone sends them.</p>
+      <div id="walk-list" class="cards" aria-live="polite"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-import">
+      <h2 id="h-import">Import a recording</h2>
+      <p>Load a walk recorded earlier: a .json saved from the phone page, or .csv files from Sensor Logger, phyphox or the gyro starter. For Sensor Logger, pick all its files at once.</p>
+      <div class="form-row">
+        <label class="field">
+          <span>Recording files (.json or .csv)</span>
+          <input id="files" type="file" multiple accept=".json,.csv,application/json,text/csv">
+        </label>
+        <label class="field field-short">
+          <span>Distance walked, in metres</span>
+          <input id="distance" type="number" value="10" min="1" max="100" step="0.1" inputmode="decimal">
+        </label>
+      </div>
+      <p id="import-msg" class="msg" role="status" hidden></p>
+      <div id="import-list" class="cards"></div>
+    </section>
+
+    <section class="panel" aria-labelledby="h-settings">
+      <h2 id="h-settings">Save settings</h2>
+      <div class="form-row">
+        <label class="field">
+          <span>Name for home tests (shared with the app's Monitoring view)</span>
+          <input id="person" type="text" autocomplete="off" spellcheck="false" placeholder="Leave empty for no name">
+        </label>
+        <label class="field field-short">
+          <span>Date to save under</span>
+          <input id="save-date" type="date">
+        </label>
+      </div>
+      <p id="demo-label" class="badge badge-demo" role="status" hidden></p>
+      <p id="demo-note" class="note demo-note" hidden></p>
+      <label class="check">
+        <input id="diagnosed" type="checkbox">
+        <span>Already diagnosed? Uses the smaller normal variation measured in people with ALS (±0.18 m/s instead of ±0.28 m/s). This changes only this page's flag.</span>
+      </label>
+      <p id="mdc-now" class="note"></p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-weekly">
+      <h2 id="h-weekly">Weekly walking speed <span id="weekly-who" class="who"></span></h2>
+      <div id="chart"></div>
+      <div id="flag-box" class="flag-box" role="status" aria-live="polite"></div>
+      <h3>What the tool does with this</h3>
+      <ul id="rules" class="rules"></ul>
+      <p><a class="link" href="/#monitoring">Open the app's Monitoring view</a></p>
+    </section>
+
+    <section class="panel" aria-labelledby="h-remove">
+      <h2 id="h-remove">Remove results</h2>
+      <p id="remove-count" class="note"></p>
+      <button id="remove-btn" type="button" class="btn btn-quiet">Remove walking results saved from this page</button>
+      <p id="remove-msg" class="msg" role="status"></p>
+    </section>
+
+    <footer class="foot">
+      <p>Measures walking speed, not ALS. Compare a person only with their own baseline. Normal variation (MDC) is borrowed from WatchALS's 60-second home walk, with the phone on a lower-back belt. Treat it as approximate, and measure your own with repeat walks.</p>
+    </footer>
+  </main>
+</body>
+</html>

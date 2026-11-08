@@ -1,0 +1,344 @@
+{
+  "bigP3BCI": {
+    "edf_files_read": 6980,
+    "per_study": {
+      "StudyA": {
+        "subjects": 13,
+        "subject_sessions": 13,
+        "als_subjects": 0,
+        "nonals_subjects": 13,
+        "unknown_status_subjects": 0
+      },
+      "StudyB": {
+        "subjects": 19,
+        "subject_sessions": 60,
+        "als_subjects": 19,
+        "nonals_subjects": 0,
+        "unknown_status_subjects": 0
+      },
+      "StudyC": {
+        "subjects": 19,
+        "subject_sessions": 19,
+        "als_subjects": 0,
+        "nonals_subjects": 19,
+        "unknown_status_subjects": 0
+      },
+      "StudyD": {
+        "subjects": 17,
+        "subject_sessions": 17,
+        "als_subjects": 0,
+        "nonals_subjects": 17,
+        "unknown_status_subjects": 0
+      },
+      "StudyE": {
+        "subjects": 8,
+        "subject_sessions": 8,
+        "als_subjects": 0,
+        "nonals_subjects": 8,
+        "unknown_status_subjects": 0
+      },
+      "StudyF": {
+        "subjects": 10,
+        "subject_sessions": 30,
+        "als_subjects": 10,
+        "nonals_subjects": 0,
+        "unknown_status_subjects": 0
+      },
+      "StudyG": {
+        "subjects": 20,
+        "subject_sessions": 20,
+        "als_subjects": 0,
+        "nonals_subjects": 20,
+        "unknown_status_subjects": 0
+      },
+      "StudyH": {
+        "subjects": 16,
+        "subject_sessions": 16,
+        "als_subjects": 0,
+        "nonals_subjects": 16,
+        "unknown_status_subjects": 0
+      },
+      "StudyI": {
+        "subjects": 13,
+        "subject_sessions": 13,
+        "als_subjects": 0,
+        "nonals_subjects": 13,
+        "unknown_status_subjects": 0
+      },
+      "StudyJ": {
+        "subjects": 20,
+        "subject_sessions": 20,
+        "als_subjects": 0,
+        "nonals_subjects": 20,
+        "unknown_status_subjects": 0
+      },
+      "StudyK": {
+        "subjects": 5,
+        "subject_sessions": 8,
+        "als_subjects": 0,
+        "nonals_subjects": 5,
+        "unknown_status_subjects": 0
+      },
+      "StudyL": {
+        "subjects": 11,
+        "subject_sessions": 11,
+        "als_subjects": 11,
+        "nonals_subjects": 0,
+        "unknown_status_subjects": 0
+      },
+      "StudyM": {
+        "subjects": 21,
+        "subject_sessions": 21,
+        "als_subjects": 0,
+        "nonals_subjects": 21,
+        "unknown_status_subjects": 0
+      },
+      "StudyN": {
+        "subjects": 8,
+        "subject_sessions": 16,
+        "als_subjects": 8,
+        "nonals_subjects": 0,
+        "unknown_status_subjects": 0
+      },
+      "StudyO": {
+        "subjects": 18,
+        "subject_sessions": 36,
+        "als_subjects": 0,
+        "nonals_subjects": 18,
+        "unknown_status_subjects": 0
+      },
+      "StudyP": {
+        "subjects": 19,
+        "subject_sessions": 38,
+        "als_subjects": 0,
+        "nonals_subjects": 19,
+        "unknown_status_subjects": 0
+      },
+      "StudyQ": {
+        "subjects": 36,
+        "subject_sessions": 107,
+        "als_subjects": 0,
+        "nonals_subjects": 36,
+        "unknown_status_subjects": 0
+      },
+      "StudyR": {
+        "subjects": 20,
+        "subject_sessions": 40,
+        "als_subjects": 0,
+        "nonals_subjects": 20,
+        "unknown_status_subjects": 0
+      },
+      "StudyS1": {
+        "subjects": 10,
+        "subject_sessions": 10,
+        "als_subjects": 0,
+        "nonals_subjects": 10,
+        "unknown_status_subjects": 0
+      },
+      "StudyS2": {
+        "subjects": 24,
+        "subject_sessions": 24,
+        "als_subjects": 0,
+        "nonals_subjects": 24,
+        "unknown_status_subjects": 0
+      }
+    },
+    "als_studies": [
+      "StudyB",
+      "StudyF",
+      "StudyL",
+      "StudyN"
+    ],
+    "als_subjects_total": 48,
+    "als_subjects_with_alsfrs_r": 29,
+    "als_subjects_alsfrs_r_missing": 19,
+    "alsfrs_r_first_recorded": {
+      "n": 29,
+      "median": 20.0,
+      "q1": 3.0,
+      "q3": 33.0,
+      "min": 0.0,
+      "max": 46.0
+    },
+    "alsfrs_r_first_recorded_by_study": {
+      "StudyF": {
+        "n": 10,
+        "median": 21.0,
+        "q1": 3.5,
+        "q3": 32.25,
+        "min": 1.0,
+        "max": 42.0
+      },
+      "StudyL": {
+        "n": 11,
+        "median": 2.0,
+        "q1": 0.5,
+        "q3": 21.0,
+        "min": 0.0,
+        "max": 36.0
+      },
+      "StudyN": {
+        "n": 8,
+        "median": 22.5,
+        "q1": 17.0,
+        "q3": 39.5,
+        "min": 4.0,
+        "max": 46.0
+      }
+    },
+    "alsfrs_r_first_recorded_bins": {
+      "0-11": 12,
+      "12-23": 6,
+      "24-35": 6,
+      "36-48": 5
+    },
+    "longitudinal": {
+      "als_subjects_with_score_in_2plus_sessions": 18,
+      "of_which_score_changes_between_sessions": 0,
+      "score_change_last_minus_first": {
+        "n": 0
+      },
+      "subjects_with_conflicting_scores_inside_one_session": 0
+    },
+    "als_age_years": {
+      "n": 21,
+      "median": 56.0,
+      "q1": 50.0,
+      "q3": 59.0,
+      "min": 37.0,
+      "max": 63.0
+    },
+    "als_sex_counts": {
+      "X": 23,
+      "M": 16,
+      "F": 9
+    },
+    "nonals_subjects_total": 279,
+    "nonals_age_years": {
+      "n": 27,
+      "median": 23.0,
+      "q1": 21.0,
+      "q3": 24.5,
+      "min": 19.0,
+      "max": 28.0
+    },
+    "note": "Status and ALSFRS-R read from the EDF+ patient field (PhysioNet Table 2: ALSFRS-R taken from medical records, if available). Age = 2020 minus the date-shifted birth year, so it is approximate."
+  },
+  "EEGET_ALS": {
+    "participants": {
+      "als_n": 6,
+      "control_n": 170,
+      "als_age_years": {
+        "n": 6,
+        "median": 44.5,
+        "q1": 40.75,
+        "q3": 57.25,
+        "min": 37.0,
+        "max": 77.0
+      },
+      "control_age_years": {
+        "n": 170,
+        "median": 19.0,
+        "q1": 19.0,
+        "q3": 64.5,
+        "min": 18.0,
+        "max": 82.0
+      },
+      "als_sex_counts": {
+        "M": 3,
+        "Fm": 3
+      },
+      "control_sex_counts": {
+        "M": 170
+      },
+      "control_age_bands": {
+        "under_19": 1,
+        "19_to_25": 110,
+        "26_to_49": 6,
+        "50_to_70": 39,
+        "over_70": 14
+      }
+    },
+    "als_visits": {
+      "visits_per_patient": [
+        1,
+        10,
+        10,
+        10,
+        10,
+        10
+      ],
+      "followup_span_weeks_patients_with_repeat_visits": {
+        "n": 5,
+        "median": 16.0,
+        "q1": 14.0,
+        "q3": 17.0,
+        "min": 9.0,
+        "max": 17.0
+      },
+      "patients_whose_visit_week_order_is_not_increasing": 1
+    },
+    "eeg_format_counts": {
+      "128 Hz x 32 ch": 1989
+    },
+    "eye_tracker_rows_per_second_scenario1": {
+      "ALS": {
+        "n": 51,
+        "median": 59.91851906231173,
+        "q1": 59.84087453967315,
+        "q3": 59.96211346697943,
+        "min": 47.58744259612122,
+        "max": 74.95768852020628
+      },
+      "control": {
+        "n": 170,
+        "median": 59.98017580892433,
+        "q1": 59.925811320260934,
+        "q3": 60.00260716986936,
+        "min": 43.17838306606184,
+        "max": 74.97458950680887
+      }
+    },
+    "eye_tracker_rate_note": "Paper says Tobii Eye Tracker 5 at 30 Hz; compare with the measured rows per second above before computing any gaze-speed feature.",
+    "from_paper": {
+      "alsfrs_r_total": {
+        "score_0": 4,
+        "score_1": 2,
+        "note": "Methods: 4 patients ALSFRS-R 0 and 2 patients ALSFRS-R 1, all locked-in. The abstract also says severity ranged 'from partial mobility and weakened speech'; the two statements do not fully agree."
+      },
+      "eeg_device": "Emotiv EPOC Flex, 32 saline electrodes, 128 Hz",
+      "eye_tracker": "Tobii Eye Tracker 5, 30 Hz",
+      "control_age_range_years": [
+        19,
+        70
+      ],
+      "mi_classification_trained_on_170_controls": {
+        "chance_3_class": 0.333,
+        "chance_4_class": 0.25,
+        "test_on_5_held_out_controls_BAC_3class_range": [
+          0.6926,
+          0.7065
+        ],
+        "test_on_5_held_out_controls_BAC_4class_range": [
+          0.5518,
+          0.6043
+        ],
+        "test_on_ALS_EEG_ITNet_BAC_3class": {
+          "ALS01": 0.6466,
+          "ALS02": 0.5239,
+          "ALS04": 0.5999,
+          "ALS_mean": 0.59
+        },
+        "test_on_ALS_EEG_ITNet_BAC_4class": {
+          "ALS01": 0.4896,
+          "ALS02": 0.3652,
+          "ALS04": 0.3936,
+          "ALS_mean": 0.4204
+        }
+      },
+      "person_identification_accuracy_best": 0.9451,
+      "attention_detection_accuracy_approx": 0.8,
+      "group_difference_in_EEG_or_eye_metrics_reported": false
+    }
+  }
+}

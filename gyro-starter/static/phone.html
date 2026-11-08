@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Gyro remote: phone</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body class="phone">
+<header><h1>Phone remote</h1><span id="conn" class="pill">not started</span></header>
+
+<section id="setup">
+  <label>Device name (shown on the laptop)
+    <input id="source" value="phone" maxlength="20" autocomplete="off" autocapitalize="off" spellcheck="false">
+  </label>
+  <button id="start" class="big">Start motion sensors</button>
+  <p id="hint" class="hint"></p>
+</section>
+
+<section id="live" hidden>
+  <div class="grid">
+    <div><h2>Gyroscope °/s</h2><pre id="gyro">–</pre></div>
+    <div><h2>Accel + gravity m/s²</h2><pre id="acc">–</pre></div>
+    <div><h2>Orientation °</h2><pre id="ori">–</pre></div>
+    <div><h2>Stream</h2><pre id="rate">–</pre></div>
+  </div>
+  <p id="warn" class="warn"></p>
+  <div class="buttons">
+    <button id="btnA" class="pad a">A</button>
+    <button id="btnB" class="pad b">B</button>
+    <button id="recenter" class="pad wide">Recenter pointer</button>
+  </div>
+  <p class="hint">Hold the phone flat with the top pointing at the laptop, like a Wii remote. A = select, hold B = freeze the pointer while you re-aim.</p>
+</section>
+
+<script src="phone.js"></script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+# private key of the self-signed HTTPS certificate
+.certs/
+__pycache__/

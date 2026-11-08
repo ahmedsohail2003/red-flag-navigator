@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F7F6F2">
+<meta name="format-detection" content="telephone=no">
+<title>Walking speed test</title>
+<link rel="stylesheet" href="motion.css">
+<!-- Phone page for the 10 m walk. Contract: motion/CONTRACT.md sections 1, 2 and 5. -->
+<script type="module" src="walk.js"></script>
+</head>
+<body class="walk">
+
+<p id="bootMsg" class="boot" role="status">Loading the walking test. If this message stays, reload the page.</p>
+<noscript><p class="boot">This page needs JavaScript. Turn it on, then reload the page.</p></noscript>
+
+<main id="app" hidden>
+  <header class="top">
+    <h1>Walking speed test</h1>
+    <p class="lede">Your phone times a short walk at your usual pace. It measures walking speed only and does not diagnose any illness.</p>
+  </header>
+
+  <!-- Problems and how to fix them (not secure, no sensors, motion access denied, walk stopped). -->
+  <div id="help" class="help" role="alert" hidden></div>
+
+  <!-- Screen-reader announcements of each state change. -->
+  <p id="live" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
+
+  <!-- 1. Settings and Start -->
+  <section id="viewSetup" class="view" aria-labelledby="setupTitle">
+    <h2 id="setupTitle" tabindex="-1">Before you start</h2>
+
+    <ol class="steps">
+      <li>Use your usual walking aid or brace. If you might fall, have someone walk beside you. Stop if you feel unsteady.</li>
+      <li>Mark a start line and a finish line on a straight, flat path.</li>
+      <li>Stand at the start line with the phone in place.</li>
+      <li>Tap Start. If the phone goes in your pocket, put it there now. Then stand still until GO.</li>
+      <li>At GO, walk at your usual pace. Stop at the finish line.</li>
+      <li>Stand still until it beeps, about 2 seconds. It stops by itself. If you hear no beep, count to 3 before you touch the phone.</li>
+    </ol>
+    <p class="hint">If you start using a new walking aid or brace, tell your doctor. The comparison has to start again.</p>
+    <p class="hint">On iPhone, turn Silent mode off and turn the volume up. The phone beeps at GO, and again when it stops timing.</p>
+
+    <form id="settingsForm" class="card" novalidate>
+      <label class="field" for="distance">
+        <span class="field-label">Distance between the lines, in metres</span>
+        <input id="distance" name="distance" type="number" inputmode="decimal" min="3" max="30" step="0.5" value="10"
+               required aria-describedby="distanceHint distanceErr">
+        <span id="distanceHint" class="hint">10 metres is usual. Measure it with a tape.</span>
+        <span id="distanceErr" class="err" hidden>Enter a distance from 3 to 30 metres.</span>
+      </label>
+
+      <fieldset class="field">
+        <legend class="field-label">Where is the phone?</legend>
+        <label class="choice">
+          <input type="radio" name="placement" id="plWaist" value="waist" checked>
+          <span><b>Waist</b> Hold the phone flat against your belly.</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="placement" id="plPocket" value="pocket">
+          <span><b>Pocket</b> Put it in a front trouser pocket after you tap Start. If you hear no beep, wait 8 seconds after the tap, then walk.</span>
+        </label>
+        <label class="choice">
+          <input type="radio" name="placement" id="plHand" value="hand">
+          <span><b>Hand</b> Hold it in your hand.</span>
+        </label>
+        <span class="hint">Use the same place every time.</span>
+      </fieldset>
+    </form>
+
+    <div class="card today" aria-labelledby="todayTitle">
+      <h3 id="todayTitle">Walk 1, 2, 3 today</h3>
+      <ol id="todayDots" class="dots" aria-hidden="true">
+        <li>Walk 1</li><li>Walk 2</li><li>Walk 3</li>
+      </ol>
+      <p id="todayText">Do 2 or 3 walks, one after another. The laptop averages them, which gives a steadier number.</p>
+    </div>
+
+    <button id="startBtn" type="button" class="btn primary big">Start</button>
+    <p id="startNote" class="note" aria-live="polite"></p>
+  </section>
+
+  <!-- 2. Countdown: recording has started -->
+  <section id="viewCount" class="view count" aria-labelledby="countTitle" hidden>
+    <h2 id="countTitle" tabindex="-1">Stand still at the start line</h2>
+    <p id="countNum" class="count-num" aria-hidden="true">3</p>
+    <p class="hint">Keep the phone in place. Do not walk yet.</p>
+    <button id="cancelBtn" type="button" class="btn quiet">Cancel</button>
+  </section>
+
+  <!-- 3. GO and recording -->
+  <section id="viewWalk" class="view walking" aria-labelledby="goCue" hidden>
+    <div class="go-block">
+      <h2 id="goCue" class="go-cue" tabindex="-1">GO</h2>
+      <p id="goText" class="go-text">Walk to the 10 m line at your usual pace. Stop at the line and stand still until it beeps.</p>
+    </div>
+    <div class="readouts">
+      <p><span class="readout-label">Time</span> <span id="elapsed" class="readout">0.0 s</span></p>
+      <p><span class="readout-label">Readings</span> <span id="rate" class="readout">–</span></p>
+    </div>
+    <p id="rateWarn" class="warn-text" hidden></p>
+    <p class="hint center">Stand still at the line until it beeps. It stops by itself. If you hear no beep, count to 3. Tap Stop only if it has not stopped.</p>
+    <button id="stopBtn" type="button" class="btn stop">Stop</button>
+  </section>
+
+  <!-- 4. Result, send status, walk again, download -->
+  <section id="viewResult" class="view" aria-labelledby="resultTitle" hidden>
+    <h2 id="resultTitle" tabindex="-1">Your walk</h2>
+
+    <div class="card speed-card">
+      <p class="speed-line"><span id="speed" class="speed">–</span> <span id="speedUnit" class="speed-unit">m/s</span></p>
+      <p class="speed-label">Walking speed (metres per second)</p>
+      <p id="quality" class="badge">–</p>
+      <p id="summary" class="summary"></p>
+    </div>
+
+    <dl class="card facts">
+      <div><dt>Time</dt><dd id="rTime">–</dd></div>
+      <div><dt>Steps</dt><dd id="rSteps">–</dd></div>
+      <div><dt>Steps per minute</dt><dd id="rCadence">–</dd></div>
+      <div><dt>Step length</dt><dd id="rStepLen">–</dd></div>
+      <div><dt>Distance</dt><dd id="rDistance">–</dd></div>
+      <div><dt>How it was timed</dt><dd id="rTiming">–</dd></div>
+    </dl>
+
+    <div class="card" id="issuesCard" hidden>
+      <h3>Notes on this walk</h3>
+      <ul id="issues" class="issues"></ul>
+    </div>
+
+    <details class="card more">
+      <summary>More numbers (for research only, not used for your result)</summary>
+      <p class="hint">These are for research only. They have not been checked for accuracy. They do not change your result.</p>
+      <dl id="exploratory" class="facts small"></dl>
+      <h4>Recording</h4>
+      <dl id="recDetails" class="facts small"></dl>
+    </details>
+
+    <div class="card send">
+      <h3>Sending to the doctor's laptop</h3>
+      <p id="sendStatus" class="send-status" aria-live="polite">Not sent yet.</p>
+    </div>
+
+    <p id="nextText" class="next"></p>
+    <button id="againBtn" type="button" class="btn primary big">Walk again</button>
+    <a id="downloadLink" class="btn quiet" href="#" download="recording.json">Download recording</a>
+  </section>
+
+  <!-- Walks saved on this phone that have not reached the laptop yet -->
+  <div id="queueBox" class="card queue" hidden>
+    <p id="queueText">1 walk is saved on this phone and not sent yet.</p>
+    <button id="resendBtn" type="button" class="btn secondary">Send again</button>
+    <p id="queueStatus" class="hint" aria-live="polite"></p>
+  </div>
+
+  <footer class="honest">
+    <p>This test measures walking speed only. It does not diagnose any illness. Results go to your doctor's laptop, and only a doctor decides what a change means.</p>
+  </footer>
+</main>
+</body>
+</html>

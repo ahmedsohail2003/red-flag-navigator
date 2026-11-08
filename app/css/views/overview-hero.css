@@ -1,0 +1,213 @@
+/* Overview hero (.ovh) and closing band (.ovc): full-bleed espresso bands with a
+   decorative canvas behind the content. Layout follows the section's own width
+   (container queries), because the sidebar takes part of the viewport:
+   - wide (>= 950px content): copy | figure stage | calculator, one screen tall
+   - medium (700 to 949px): copy on top, then figure stage | calculator
+   - narrow (< 700px): copy, figure, calculator stacked
+   Tokens only from app.css. No blur, no gradients on controls, chips only for status. */
+
+.ovh, .ovc {
+  position: relative; isolation: isolate; overflow: hidden;
+  background: var(--panel); color: var(--panel-ink);
+  container-type: inline-size;
+}
+.ovh-canvas, .ovc-canvas {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; pointer-events: none;
+}
+.ovh :focus-visible, .ovc :focus-visible { outline: 2px solid var(--panel-accent); outline-offset: 3px; }
+.ovh .soft, .ovc .soft { color: var(--panel-ink-3); }
+.ovh-sr {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* ---------- hero layout ---------- */
+.ovh-inner {
+  position: relative; z-index: 1; width: 100%; max-width: 1200px; margin: 0 auto;
+  min-height: min(calc(100vh - var(--ov-topbar, 60px)), 900px);
+  min-height: min(calc(100svh - var(--ov-topbar, 60px)), 900px);
+  padding: 40px 20px 36px;
+  display: grid; gap: 28px 28px; align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "copy" "stage" "card";
+}
+.ovh-copy { grid-area: copy; min-width: 0; }
+.ovh-stage { grid-area: stage; align-self: stretch; min-height: 400px; }
+.ovh-card { grid-area: card; min-width: 0; }
+
+@container (min-width: 700px) {
+  .ovh-inner {
+    padding: 64px 36px 56px;
+    /* The figure gets a tall column beside both the copy and the calculator, so it is on
+       the first screen (1010-1260px windows, tablets) and still beside the calculator when
+       a flag is ticked. It used to sit under the copy, below the fold. */
+    grid-template-columns: minmax(424px, 1fr) minmax(220px, .7fr);
+    grid-template-areas: "copy stage" "card stage";
+  }
+  .ovh-stage { min-height: 560px; }
+  .ovh-card { align-self: start; max-width: 420px; }
+}
+@container (min-width: 950px) {
+  .ovh-inner {
+    padding: clamp(40px, 7vh, 72px) 40px 40px;
+    column-gap: 24px;
+    align-items: start;
+    grid-template-columns: minmax(360px, 450px) minmax(180px, 1fr) minmax(320px, 352px);
+    grid-template-areas: "copy stage card";
+  }
+}
+/* 1280-wide windows (a 1920 laptop at 150%): the copy got 390px, so the lede ran long and
+   the two buttons wrapped below the fold. Give the copy 420px+ (one row of buttons); the
+   figure scales to its narrower column (its height follows the column width). */
+@container (min-width: 950px) and (max-width: 1099.98px) {
+  .ovh-inner { grid-template-columns: minmax(420px, 450px) minmax(150px, 1fr) minmax(320px, 352px); }
+}
+/* Inside the overview composer the band already has side padding (--ov-x) that lines
+   the content up with the other sections, so the inner layout drops its own. */
+.ov-sec.ovh .ovh-inner, .ov-sec.ovc .ovc-inner { max-width: none; padding-inline: 0; }
+
+/* ---------- copy column ---------- */
+.ovh-kicker {
+  display: inline-flex; align-items: center; gap: 9px; margin: 0;
+  font: 500 11px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--panel-ink-2);
+}
+.ovh-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--panel-flag); flex: none; }
+.ovh-title {
+  margin: 20px 0 0; color: var(--panel-ink); font-weight: 600;
+  font-size: clamp(36px, 6.4cqi, 62px); line-height: 1.02; letter-spacing: -.045em;
+}
+@container (min-width: 950px) { .ovh-title { font-size: clamp(40px, 4.4cqi, 50px); } }
+.ovh-title-vis { display: block; }
+.ovh-l { display: block; white-space: nowrap; }
+.ovh-cycle { display: inline-block; min-width: 1ch; }
+.ovh-lede { margin-top: 22px; max-width: 44ch; font-size: 16.5px; line-height: 1.6; color: var(--panel-ink-2); }
+/* the tool's headline result, from the engine */
+.ovh-proof {
+  margin-top: 16px; max-width: 46ch; padding-top: 14px; border-top: 1px solid var(--panel-line);
+  font-size: 14.5px; line-height: 1.55; color: var(--panel-ink-2);
+}
+.ovh-proof strong { color: var(--panel-ink); font-weight: 600; }
+.ovh-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.ovh-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 46px; padding: 0 22px;
+  border-radius: 10px; border: 1px solid transparent; font: 500 15px var(--font-sans); text-decoration: none;
+  white-space: nowrap; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s;
+}
+.ovh-btn.light { background: var(--panel-ink); border-color: var(--panel-ink); color: var(--panel); }
+.ovh-btn.light:hover { background: #FFFFFF; border-color: #FFFFFF; color: var(--panel); }
+.ovh-btn.ghost { background: transparent; border-color: rgba(246, 238, 229, .24); color: var(--panel-ink); }
+.ovh-btn.ghost:hover { background: rgba(246, 238, 229, .06); border-color: rgba(246, 238, 229, .4); color: var(--panel-ink); }
+.ovh-btn span[aria-hidden] { transition: transform .15s; }
+.ovh-btn:hover span[aria-hidden] { transform: translateX(2px); }
+
+/* ---------- calculator card (the reference's calculator, adapted) ---------- */
+.ovh-card.panel {
+  background: var(--panel-2); border: 1px solid var(--panel-line); border-radius: var(--r-xl);
+  padding: 15px 15px 11px; color: var(--panel-ink);
+}
+.ovh-card-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 26px; }
+.ovh-card-title { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: -.01em; color: var(--panel-ink); }
+.ovh-reset {
+  height: 26px; padding: 0 10px; border-radius: 7px; border: 1px solid var(--panel-line); background: transparent;
+  color: var(--panel-ink-2); font: 500 12px var(--font-sans); cursor: pointer;
+}
+.ovh-reset:hover { color: var(--panel-ink); border-color: rgba(246, 238, 229, .26); }
+.ovh-card-sub { margin-top: 2px; font-size: 12.5px; line-height: 1.4; color: var(--panel-ink-3); }
+.ovh-mini { font: 500 10.5px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--panel-ink-3); }
+.ovh-card-sub { min-height: 1.4em; margin-bottom: 12px; }
+
+.ovh-flags {
+  list-style: none; margin: 0; padding: 0; overflow: hidden;
+  border: 1px solid var(--panel-line); border-radius: 12px; background: var(--panel);
+}
+.ovh-flags li + li { border-top: 1px solid var(--panel-line); }
+.ovh-flag {
+  position: relative; display: flex; align-items: center; gap: 10px; min-height: 31px; padding: 4px 12px;
+  font-size: 13.5px; line-height: 1.3; color: var(--panel-ink-2); cursor: pointer; transition: background-color .12s, color .12s;
+}
+.ovh-flag:hover { background: var(--panel-2); color: var(--panel-ink); }
+.ovh-flag input { position: absolute; opacity: 0; width: 1px; height: 1px; margin: 0; pointer-events: none; }
+.ovh-sw {
+  position: relative; flex: none; width: 26px; height: 16px; border-radius: 999px;
+  border: 1px solid rgba(246, 238, 229, .24); background: var(--panel-2); transition: background-color .15s, border-color .15s;
+}
+.ovh-sw::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 10px; height: 10px; border-radius: 50%;
+  background: var(--panel-ink-3); transition: transform .15s, background-color .15s;
+}
+.ovh-flag input:checked + .ovh-sw { background: rgba(142, 198, 232, .16); border-color: var(--panel-accent); }
+.ovh-flag input:checked + .ovh-sw::after { transform: translateX(10px); background: var(--panel-accent); }
+.ovh-flag input:focus-visible + .ovh-sw { outline: 2px solid var(--panel-accent); outline-offset: 2px; }
+.ovh-flag input:checked ~ .ovh-flag-name { color: var(--panel-ink); }
+.ovh-flag-name { flex: 1; min-width: 0; }
+.ovh-flag-w { font: 500 12px var(--font-mono); font-feature-settings: "tnum" 1; color: var(--panel-ink-3); white-space: nowrap; }
+.ovh-flag input:checked ~ .ovh-flag-w { color: var(--panel-ink-2); }
+.ovh-flag-w.is-rule, .ovh-flag input:checked ~ .ovh-flag-w.is-rule { color: var(--panel-flag); }
+.ovh-pattern-h { margin: 10px 2px 6px; }
+/* 'More red flags (3)': the three flags outside Alex's story, closed by default */
+.ovh-more { margin-top: 6px; }
+.ovh-more > summary {
+  display: flex; align-items: center; gap: 8px; min-height: 30px; padding: 0 4px; border-radius: 8px;
+  list-style: none; cursor: pointer; font-size: 12.5px; color: var(--panel-ink-2);
+}
+.ovh-more > summary::-webkit-details-marker { display: none; }
+.ovh-more > summary:hover { color: var(--panel-ink); }
+.ovh-more-c {
+  flex: none; width: 7px; height: 7px; margin: 0 3px 0 2px; border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
+  transform: rotate(-45deg); transition: transform .15s;
+}
+.ovh-more[open] .ovh-more-c { transform: rotate(45deg); }
+.ovh-more-n { color: var(--panel-ink-3); }
+.ovh-more > .ovh-flags { margin-top: 4px; }
+
+.ovh-result {
+  margin-top: 12px; padding: 13px 15px 13px; border: 1px solid var(--panel-line); border-radius: 14px; background: var(--panel);
+}
+.ovh-result-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.ovh-result-top .ovh-big { min-width: 0; }
+.ovh-res-lbl { font-size: 12px; line-height: 1.4; color: var(--panel-ink-2); }
+.ovh-result-top .chip { flex: none; }
+.ovh-big {
+  margin-top: 6px; font: 500 52px/1.04 var(--font-mono); letter-spacing: -.045em; color: var(--panel-ink);
+  font-feature-settings: "tnum" 1; white-space: nowrap;
+  height: 54px; line-height: 54px; overflow: hidden;
+  /* the negative letter-spacing ends the box inside the last glyph: room for the '%' */
+  padding-right: .1em;
+}
+.ovh-verdict { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; font-size: 14px; font-weight: 500; color: var(--panel-ink); }
+.ovh-reason { margin-top: 6px; font-size: 12.5px; line-height: 1.45; min-height: calc(2 * 1.45em); color: var(--panel-ink-3); }
+.ovh-line-ro { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--panel-line); font-size: 12px; line-height: 1.4; color: var(--panel-ink-3); }
+.ovh-foot { margin-top: 10px; font-size: 11.5px; line-height: 1.5; color: var(--panel-ink-3); text-align: center; }
+.ovh-foot .chip { vertical-align: 1px; }
+.ovh-foot a { color: var(--panel-ink-2); text-underline-offset: 2px; }
+.ovh-foot a:hover { color: var(--panel-ink); }
+
+/* ---------- closing band ---------- */
+.ovc-inner {
+  position: relative; z-index: 1; width: 100%; max-width: 1200px; margin: 0 auto; min-height: 520px;
+  padding: 84px 24px 210px; display: flex; flex-direction: column; align-items: center; text-align: center;
+}
+.ovc-kicker {
+  display: inline-flex; align-items: center; gap: 9px; margin: 0;
+  font: 500 11px/1.4 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--panel-ink-2);
+}
+.ovc-title {
+  margin: 20px 0 0; color: var(--panel-ink); font-weight: 600;
+  font-size: clamp(32px, 4.5cqi, 54px); line-height: 1.06; letter-spacing: -.04em;
+}
+.ovc-title > span { display: block; }
+.ovc-lede { margin-top: 18px; max-width: 52ch; font-size: 16px; line-height: 1.6; color: var(--panel-ink-2); }
+.ovc .ovh-actions { justify-content: center; margin-top: 28px; }
+
+@container (max-width: 699px) {
+  .ovh-lede { font-size: 16px; }
+  .ovh-proof { font-size: 14px; }
+  .ovh-actions { margin-top: 24px; }
+  .ovh-btn { height: 44px; padding: 0 18px; font-size: 14.5px; }
+  .ovh-l { white-space: normal; }
+  .ovc-inner { min-height: 460px; padding: 64px 18px 190px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ovh-btn, .ovh-btn span[aria-hidden], .ovh-flag, .ovh-sw, .ovh-sw::after, .ovh-more-c { transition: none; }
+}

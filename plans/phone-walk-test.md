@@ -1,0 +1,96 @@
+# A real phone walking test: the phone's motion sensors time a 10 m walk, the result lands in the app's home tests, and a decline raises the flag
+
+Plan v1 (8 Nov 2026, 02:15). Executed by: Claude (this session), with parallel builders. Merged into the app by the main session or Ahmed after about 4 a.m.
+
+- **0. Situation**
+  - The ask (Ahmed, about 01:50): "If you use the gyro sensors from whatever, does that help us with the detection and diagnosis? If so ... build the functionality ... so that using the gyros or whatever ... if you connect it to the app or if you read its data, the real data, then it can detect the ALS or whatever was discussed earlier. It raises a flag." Also: "focus on the gyro part"; "let me know if this is even worth doing and if I'm being stupid or not". Aim for about 4 a.m., at the latest 5:30 a.m., so it can be combined with the main app.
+  - What is true now (looked at, 02:00 to 02:10):
+    - The app (`app/`, owned by the main session) has working tapping and reading tests. Walking is a mockup. `HOME_TESTS.walk` is stride-time variability with a placeholder MDC of 1.0.
+    - Results live in localStorage `rfn.homeResults` as `{date, time, test, value, trial, person, calibration}`. The Monitoring view merges real results into the current case for every test in `HOME_TESTS`, and averages same-day results (`weeklySeries`).
+    - `detectDecline`: baseline is the mean of the first two weekly values. A decline is two consecutive later values each worse by more than the MDC. It creates `home_decline` in the test's region. A decline in a second motor region fires `multi_region` (refer for EMG). Any decline in an unclear case fires `unclear_with_decline`.
+    - `gyro-starter/` (another session's) streams phone motion to the laptop: HTTPS self-signed on port 8443, phone POSTs to `/ingest`, the screen reads Server-Sent Events. It serves only its own folder, sends no CORS headers, and has never run on a real phone.
+    - Our research (`docs/WEARABLES.md`) ranks "Timed walk gait speed" first for earlier referral: MDC 0.28 m/s before diagnosis, 0.18 after (WatchALS). Stride-time variability is weak. No phone signal is validated for detecting undiagnosed ALS.
+  - Why build it: the legs are Alex's second region, and the walk test is the only body-region test still a mockup. A motion-timed walk turns it into real data with a sourced MDC.
+  - What motion sensors add over a stopwatch:
+    - automatic timing (no reaction-time error)
+    - step count, cadence and step length
+    - quality checks (did they walk, stop or turn)
+    - exploratory step-time asymmetry for foot drop
+  - What motion sensors do not do: diagnose ALS.
+  - Known vs assumed:
+    - Verified: a self-signed HTTPS page the user clicked through counts as a secure context, so motion sensors work. iPhone Safari gives about 60 Hz and needs a tap for permission. `wss://` to a self-signed certificate fails on iPhone, so the phone sends HTTPS POSTs. Source: the gyro session's fact-checked notes [E1].
+    - Unverified until Ahmed tries it: a real phone, the real permission prompt, the firewall and Wi-Fi path, and step detection on real walking.
+  - Kind of problem: a build with checkable parts (tests, browser run with simulated motion) and judged parts (wording, honesty).
+- **C. Done means**
+  - C1 "does that help us with the detection and diagnosis? ... let me know if this is even worth doing" — full marks: a plain-words answer, with sources, saying what motion sensors can and cannot do, and why the walk test is worth building — check: each claim traced to `docs/WEARABLES.md` or a source — met by: 6.2
+  - C2 "using the gyros ... if you connect it to the app or if you read its data, the real data, then it ... raises a flag" — full marks: the real phone sensors record a walk, the code turns it into walking speed, the result is saved as a home test, and a decline beyond normal variation two weeks running raises the flag, both live from a phone and from a recorded file — check: unit tests on synthetic walks, server tests, an engine test showing the flag rules fire, and a browser run end to end with simulated motion — met by: 1, 2, 3, 4, 5
+  - C3 "the main chat is building ... the main app ... so that the other shit from the project I can like combine it with that" — full marks: built in its own folder with no edits to `app/`, `gyro-starter/` or other docs, plus a merge guide with a tested patch so combining takes minutes — check: no files changed outside `motion/` and `plans/`; the patch applied to a scratch copy keeps `npm test` passing — met by: 6.1
+  - C4 "focus on the gyro part" — full marks: motion-sensor tests only; other data left to the other chat — check: scope review — met by: the tree
+  - C5 "aim ... 4 a.m. ... at the latest 5:30" — full marks: working and verified by about 4 a.m., with a 5-minute morning checklist for the real phone — check: timestamps on the leaves — met by: Sequence
+- **1. Walk analysis core** (`motion/web/gait.js`) — why: everything else shows or stores its output
+  - [x] 1.1 Pure function `analyzeWalk(recording)`: finds the walking bout and steps, then computes speed, steps, cadence, quality and exploratory asymmetry. Uses the timing from motion, or the manual Stop tap when motion fails. — done when: unit tests on synthetic walks pass (steps within 1, time within 0.3 s, speed within 5%, at 30, 60 and 100 Hz, with jitter, gaps, any phone orientation and a slow gait); still, short and garbage input give plain-words issues, not crashes — check: `node --test "motion/tests/*.test.mjs"` -> 85/85 (02:57); browser replay of a synthetic 14-step walk as live motion events -> 1.29 m/s against 1.28 true, 7.75 s against 7.83 s, 14/14 steps, good (02:52)
+- **2. Server** (`motion/server.py`) — why: the phone needs HTTPS for its sensors, and the laptop pages must share an origin with the app so results reach `rfn.homeResults`. Reusing gyro-starter's server lost: it serves only its own folder, has no CORS, and belongs to another session. Ports 8090 (HTTP) and 8453 (HTTPS) avoid the app's 8765 and gyro-starter's 8080 and 8443.
+  - [x] 2.1 One process serves `app/` read-only at `/` and `motion/web/` at `/motion/`, on HTTP (laptop) and self-signed HTTPS (phone), with the walk API (POST/GET walks, Server-Sent Events, info, clear from localhost only) — done when: unittest covers each endpoint, size limits, bad JSON, path traversal and HTTPS — check: `python -m unittest discover -s motion/tests -p "test_*.py"` -> 39/39 (02:48); live in the browser pane: pages, /api/info, POST 201, Server-Sent Events delivery, DELETE (02:50 to 02:55)
+- **3. Phone page** (`motion/web/walk.html`) — why: the patient's side, reading the real sensors
+  - [x] 3.1 Permission, countdown, record, auto-stop or Stop, analyse, show the result, send it to the laptop, and download the recording; plain-words help when not HTTPS or permission is denied — done when: it runs in the browser pane with simulated motion events and the walk reaches the server — check: walk.html in the pane, with a shimmed permission (desktop Chromium has no motion sensor), auto-stopped, analysed, showed the result and "Sent to the laptop"; receive.html showed it live (02:52). Not checked: a real phone.
+- **4. Laptop page and flag** (`motion/web/receive.html`, `flag.js`) — why: the doctor's side, where the flag shows
+  - [x] 4.1 Shows the phone address, receives walks live, saves them as `gait_speed` home-test rows (today or a labelled demo date), plots the weekly series against the MDC and shows the flag with what it does in the rules — done when: flag tests pass; the browser run shows a saved row and a flag after a declining series — check: 4 simulated walks posted, saved under labelled demo dates -> 4 rows, 4 chart points, "FLAG: walking speed fell more than normal variation two weeks in a row (baseline 1.33 m/s, latest 0.92 m/s, normal variation ±0.28 m/s)" (02:51); test data removed afterwards
+  - [x] 4.2 Engine test: with `gait_speed` added to `HOME_TESTS`, a decline creates `home_decline` in the legs; an arm case plus a leg decline fires `multi_region`; an unclear case plus a decline fires `unclear_with_decline` — done when: the test passes against the real `app/js/engine.js` — check: `motion/tests/engine-flag.test.mjs`: 5 tests pass (arm plus leg decline fires multi_region; flat series gives none; unclear plus decline fires unclear_with_decline; the 0.18 MDC catches a smaller drop) (02:57)
+- **5. Read a recorded file** (`motion/web/recording.js`) — why: "or if you read its data, the real data" works without a live connection, including Apple Watch or AirPods data through Sensor Logger
+  - [x] 5.1 Parses our own recording JSON, gyro-starter's CSV and Sensor Logger and phyphox exports into samples — done when: parser tests pass on sample files built from each documented format — check: the recording tests pass. Layouts come from Sensor Logger's UNITS.md, phyphox's experiment files and DataExport.java, and gyro-starter's own writer. Not checked: real exports from a phone.
+- **6. Hand-over** — why: Ahmed and the main session combine it in minutes
+  - [x] 6.1 `motion/README.md`, `motion/MERGE.md` and a patch for `app/` (HOME_TESTS entry, labels, Monitoring link) — done when: the patch applied to a scratch copy passes `npm test` and the merged app shows a gait row
+    - patch script `motion/merge/apply-app-patch.mjs`: 9 anchored edits. Check: dry run on the real app, then applied to a scratch copy and run a second time, then `node --test` in that copy -> all 9 apply, the second run skips them, 69/69 tests pass (02:35). Then (03:00) 3 rounding edits were added after the merged view read "1.0 ... more than 0.3 below 1.3": the scratch copy was refreshed from the latest app, all 12 edits applied, 324/324 tests passed, and the patched Monitoring view, served by motion/server.py --app-dir, read "Decline confirmed on 8 Nov 2026. Two results in a row (0.96 on 1 Nov 2026, then 0.92) were more than 0.28 m/s below the baseline of 1.34" (screenshot).
+  - [x] 6.2 The reply answers "is it worth it", plus a 5-minute morning test checklist for the real phone
+- **Plan support**
+  - **Sequence**
+    - Contract written first, so builders share interfaces.
+    - Then in parallel: 1.1, 2.1, 3.1, 4.1 with 4.2, and 5.1. Each builder is followed by its own reviewer.
+    - Then integration and the browser run.
+    - Then an adversarial review, then fixes.
+    - Then 6.1 and 6.2.
+  - **Triggers**
+    - Two failed fixes of a leaf: re-plan that leaf.
+    - Past 3:30 with the core not working end to end: cut 5.1 and the exploratory metrics, and ship the core.
+    - Past 5:00: stop building, verify and hand over what exists.
+  - **Risks**
+    - The real phone cannot reach the laptop (firewall, client isolation). Mitigation: hotspot and tunnel steps from gyro-starter's README; the file import; manual entry of a speed shown on the phone.
+    - Step detection fails on real walking. Mitigation: speed needs only timing, so the manual Stop tap is the fallback; the quality label shows which timing was used.
+    - The flag is invisible in the app until `HOME_TESTS` has `gait_speed`. Mitigation: the laptop page registers it for itself; the patch adds it for the app.
+    - The main session changes engine exports. Mitigation: import only `HOME_TESTS` and `detectDecline` (plus `evaluateState` and `stateAt` in tests), and re-run the tests at merge.
+    - Overclaiming. Mitigation: every screen says it measures walking, not ALS, and demo dates are labelled.
+    - The builders' pieces do not fit. Mitigation: one written contract (`motion/CONTRACT.md`), a reviewer per piece, then integration in one place.
+    - It works in desktop Chromium but not on iPhone Safari: the permission flow, Wake Lock (iOS 16.4 and later), no vibration on iOS, and sound needing a tap. Mitigation: feature-detect everything, use only visual cues as required, and keep the permission request inside the Start tap.
+    - The Windows firewall blocks the phone. Mitigation: the README gives gyro-starter's tested firewall rule, using this server's ports.
+  - **Assumptions**
+    - A1 10 m walks are repeatable enough that the borrowed WatchALS MDC is a fair start (it came from a 60-second walk). Unverified: the team's repeat walks will check it.
+    - A2 A phone held at the waist or in a front pocket gives peaks clear enough for step counting. Unverified: synthetic tests only until Ahmed walks with a real phone.
+  - **Evidence**
+    - E1 Secure context, 60 Hz, permission tap, `wss` failing on iPhone — confirmed in `research_notes/AirPods phone and watch gyro access/phone_gyro_access.md` and its verification file (W3C Secure Contexts, WebKit source, MDN compatibility data; opened by that session on 2026-11-07; re-read here 2026-11-08)
+    - E2 Gait speed MDC 0.179 m/s in ALS and 0.284 in controls; ICC 0.93 — WatchALS, `docs/WEARABLES.md` (fact-checked 2026-11-08)
+  - **Changes**
+    - Final review (03:00 to 03:52): four lenses (first real phone walk, gait validity, integration, honesty and security), then one skeptic per serious finding. All 17 serious findings survived; none was a blocker. Fixed by five fixers with separate files (03:52 to 04:01), then checked by the lead:
+      - Stop tapped mid-walk gave a speed 11 to 44% too fast, rated good. It is now `stopped_while_walking` (fail).
+      - Turning back before the stop now fails. Slow, weak walkers are now within 10% or refused, where before they could be 114% off.
+      - The manual-mismatch false alarm floor went from 1.5 s to 3 s. Cadence uses half-strides (foot drop).
+      - The gyroscope axes were permuted: MDN's old reading, copied from gyro-starter into the contract. Now alpha, beta, gamma = x, y, z.
+      - A beep at GO and at the stop (iPhone Silent mode via audioSession). Pocket placement gets a 6 s countdown.
+      - The patient page has a fall-safety line, never names ALS, and shows no unvalidated left-right number.
+      - An import keeps its own distance. The laptop refuses speeds outside 0.15 to 2.5 m/s. Simulated walks are labelled. A page open across midnight saves under the new day.
+      - DELETE also checks the Host header. /api/info recomputes the LAN addresses on each request.
+      - The app patch keeps demo-date and simulated rows marked in Monitoring (15 edits).
+      - Check: 116/116 JS, 46/46 Python, app 475/475 (04:00). The patch on a fresh app copy: 15/15 applied, then 15/15 "already done" on a second run, 441/441 (03:54). Browser replay of the fixed walk.js: 1.25 m/s against 1.24 true, 14/14 steps, cadence 104, sent and received live (04:01).
+    - Deliberate test change (04:05): the laptop page's demo note said "the app's Monitoring view does not mark demo dates". The merge patch now marks them, so the note says what happens before and after the patch, and its test expectation changed with it.
+    - Main session (03:45): it will apply the app patch. It got the 15-edit version (md5 19385ac2) and the server-side items to mirror in run.py: the simulated flag in summaries, the DELETE Host check, and the gyro-starter axes.
+    - Looking back (04:10):
+      - Kept: writing the contract first. Five builders produced pieces that fitted with no interface failure at integration. Also kept: a reviewer per piece (13 bugs), replaying a synthetic walk as live motion events in the browser, and the anchored patch script proven on fresh app copies.
+      - Went wrong, cause 1: 85 passing tests missed real-world failures (Stop tapped mid-walk, lifting the phone, slow walkers, turning back). The same agent wrote the generator and the analysis, and the generator did not end recordings at the tap the way walk.js does. Fix: tests now cut samples at the click, and a sweep with a different generator guards slow gaits.
+      - Went wrong, cause 2: the gyroscope axis mapping was a claim the contract copied from gyro-starter without a check. Fix: the contract cites the spec, and walk.test.mjs checks the mapping.
+      - Went wrong, cause 3: two servers would have split the morning test from the demo across two browser origins. Fix: the README names run.py for both.
+      - Cost: the final review took 52 minutes against the 15 to 20 planned, so the 4 a.m. target slipped to about 4:15. Its findings changed results that were wrong but rated "good", so it was worth the time.
+    - v1 test pass (02:20): added three risks the first draft missed (pieces not fitting, iPhone-only browser gaps, the firewall), and the reason for not reusing gyro-starter's server.
+    - Build (02:47): five builders and five reviewers finished. The reviewers fixed 13 bugs, among them a page-blanking walk card, a chart hang, server JSON poisoned by an infinite number, a Windows console crash, early handling of the phone making speeds 15% too fast, and auto-stop switching itself off. Check: 84/84 JS and 39/39 Python tests.
+    - Lead fix (02:55): a walk timed by the taps could report an impossible speed (3 steps over 10 m gave 3.79 m/s). The laptop page would have let it be saved, and a too-fast baseline makes every later normal walk look like a decline. Added `speed_out_of_range` (fail, outside 0.15 to 2.5 m/s) to gait.js and the contract. The new test failed first, then passed.
+    - Merge check (03:00): the merged view printed "1.0 on 1 Nov, then 0.9 ... more than 0.3 m/s below the baseline of 1.3" because the app rounds to 1 decimal (1.3 - 1.0 is not more than 0.3). The patch now keeps 2 decimals below 10 in the engine quote and the Monitoring view.
+    - Main session request (03:08): it built one server for the whole app (`python run.py`, HTTP 8765, HTTPS 8443), which serves `motion/web/` at `/motion/` and implements contract section 5. walk.js had hard-coded port 8453 for its "Open the secure address" link, so the link now comes from GET /api/info. receive.html's help texts no longer name motion/server.py. Check: over http://LAN-IP:8090 the link read https://LAN-IP:8453/motion/walk.html; 85/85 tests pass. Endpoint list sent: nothing beyond section 5.
+    - Deliberate test change (02:57): two gait tests used a 10 m walk in 2 steps (about 5 m/s) to exercise the tap-timing fallback. The fixture now walks 3 m in 2 steps (about 1.4 m/s). What those tests check (falling back to the taps, with a warning that the time includes reaction time) is unchanged; only the impossible input changed. Check: 85/85.

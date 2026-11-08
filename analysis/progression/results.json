@@ -1,0 +1,779 @@
+{
+  "source": "Datasets/02_ALS_Progression_Efron_Hastie/ALS.txt (DREAM-ALS / PRO-ACT, via Efron & Hastie CASI ch. 17)",
+  "n_patients": 1822,
+  "n_columns": 371,
+  "split": {
+    "train": 1197,
+    "test": 625
+  },
+  "n_missing_values": 0,
+  "predictor_groups": {
+    "alsfrs_items": {
+      "n_columns": 72,
+      "examples": [
+        "max.speech",
+        "min.speech",
+        "last.speech",
+        "mean.speech"
+      ]
+    },
+    "alsfrs_items_visit_to_visit_slopes": {
+      "n_columns": 72,
+      "examples": [
+        "max.slope.speech",
+        "min.slope.speech",
+        "last.slope.speech",
+        "mean.slope.speech"
+      ]
+    },
+    "alsfrs_total": {
+      "n_columns": 13,
+      "examples": [
+        "max.alsfrs.score",
+        "min.alsfrs.score",
+        "last.alsfrs.score",
+        "mean.alsfrs.score"
+      ]
+    },
+    "alsfrs_total_visit_to_visit_slopes": {
+      "n_columns": 12,
+      "examples": [
+        "max.slope.alsfrs.score",
+        "min.slope.alsfrs.score",
+        "last.slope.alsfrs.score",
+        "mean.slope.alsfrs.score"
+      ]
+    },
+    "demographics": {
+      "n_columns": 7,
+      "examples": [
+        "Race...Asian",
+        "Race...Black.African.American",
+        "Race...Caucasian",
+        "Race...Other"
+      ]
+    },
+    "family_history_neuro_disease": {
+      "n_columns": 9,
+      "examples": [
+        "Neurological.Disease.OTHER",
+        "Neurological.Disease.STROKE.NOS",
+        "Neurological.Disease.DEMENTIA.NOS",
+        "Neurological.Disease.PARKINSON.S.DISEASE"
+      ]
+    },
+    "family_history_relatives": {
+      "n_columns": 16,
+      "examples": [
+        "Aunt",
+        "Aunt..Maternal.",
+        "Cousin",
+        "Father"
+      ]
+    },
+    "fvc": {
+      "n_columns": 13,
+      "examples": [
+        "max.fvc.liters",
+        "min.fvc.liters",
+        "last.fvc.liters",
+        "mean.fvc.liters"
+      ]
+    },
+    "fvc_visit_to_visit_slopes": {
+      "n_columns": 13,
+      "examples": [
+        "max.slope.fvc.liters",
+        "min.slope.fvc.liters",
+        "last.slope.fvc.liters",
+        "mean.slope.fvc.liters"
+      ]
+    },
+    "height": {
+      "n_columns": 10,
+      "examples": [
+        "max.height",
+        "min.height",
+        "mean.height",
+        "num.height.visits"
+      ]
+    },
+    "height_visit_to_visit_slopes": {
+      "n_columns": 1,
+      "examples": [
+        "first.slope.height.date"
+      ]
+    },
+    "onset_site": {
+      "n_columns": 3,
+      "examples": [
+        "Site.of.Onset.Onset..Bulbar",
+        "Site.of.Onset.Onset..Limb",
+        "Site.of.Onset.Onset..Limb.and.Bulbar"
+      ]
+    },
+    "onset_symptoms": {
+      "n_columns": 11,
+      "examples": [
+        "Symptom.Speech",
+        "Symptom.WEAKNESS",
+        "Symptom.OTHER",
+        "Symptom.Swallowing"
+      ]
+    },
+    "onset_timing": {
+      "n_columns": 1,
+      "examples": [
+        "Onset.Delta"
+      ]
+    },
+    "svc": {
+      "n_columns": 10,
+      "examples": [
+        "max.svc.liters",
+        "min.svc.liters",
+        "last.svc.liters",
+        "mean.svc.liters"
+      ]
+    },
+    "svc_visit_to_visit_slopes": {
+      "n_columns": 9,
+      "examples": [
+        "max.slope.svc.liters",
+        "min.slope.svc.liters",
+        "last.slope.svc.liters",
+        "mean.slope.svc.liters"
+      ]
+    },
+    "trial_arm": {
+      "n_columns": 2,
+      "examples": [
+        "Study.Arm.PLACEBO",
+        "Study.Arm.ACTIVE"
+      ]
+    },
+    "vitals": {
+      "n_columns": 35,
+      "examples": [
+        "max.resp.rate",
+        "min.resp.rate",
+        "last.resp.rate",
+        "mean.resp.rate"
+      ]
+    },
+    "vitals_visit_to_visit_slopes": {
+      "n_columns": 35,
+      "examples": [
+        "max.slope.resp.rate",
+        "min.slope.resp.rate",
+        "last.slope.resp.rate",
+        "mean.slope.resp.rate"
+      ]
+    },
+    "weight": {
+      "n_columns": 12,
+      "examples": [
+        "max.weight",
+        "min.weight",
+        "last.weight",
+        "mean.weight"
+      ]
+    },
+    "weight_visit_to_visit_slopes": {
+      "n_columns": 13,
+      "examples": [
+        "max.slope.weight",
+        "min.slope.weight",
+        "last.slope.weight",
+        "mean.slope.weight"
+      ]
+    }
+  },
+  "predictor_groups_note": "No laboratory columns exist in this version (the PRO-ACT labs were not kept). Each measured variable has summaries of the first 3 months: max, min, last, mean, sum, meansquares, sd, number of visits, first/last date, first-to-last slope; the 'visit_to_visit_slopes' groups summarise the rates between consecutive visits.",
+  "scale_checks": {
+    "max_alsfrs_total_seen": 40,
+    "max_last_alsfrs_date_days": 91,
+    "pct_sex_unknown": 47.4,
+    "pct_trial_arm_unknown": 77.7,
+    "pct_bulbar_onset": 21.0
+  },
+  "dFRS_points_per_month": {
+    "all": {
+      "n": 1822,
+      "median": -0.5916,
+      "iqr": [
+        -1.026,
+        -0.2497
+      ],
+      "mean": -0.6855,
+      "sd": 0.5654,
+      "pct_zero_or_improving": 10.4
+    },
+    "bulbar_onset": {
+      "n": 383,
+      "median": -0.801,
+      "iqr": [
+        -1.2761,
+        -0.3847
+      ]
+    },
+    "limb_onset": {
+      "n": 1429,
+      "median": -0.5534,
+      "iqr": [
+        -0.9662,
+        -0.2306
+      ]
+    },
+    "bulbar_vs_limb_mannwhitney_p": 3.08e-11,
+    "train": {
+      "n": 1197,
+      "median": -0.5786,
+      "iqr": [
+        -1.0146,
+        -0.2568
+      ]
+    },
+    "test": {
+      "n": 625,
+      "median": -0.6087,
+      "iqr": [
+        -1.0629,
+        -0.2445
+      ]
+    }
+  },
+  "models_official_split": {
+    "predict_training_mean": {
+      "test_mse": 0.3204
+    },
+    "random_forest": {
+      "test_mse": 0.259,
+      "test_r2": 0.1916,
+      "pearson_r_pred_vs_actual": 0.4417,
+      "spearman_r_pred_vs_actual": 0.4576,
+      "settings": "500 trees, mtry = p/3, min leaf 5 (R randomForest defaults)",
+      "oob_mse_train": 0.2542
+    },
+    "gradient_boosting": {
+      "test_mse": 0.2615,
+      "test_r2": 0.1836,
+      "pearson_r_pred_vs_actual": 0.4327,
+      "spearman_r_pred_vs_actual": 0.4405,
+      "settings": "CASI Fig 17.8 settings fixed in advance: shrinkage 0.02, 4 splits per tree (5 leaves), 50% subsample, 300 trees",
+      "test_mse_at_500_trees": 0.2673,
+      "best_test_mse_over_1_to_500_trees_optimistic": 0.2615,
+      "best_n_trees_optimistic": 299
+    },
+    "lasso_10fold_cv": {
+      "test_mse": 0.2779,
+      "test_r2": 0.1327,
+      "pearson_r_pred_vs_actual": 0.3825,
+      "spearman_r_pred_vs_actual": 0.4214,
+      "n_nonzero_coefs": 51
+    },
+    "linear_4_features": {
+      "test_mse": 0.2746,
+      "test_r2": 0.1428,
+      "pearson_r_pred_vs_actual": 0.3848,
+      "spearman_r_pred_vs_actual": 0.3894,
+      "features": [
+        "log(months since onset)",
+        "pre-entry slope (40 - first ALSFRS) / months",
+        "first-3-month ALSFRS slope",
+        "bulbar onset"
+      ]
+    },
+    "casi_benchmark_note": "CASI Fig 17.6 plots test MSE for boosting, random forest and lasso between 0.25 and 0.30 on this split, boosting lowest; exact values are only shown graphically."
+  },
+  "rf_top10_impurity_importance": [
+    {
+      "feature": "Onset.Delta",
+      "importance": 0.1495
+    },
+    {
+      "feature": "alsfrs.score.slope",
+      "importance": 0.0266
+    },
+    {
+      "feature": "sum.slope.alsfrs.score",
+      "importance": 0.0226
+    },
+    {
+      "feature": "sum.slope.fvc.liters",
+      "importance": 0.0147
+    },
+    {
+      "feature": "mean.slope.alsfrs.score",
+      "importance": 0.0145
+    },
+    {
+      "feature": "mean.slope.fvc.liters",
+      "importance": 0.0137
+    },
+    {
+      "feature": "last.slope.weight",
+      "importance": 0.0136
+    },
+    {
+      "feature": "mean.slope.weight",
+      "importance": 0.0129
+    },
+    {
+      "feature": "last.slope.fvc.liters",
+      "importance": 0.012
+    },
+    {
+      "feature": "mean.speech",
+      "importance": 0.0098
+    }
+  ],
+  "gb_top10_impurity_importance": [
+    {
+      "feature": "Onset.Delta",
+      "importance": 0.1643
+    },
+    {
+      "feature": "alsfrs.score.slope",
+      "importance": 0.028
+    },
+    {
+      "feature": "last.slope.fvc.liters",
+      "importance": 0.028
+    },
+    {
+      "feature": "mean.slope.svc.liters",
+      "importance": 0.0249
+    },
+    {
+      "feature": "last.slope.weight",
+      "importance": 0.0244
+    },
+    {
+      "feature": "last.slope.bp.systolic",
+      "importance": 0.0207
+    },
+    {
+      "feature": "sum.slope.alsfrs.score",
+      "importance": 0.0159
+    },
+    {
+      "feature": "meansquares.alsfrs.score",
+      "importance": 0.0152
+    },
+    {
+      "feature": "mean.slope.weight",
+      "importance": 0.0137
+    },
+    {
+      "feature": "sum.slope.fvc.liters",
+      "importance": 0.0132
+    }
+  ],
+  "rf_grouped_permutation_importance_test": {
+    "onset_timing": {
+      "n_columns": 1,
+      "test_mse_increase_mean": 0.061,
+      "sd_over_10_repeats": 0.0073
+    },
+    "alsfrs_items": {
+      "n_columns": 72,
+      "test_mse_increase_mean": 0.0061,
+      "sd_over_10_repeats": 0.0022
+    },
+    "weight_visit_to_visit_slopes": {
+      "n_columns": 13,
+      "test_mse_increase_mean": 0.0037,
+      "sd_over_10_repeats": 0.001
+    },
+    "alsfrs_total": {
+      "n_columns": 13,
+      "test_mse_increase_mean": 0.0035,
+      "sd_over_10_repeats": 0.0022
+    },
+    "fvc_visit_to_visit_slopes": {
+      "n_columns": 13,
+      "test_mse_increase_mean": 0.0028,
+      "sd_over_10_repeats": 0.0021
+    },
+    "vitals": {
+      "n_columns": 35,
+      "test_mse_increase_mean": 0.0025,
+      "sd_over_10_repeats": 0.000696
+    },
+    "weight": {
+      "n_columns": 12,
+      "test_mse_increase_mean": 0.000767,
+      "sd_over_10_repeats": 0.000416
+    },
+    "fvc": {
+      "n_columns": 13,
+      "test_mse_increase_mean": 0.000536,
+      "sd_over_10_repeats": 0.0011
+    },
+    "svc_visit_to_visit_slopes": {
+      "n_columns": 9,
+      "test_mse_increase_mean": 0.000237,
+      "sd_over_10_repeats": 0.000839
+    },
+    "svc": {
+      "n_columns": 10,
+      "test_mse_increase_mean": 0.000205,
+      "sd_over_10_repeats": 0.00016
+    },
+    "vitals_visit_to_visit_slopes": {
+      "n_columns": 35,
+      "test_mse_increase_mean": 0.000193,
+      "sd_over_10_repeats": 0.000962
+    },
+    "demographics": {
+      "n_columns": 7,
+      "test_mse_increase_mean": 0.000129,
+      "sd_over_10_repeats": 0.000165
+    },
+    "height": {
+      "n_columns": 10,
+      "test_mse_increase_mean": 0.000108,
+      "sd_over_10_repeats": 0.00017
+    },
+    "alsfrs_items_visit_to_visit_slopes": {
+      "n_columns": 72,
+      "test_mse_increase_mean": 5.3e-05,
+      "sd_over_10_repeats": 0.0015
+    },
+    "height_visit_to_visit_slopes": {
+      "n_columns": 1,
+      "test_mse_increase_mean": 1.29e-05,
+      "sd_over_10_repeats": 2.69e-05
+    },
+    "onset_site": {
+      "n_columns": 3,
+      "test_mse_increase_mean": 8.66e-06,
+      "sd_over_10_repeats": 9.31e-05
+    },
+    "family_history_neuro_disease": {
+      "n_columns": 9,
+      "test_mse_increase_mean": 5.66e-06,
+      "sd_over_10_repeats": 1.1e-05
+    },
+    "family_history_relatives": {
+      "n_columns": 16,
+      "test_mse_increase_mean": 3.1e-06,
+      "sd_over_10_repeats": 2.43e-05
+    },
+    "trial_arm": {
+      "n_columns": 2,
+      "test_mse_increase_mean": -2.39e-05,
+      "sd_over_10_repeats": 1.54e-05
+    },
+    "onset_symptoms": {
+      "n_columns": 11,
+      "test_mse_increase_mean": -3.23e-05,
+      "sd_over_10_repeats": 3.77e-05
+    },
+    "alsfrs_total_visit_to_visit_slopes": {
+      "n_columns": 12,
+      "test_mse_increase_mean": -0.000653,
+      "sd_over_10_repeats": 0.0029
+    }
+  },
+  "onset_to_entry": {
+    "months_since_onset_at_entry": {
+      "n": 1822,
+      "median": 18.9902,
+      "iqr": [
+        12.2303,
+        29.5614
+      ]
+    },
+    "spearman_months_vs_dFRS_all": {
+      "n": 1822,
+      "rho": 0.3592,
+      "ci95": [
+        0.3161,
+        0.4009
+      ],
+      "p": 1.31e-56
+    },
+    "spearman_months_vs_dFRS_bulbar": {
+      "n": 383,
+      "rho": 0.3476,
+      "ci95": [
+        0.2507,
+        0.4376
+      ],
+      "p": 2.56e-12
+    },
+    "spearman_months_vs_dFRS_limb": {
+      "n": 1429,
+      "rho": 0.3384,
+      "ci95": [
+        0.2888,
+        0.3862
+      ],
+      "p": 1.26e-39
+    },
+    "dFRS_by_months_since_onset": {
+      "<12": {
+        "n": 434,
+        "median": -0.9107,
+        "iqr": [
+          -1.3577,
+          -0.446
+        ],
+        "pct_bulbar": 27.2,
+        "first_alsfrs_median": 34.0,
+        "pre_entry_slope_median": 0.6937
+      },
+      "12-24": {
+        "n": 727,
+        "median": -0.6459,
+        "iqr": [
+          -1.0416,
+          -0.3261
+        ],
+        "pct_bulbar": 23.9,
+        "first_alsfrs_median": 32.0,
+        "pre_entry_slope_median": 0.462
+      },
+      "24-36": {
+        "n": 381,
+        "median": -0.5159,
+        "iqr": [
+          -0.8894,
+          -0.223
+        ],
+        "pct_bulbar": 15.2,
+        "first_alsfrs_median": 31.0,
+        "pre_entry_slope_median": 0.3014
+      },
+      ">=36": {
+        "n": 280,
+        "median": -0.2754,
+        "iqr": [
+          -0.5451,
+          -0.061
+        ],
+        "pct_bulbar": 11.8,
+        "first_alsfrs_median": 29.0,
+        "pre_entry_slope_median": 0.2363
+      }
+    },
+    "pre_entry_slope_points_per_month": {
+      "n": 1822,
+      "median": 0.3932,
+      "iqr": [
+        0.2418,
+        0.6577
+      ]
+    },
+    "spearman_pre_entry_slope_vs_dFRS": {
+      "n": 1822,
+      "rho": -0.3478,
+      "ci95": [
+        -0.3899,
+        -0.3043
+      ],
+      "p": 5.84e-53
+    },
+    "spearman_first_3_month_slope_vs_dFRS": {
+      "n": 1819,
+      "rho": 0.2308,
+      "ci95": [
+        0.1841,
+        0.2764
+      ],
+      "p": 2.04e-23
+    },
+    "ols_dFRS_on_log2_months_adjusted": {
+      "intercept": {
+        "coef": -2.042,
+        "ci95": [
+          -2.2846,
+          -1.7994
+        ],
+        "p": 4.34e-57
+      },
+      "log2_months_since_onset": {
+        "coef": 0.2521,
+        "ci95": [
+          0.223,
+          0.2812
+        ],
+        "p": 4.27e-60
+      },
+      "bulbar": {
+        "coef": -0.156,
+        "ci95": [
+          -0.2155,
+          -0.0965
+        ],
+        "p": 3.06e-07
+      },
+      "age": {
+        "coef": -0.0015,
+        "ci95": [
+          -0.0036,
+          0.000635
+        ],
+        "p": 0.1701
+      },
+      "first_alsfrs": {
+        "coef": 0.0129,
+        "ci95": [
+          0.008,
+          0.0177
+        ],
+        "p": 1.94e-07
+      },
+      "_n": 1822,
+      "_r2": 0.1607
+    },
+    "ols_dFRS_on_log2_months_plus_pre_entry_slope": {
+      "intercept": {
+        "coef": -2.1695,
+        "ci95": [
+          -2.6076,
+          -1.7313
+        ],
+        "p": 9.54e-22
+      },
+      "log2_months_since_onset": {
+        "coef": 0.2645,
+        "ci95": [
+          0.2186,
+          0.3104
+        ],
+        "p": 1.34e-28
+      },
+      "bulbar": {
+        "coef": -0.1552,
+        "ci95": [
+          -0.2147,
+          -0.0956
+        ],
+        "p": 3.61e-07
+      },
+      "age": {
+        "coef": -0.0015,
+        "ci95": [
+          -0.0037,
+          0.000592
+        ],
+        "p": 0.1578
+      },
+      "first_alsfrs": {
+        "coef": 0.0148,
+        "ci95": [
+          0.0075,
+          0.0222
+        ],
+        "p": 8.13e-05
+      },
+      "pre_entry_slope": {
+        "coef": 0.0336,
+        "ci95": [
+          -0.0625,
+          0.1297
+        ],
+        "p": 0.4935
+      },
+      "_n": 1822,
+      "_r2": 0.1609
+    },
+    "caveats": [
+      "Onset.Delta is symptom onset to TRIAL ENTRY, not to diagnosis; it includes the diagnostic delay plus time from diagnosis to enrolment.",
+      "Left truncation: trials enrol people still well enough to qualify, so anyone enrolled years after onset must be a slow progressor. This builds the association in.",
+      "Direction: slow disease is diagnosed later (subtle symptoms), so delay mostly marks slow biology; it does not show that diagnosing earlier changes the course."
+    ]
+  },
+  "noise_and_detectability": {
+    "alsfrs_total": {
+      "n_with_3_visits": 347,
+      "n_reconstructed_and_validated": 347,
+      "n_both_gap_times_computable": 175,
+      "n_where_both_gap_times_agree_with_span": 175,
+      "sigma_robust_median_based": 1.0514,
+      "mdc95_robust": 2.9144,
+      "span_days_median": 62.0,
+      "middle_visit_abs_residual_median": 0.871,
+      "pct_middle_visit_off_line_by_ge_2": 15.8501,
+      "sigma_single_visit_noise": 1.2245,
+      "mdc95_between_two_visits": 3.3941
+    },
+    "weight_kg": {
+      "n_with_3_visits": 262,
+      "n_reconstructed_and_validated": 262,
+      "n_both_gap_times_computable": 161,
+      "n_where_both_gap_times_agree_with_span": 161,
+      "sigma_robust_median_based": 0.612,
+      "mdc95_robust": 1.6964,
+      "span_days_median": 63.0,
+      "middle_visit_abs_residual_median": 0.5088,
+      "pct_middle_visit_off_line_by_ge_2": null,
+      "sigma_single_visit_noise": 1.9675,
+      "mdc95_between_two_visits": 5.4536
+    },
+    "fvc_liters": {
+      "n_with_3_visits": 170,
+      "n_reconstructed_and_validated": 170,
+      "n_both_gap_times_computable": 165,
+      "n_where_both_gap_times_agree_with_span": 165,
+      "sigma_robust_median_based": 0.1556,
+      "mdc95_robust": 0.4314,
+      "span_days_median": 64.0,
+      "middle_visit_abs_residual_median": 0.129,
+      "pct_middle_visit_off_line_by_ge_2": null,
+      "sigma_single_visit_noise": 0.1965,
+      "mdc95_between_two_visits": 0.5447
+    },
+    "months_until_alsfrs_drop_exceeds_mdc95": {
+      "slow_progressor_p75_dFRS": {
+        "rate_points_per_month": -0.2497,
+        "months": 13.6,
+        "months_with_robust_mdc": 11.7
+      },
+      "median": {
+        "rate_points_per_month": -0.5916,
+        "months": 5.7,
+        "months_with_robust_mdc": 4.9
+      },
+      "fast_progressor_p25_dFRS": {
+        "rate_points_per_month": -1.026,
+        "months": 3.3,
+        "months_with_robust_mdc": 2.8
+      }
+    },
+    "months_until_mdc95_for_onset_to_entry_ge_36_months_group": {
+      "n": 280,
+      "median_dFRS": -0.2754,
+      "months": 12.3,
+      "months_with_robust_mdc": 10.6
+    },
+    "observed_first_3_months": {
+      "n_with_span_ge_60_days": 1536,
+      "span_days_median": 80.0,
+      "pct_drop_ge_mdc95": 16.9,
+      "pct_no_drop_or_rise": 38.7
+    },
+    "early_slopes_first_3_months": {
+      "weight_kg_per_month": {
+        "n": 1578,
+        "median": 0.1003,
+        "iqr": [
+          -0.3261,
+          0.7358
+        ]
+      },
+      "fvc_liters_per_month": {
+        "n": 1819,
+        "median": -0.0504,
+        "iqr": [
+          -0.1339,
+          0.0124
+        ]
+      }
+    },
+    "note": "Noise = scatter of the middle of 3 visits around the first-to-last line within ~3 months (rater error + real day-to-day change). MDC95 = 1.96 * sqrt(2) * sigma. Scale is the 40-point ALSFRS; the 48-point ALSFRS-R adds respiratory items, so treat these as approximate for ALSFRS-R."
+  }
+}

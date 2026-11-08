@@ -1,0 +1,164 @@
+/* Overview section: the pattern grid (js/app/views/overview/pattern.js).
+   The reference's crop-marked "fleet" panel, adapted: visits x body regions, cells in ALS
+   red tones by the number of red flags (always with the count), a detail row below. */
+
+.ovp { padding: 8px 0; }
+.ovp-head { text-align: center; max-width: 860px; margin: 0 auto 36px; }
+.ovp-eyebrow { justify-content: center; margin-bottom: 14px; }
+.ovp-eyebrow::before { background: var(--flag); opacity: 1; }
+.ovp-title { font-size: clamp(30px, 3.6vw, 50px); line-height: 1.03; letter-spacing: -.045em; font-weight: 600; text-wrap: balance; }
+.ovp-lede { margin: 16px auto 0; max-width: 64ch; color: var(--ink-2); font-size: 16.5px; line-height: 1.6; text-wrap: pretty; }
+
+/* crop-marked frame */
+.ovp-frame { position: relative; max-width: 1020px; margin: 0 auto; }
+.ovp-crop { position: absolute; width: 12px; height: 12px; border: 0 solid var(--ink); pointer-events: none; }
+.ovp-crop.tl { top: -7px; left: -7px; border-top-width: 1.5px; border-left-width: 1.5px; }
+.ovp-crop.tr { top: -7px; right: -7px; border-top-width: 1.5px; border-right-width: 1.5px; }
+.ovp-crop.bl { bottom: -7px; left: -7px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+.ovp-crop.br { bottom: -7px; right: -7px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+.ovp-panel { background: var(--surface); border: 1px solid var(--line-2); border-radius: 3px; }
+
+.ovp-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--line); }
+.ovp-bar .micro { letter-spacing: .12em; }
+.ovp-live { color: var(--ink-3); white-space: nowrap; }
+.ovp-live.on { color: var(--flag); }
+.ovp-live.on::before { animation: ovp-pulse 1.2s ease-in-out infinite; }
+@keyframes ovp-pulse { 50% { opacity: .25; } }
+
+.ovp-tools { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 12px 18px 2px; }
+.ovp-step { display: inline-flex; gap: 6px; }
+.ovp-step[hidden] { display: none; }
+.ovp-step .btn { width: 32px; padding: 0; font-family: var(--font-mono); }
+
+/* the grid */
+.ovp-scroll { padding: 2px 12px 8px; overflow-x: auto; container: ovp-grid / inline-size; }
+.ovp-grid { width: 100%; border-collapse: separate; border-spacing: 6px 5px; table-layout: fixed; }
+.ovp-grid th { font-weight: 500; }
+.ovp-vh { width: 200px; }
+.ovp-th-tool { width: 158px; }
+.ovp-grid thead th {
+  font: 500 10.5px/1.3 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3);
+  text-align: center; padding: 0 2px 4px; vertical-align: bottom;
+}
+.ovp-grid thead th.ovp-vh { text-align: left; padding-left: 4px; }
+.ovp-short { display: none; }
+.ovp-visit { text-align: left; padding: 0 8px 0 4px; white-space: nowrap; transition: opacity .3s; }
+.ovp-date { display: block; font: 500 13px/1.25 var(--font-mono); font-feature-settings: "tnum" 1; color: var(--ink); }
+.ovp-set { display: block; font-size: 12.5px; line-height: 1.3; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; }
+.ovp-tool { text-align: center; vertical-align: middle; transition: opacity .3s; }
+
+.ovp-cell {
+  position: relative; height: 46px; padding: 0; vertical-align: top; cursor: pointer;
+  background: var(--surface-3); border: 1px solid var(--line); border-radius: 5px;
+  transition: background-color .3s, border-color .3s, color .3s, opacity .3s;
+}
+.ovp-n { position: absolute; top: 6px; left: 8px; font: 500 11px/1 var(--font-mono); font-feature-settings: "tnum" 1; letter-spacing: .02em; }
+.ovp-pip { position: absolute; right: 7px; bottom: 7px; width: 5px; height: 5px; border-radius: 50%; background: var(--line-2); }
+.ovp-cell.l1 { background: #F8E1DA; border-color: rgba(200, 68, 44, .22); color: #9C3420; }
+.ovp-cell.l2 { background: #F1C4B6; border-color: rgba(200, 68, 44, .3); color: #86301C; }
+.ovp-cell.l3 { background: #E2907A; border-color: rgba(160, 50, 30, .35); color: #2B120B; }
+.ovp-cell.l4 { background: var(--flag); border-color: var(--flag); color: #FFFFFF; }
+.ovp-cell.l1 .ovp-pip, .ovp-cell.l2 .ovp-pip, .ovp-cell.l3 .ovp-pip { background: currentColor; }
+.ovp-cell.l4 .ovp-pip { background: #FFFFFF; }
+.ovp-cell:hover { border-color: var(--ink-3); }
+.ovp-cell.sel { box-shadow: 0 0 0 2px var(--ink); border-color: var(--ink); }
+.ovp-cell:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 5px; }
+/* replay: visits not yet shown are empty */
+.ovp-cell.off { background: var(--surface-3); border-color: var(--line); color: transparent; }
+.ovp-cell.off .ovp-pip { background: var(--line); }
+tr.off .ovp-visit, tr.off .ovp-tool { opacity: .35; }
+/* one clinician at a time */
+tr.dim .ovp-cell, tr.dim .ovp-visit, tr.dim .ovp-tool { opacity: .16; }
+tr.act .ovp-date { color: var(--flag); }
+tr.act .ovp-visit { box-shadow: inset 2px 0 0 var(--flag); }
+
+/* detail row (the reference's 4-up readout) */
+.ovp-detail {
+  display: grid; grid-template-columns: 210px minmax(0, 1fr) 270px; border-top: 1px solid var(--line);
+  min-height: 196px;
+}
+.ovp-dc { padding: 16px 18px 18px; min-width: 0; }
+.ovp-dc + .ovp-dc { border-left: 1px solid var(--line); }
+.ovp-dc > .micro { display: flex; margin-bottom: 10px; letter-spacing: .1em; }
+.ovp-dv { font-size: 15px; color: var(--ink); }
+.ovp-dv b { font: 500 15px/1.3 var(--font-mono); font-feature-settings: "tnum" 1; white-space: nowrap; }
+.ovp-ds { margin-top: 3px; font-size: 13.5px; color: var(--ink-2); }
+.ovp-dn { margin-top: 8px; font-size: 12.5px; color: var(--ink-3); line-height: 1.45; }
+.ovp-flags { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; }
+.ovp-flags li { display: grid; gap: 3px; }
+.ovp-fl { font-size: 13.5px; font-weight: 500; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ovp-tag { font: 500 10px/1 var(--font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--flag); }
+.ovp-q {
+  quotes: "\201C" "\201D"; font-size: 13.5px; line-height: 1.45; color: var(--ink-2);
+  border-left: 2px solid var(--flag); padding: 1px 0 1px 10px;
+}
+.ovp-sum li { grid-template-columns: 190px minmax(0, 1fr); align-items: baseline; gap: 10px; }
+.ovp-cnt { font-size: 12px; color: var(--flag); }
+.ovp-names { font-size: 13.5px; color: var(--ink-2); }
+.ovp-none { font-size: 13.5px; color: var(--ink-3); }
+.ovp-what { margin-top: 12px; padding-top: 10px; border-top: 1px dashed var(--line-2); font-size: 13.5px; color: var(--ink-2); line-height: 1.5; }
+.ovp-what .micro { margin-right: 6px; }
+.ovp-tierline { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ovp-act { font-size: 13.5px; font-weight: 500; color: var(--ink); }
+.ovp-range, .ovp-why { margin-top: 8px; font-size: 12.5px; line-height: 1.5; color: var(--ink-3); }
+.ovp-range .mono { color: var(--ink); }
+/* the number-only crossing one visit before the pattern rule: shown, smaller, not claimed */
+.ovp-aside { margin-top: 10px; padding-top: 9px; border-top: 1px dashed var(--line-2); font-size: 12px; line-height: 1.45; color: var(--ink-3); }
+.ovp-aside .mono { color: var(--ink-2); }
+/* a mention the case file keeps but does not weight: quoted, without the red-flag rule */
+.ovp-also { margin-top: 10px; }
+.ovp-also .ovp-q { display: block; margin-top: 5px; border-left-color: var(--line-2); }
+.ovp-tool .chip { white-space: nowrap; }
+.ovp-rules { margin: 8px 0 0; padding-left: 16px; font-size: 12.5px; line-height: 1.45; color: var(--ink-2); }
+.ovp-rules li + li { margin-top: 3px; }
+.ovp-foot { max-width: 1020px; margin: 18px auto 0; text-align: center; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ovp-cell, .ovp-visit, .ovp-tool { transition: none; }
+  .ovp-live.on::before { animation: none; }
+}
+/* Up to 1180px wide (the sidebar takes 248px) the middle column cannot hold the 190px region
+   labels and their names side by side, so the Indicator cell moves below. */
+@media (max-width: 1180px) {
+  .ovp-detail { grid-template-columns: 190px minmax(0, 1fr); }
+  .ovp-dc:last-child { grid-column: 1 / -1; border-left: 0; border-top: 1px solid var(--line); }
+}
+/* Column labels follow the grid's own width (with or without the sidebar). Short labels once
+   a region column is under about 75px, the width of "SWALLOWING"; the full names stay for
+   screen readers. Narrower still, the Indicator column goes, as on phones (the detail row
+   below still shows it). */
+@container ovp-grid (max-width: 782px) {
+  .ovp-full { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ovp-short { display: inline; }
+}
+@container ovp-grid (max-width: 640px) {
+  .ovp-th-tool, .ovp-tool { display: none; }
+}
+@media (max-width: 640px) {
+  .ovp-head { text-align: left; margin-bottom: 24px; }
+  .ovp-eyebrow { justify-content: flex-start; }
+  .ovp-title { font-size: 28px; }
+  .ovp-lede { font-size: 15.5px; }
+  .ovp-grid thead th { letter-spacing: 0; }
+  .ovp-th-tool, .ovp-tool { display: none; }
+  .ovp-scroll { padding: 4px 4px 8px; }
+  .ovp-grid { border-spacing: 4px; }
+  .ovp-vh { width: 96px; }
+  .ovp-visit { padding: 0 2px; white-space: normal; }
+  .ovp-date { font-size: 11.5px; }
+  .ovp-set { font-size: 11px; white-space: nowrap; }
+  .ovp-cell { height: 44px; }
+  .ovp-n { top: 5px; left: 5px; font-size: 10.5px; }
+  .ovp-pip { right: 5px; bottom: 5px; }
+  .ovp-bar, .ovp-tools { padding-left: 12px; padding-right: 12px; }
+  .ovp-tools .seg { width: 100%; }
+  .ovp-tools .seg button { flex: 1; padding: 0 6px; font-size: 12.5px; }
+  .ovp-detail { grid-template-columns: 1fr; min-height: 0; }
+  .ovp-dc + .ovp-dc { border-left: 0; border-top: 1px solid var(--line); }
+  .ovp-sum li { grid-template-columns: 1fr; gap: 2px; }
+  .ovp-foot { text-align: left; }
+}
+/* the smallest phones (and 400% zoom): SPEECH and BREATH would touch */
+@media (max-width: 359px) {
+  .ovp-grid thead th { font-size: 9px; }
+}
